@@ -1,0 +1,38 @@
+public int <MethodName>(<Params>)
+{
+	if(m_Operator==null)
+	{
+		return (int)COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
+	}
+
+	uint MsgDataSize=CSmartStruct.GetEmptyStructSize()
+		<PacketSizes>;
+
+	ushort MsgFlag=0;
+	<IfMsgCanCache>MsgFlag|=(ushort)DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
+		
+	byte[] MsgBuffer=new byte[MsgDataSize];
+	
+	
+    uint MsgID = CBaseMsgHandler.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>);		
+
+	
+	CSmartStruct Packet=new CSmartStruct(MsgBuffer,0,MsgDataSize,true);
+	
+	if(PackMsg<MethodName>(Packet<,Params>))
+	{	
+		if(m_Operator.SendMessage(m_TargetID, MsgID, MsgFlag, MsgBuffer, 0, MsgBuffer.Length))
+		{
+			return (int)COMMON_RESULT_CODE.COMMON_RESULT_SUCCEED;
+		}
+		else
+		{
+			return (int)COMMON_RESULT_CODE.COMMON_RESULT_MSG_SEND_ERROR;
+		}
+	}
+	else
+	{
+		return (int)COMMON_RESULT_CODE.COMMON_RESULT_MSG_PACK_ERROR;
+	}
+	
+}

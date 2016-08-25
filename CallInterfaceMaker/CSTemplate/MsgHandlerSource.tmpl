@@ -1,0 +1,23 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using DOSSystem;
+using <SpaceName>;
+
+
+namespace <SpaceName>
+{
+	
+	public class C<InterfaceName>MsgHandler : CBaseMsgHandler
+	{
+		I<InterfaceName>	m_pMsgHandler;
+		public void InitMsgMap(I<InterfaceName> pMsgHandler,Dictionary<uint,MsgHandler> MsgMap)
+		{
+			m_pMsgHandler=pMsgHandler;
+			<MsgMapInits>
+		}
+
+		<Methods>
+	};
+};

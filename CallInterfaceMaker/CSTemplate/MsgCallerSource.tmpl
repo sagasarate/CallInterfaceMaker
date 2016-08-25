@@ -1,0 +1,28 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using DOSSystem;
+using <SpaceName>;
+
+
+namespace <SpaceName>
+{
+	public class C<InterfaceName>MsgCaller :
+		I<InterfaceName>
+	{
+		DistributedObjectOperator						m_Operator;		
+		OBJECT_ID										m_TargetID;
+		
+		public C<InterfaceName>MsgCaller(DistributedObjectOperator Operator, OBJECT_ID TargetID)
+		{
+			m_Operator = Operator;
+			m_TargetID = TargetID;			
+		}
+		
+		
+		
+		<Methods>
+		<PackMethods>
+	};
+};
