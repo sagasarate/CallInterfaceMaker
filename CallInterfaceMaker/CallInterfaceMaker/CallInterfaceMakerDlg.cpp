@@ -147,7 +147,7 @@ BOOL CCallInterfaceMakerDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	m_TypeDefFileName=MakeModuleFullPath(NULL,TYPE_DEF_FILE_NAME);
+	m_TypeDefFileName=CFileTools::MakeModuleFullPath(NULL,TYPE_DEF_FILE_NAME);
 	
 	LoadTypeDef();
 	LoadTemples();
@@ -472,7 +472,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 
 	CString FileName;
 
-	FileName=MakeModuleFullPath(NULL,INTERFACE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,INTERFACE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -490,7 +490,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}	
 
-	FileName=MakeModuleFullPath(NULL,INTERFACE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,INTERFACE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -508,7 +508,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}	
 
-	FileName=MakeModuleFullPath(NULL,PARAM_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,PARAM_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -526,7 +526,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,PARAM_DESCRIPTION_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,PARAM_DESCRIPTION_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -544,7 +544,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,PACK_SIZE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,PACK_SIZE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -562,7 +562,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,METHOD_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -580,7 +580,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -598,7 +598,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -616,7 +616,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -634,7 +634,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -652,7 +652,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -670,7 +670,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -688,7 +688,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_MAP_INIT_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_MAP_INIT_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -708,7 +708,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 
 	
 
-	FileName=MakeModuleFullPath(NULL,MSG_CALLER_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_CALLER_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -726,7 +726,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_CALLER_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_CALLER_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -744,7 +744,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_HANDLER_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -762,7 +762,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -780,7 +780,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -798,7 +798,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -817,7 +817,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 	}
 
 
-	FileName=MakeModuleFullPath(NULL,STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -835,7 +835,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -853,7 +853,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -871,7 +871,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,STRUCT_DEFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_DEFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -889,7 +889,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 	
-	FileName=MakeModuleFullPath(NULL,STRUCT_MEMBER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_MEMBER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -907,7 +907,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName = MakeModuleFullPath(NULL, DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME);
+	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME);
 	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
 	{
 		ULONG64 Size = TempleFile.GetLength();
@@ -925,7 +925,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAGS_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAGS_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -943,7 +943,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}	
 
-	FileName=MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -961,7 +961,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -979,7 +979,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,PACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,PACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -997,7 +997,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1015,7 +1015,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName = MakeModuleFullPath(NULL, TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	FileName = CFileTools::MakeModuleFullPath(NULL, TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
 	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
 	{
 		ULONG64 Size = TempleFile.GetLength();
@@ -1033,7 +1033,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName = MakeModuleFullPath(NULL, FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	FileName = CFileTools::MakeModuleFullPath(NULL, FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
 	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
 	{
 		ULONG64 Size = TempleFile.GetLength();
@@ -1051,7 +1051,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName = MakeModuleFullPath(NULL, STRUCT_XML_PROCESS_TEMPLE_FILE_NAME);
+	FileName = CFileTools::MakeModuleFullPath(NULL, STRUCT_XML_PROCESS_TEMPLE_FILE_NAME);
 	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
 	{
 		ULONG64 Size = TempleFile.GetLength();
@@ -1069,7 +1069,61 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,ENUM_DFINE_TEMPLE_FILE_NAME);
+	FileName = CFileTools::MakeModuleFullPath(NULL, TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
+	{
+		ULONG64 Size = TempleFile.GetLength();
+		char * Buffer = new char[Size + 1];
+		TempleFile.Read(Buffer, Size);
+		Buffer[Size] = 0;
+		m_ToJsonOperationUnitTemplate = Buffer;
+		delete[] Buffer;
+		TempleFile.Close();
+	}
+	else
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", FileName);
+		MessageBox(Msg);
+	}
+
+	FileName = CFileTools::MakeModuleFullPath(NULL, FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME);
+	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
+	{
+		ULONG64 Size = TempleFile.GetLength();
+		char * Buffer = new char[Size + 1];
+		TempleFile.Read(Buffer, Size);
+		Buffer[Size] = 0;
+		m_FromJsonOperationUnitTemplate = Buffer;
+		delete[] Buffer;
+		TempleFile.Close();
+	}
+	else
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", FileName);
+		MessageBox(Msg);
+	}
+
+	FileName = CFileTools::MakeModuleFullPath(NULL, STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME);
+	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
+	{
+		ULONG64 Size = TempleFile.GetLength();
+		char * Buffer = new char[Size + 1];
+		TempleFile.Read(Buffer, Size);
+		Buffer[Size] = 0;
+		m_StructJsonProcessTemplate = Buffer;
+		delete[] Buffer;
+		TempleFile.Close();
+	}
+	else
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", FileName);
+		MessageBox(Msg);
+	}
+
+	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1087,7 +1141,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1105,7 +1159,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,ENUM_STR_VALUE_DFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_STR_VALUE_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1123,7 +1177,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,CONST_DFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,CONST_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1141,7 +1195,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,MACRO_DFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,MACRO_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1159,7 +1213,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,CONST_DFINE_HEADER_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,CONST_DFINE_HEADER_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1177,7 +1231,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
-	FileName=MakeModuleFullPath(NULL,STRING_CONST_DFINE_TEMPLE_FILE_NAME);
+	FileName=CFileTools::MakeModuleFullPath(NULL,STRING_CONST_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
 		ULONG64 Size=TempleFile.GetLength();
@@ -1203,7 +1257,7 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 {
 	xml_parser Parser;
 
-	CString FileName=MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
+	CString FileName=CFileTools::MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
 
 	if(Parser.parse_file(FileName,pug::parse_trim_attribute))
 	{
@@ -1352,7 +1406,7 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 bool CCallInterfaceMakerDlg::SaveConfig()
 {
 	std::ofstream os;	
-	CString FileName=MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
+	CString FileName=CFileTools::MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
 	os.open(FileName, std::ios::trunc);	
 	if (os.is_open())
 	{
@@ -1508,7 +1562,7 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 {
 	xml_parser Parser;
 
-	CString FileName=MakeModuleFullPath(NULL,ENV_FILE_NAME);
+	CString FileName=CFileTools::MakeModuleFullPath(NULL,ENV_FILE_NAME);
 	if(Parser.parse_file(FileName,pug::parse_trim_attribute))
 	{
 
@@ -1559,7 +1613,7 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 bool CCallInterfaceMakerDlg::SaveEnv()
 {
 	std::ofstream os;	
-	CString FileName=MakeModuleFullPath(NULL,ENV_FILE_NAME);
+	CString FileName=CFileTools::MakeModuleFullPath(NULL,ENV_FILE_NAME);
 	os.open(FileName, std::ios::trunc);	
 	if (os.is_open())
 	{
@@ -1727,6 +1781,10 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 						Type.GenerateOperations.ToXMLOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToXMLOperation;
 					if (Type.GenerateOperations.FromXMLOperation.IsEmpty())
 						Type.GenerateOperations.FromXMLOperation = m_InterfaceConfig.DefaultStructGenerateOperations.FromXMLOperation;
+					if (Type.GenerateOperations.ToJsonOperation.IsEmpty())
+						Type.GenerateOperations.ToJsonOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToJsonOperation;
+					if (Type.GenerateOperations.FromJsonOperation.IsEmpty())
+						Type.GenerateOperations.FromJsonOperation = m_InterfaceConfig.DefaultStructGenerateOperations.FromJsonOperation;
 					if(Type.GenerateOperations.ReferenceDefine.IsEmpty())
 						Type.GenerateOperations.ReferenceDefine=m_InterfaceConfig.DefaultStructGenerateOperations.ReferenceDefine;
 					if(Type.GenerateOperations.ReferenceUse.IsEmpty())
@@ -1795,7 +1853,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonLoad()
 			m_MainModule.ModuleDefineFileName = Dlg.GetPathName();
 			for (size_t i = 0; i < m_MainModule.ImportList.size(); i++)
 			{
-				CEasyString FileName = MakeFullPath(GetPathDirectory(m_MainModule.ModuleDefineFileName) + DIR_SLASH + (LPCTSTR)m_MainModule.ImportList[i]);
+				CEasyString FileName = CFileTools::MakeFullPath(CFileTools::GetPathDirectory(m_MainModule.ModuleDefineFileName) + DIR_SLASH + (LPCTSTR)m_MainModule.ImportList[i]);
 				LoadModule(FileName);
 			}
 			RefreshDataCache();
@@ -1808,7 +1866,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonLoad()
 			RestoreInterfaceSelections();
 
 
-			m_RunEnvInfo.RecentDataDir = (LPCTSTR)GetPathDirectory(Dlg.GetPathName());
+			m_RunEnvInfo.RecentDataDir = (LPCTSTR)CFileTools::GetPathDirectory(Dlg.GetPathName());
 			m_IsLoaded = true;
 		}
 	}
@@ -2244,7 +2302,7 @@ MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::LoadModule(LPCTSTR szFileName)
 		MODULE_DEFINE_INFO * pModuleIndo = m_ImportModuleList.end()._Ptr;
 		for (size_t i = 0; i < ModuleDefine.ImportList.size(); i++)
 		{
-			CEasyString FileName = MakeFullPath(GetPathDirectory(ModuleDefine.ModuleDefineFileName) + DIR_SLASH + (LPCTSTR)ModuleDefine.ImportList[i]);
+			CEasyString FileName = CFileTools::MakeFullPath(CFileTools::GetPathDirectory(ModuleDefine.ModuleDefineFileName) + DIR_SLASH + (LPCTSTR)ModuleDefine.ImportList[i]);
 			LoadModule(FileName);
 		}
 		return pModuleIndo;
@@ -2756,6 +2814,8 @@ bool CCallInterfaceMakerDlg::SaveGenerateOperations(xml_node& XmlNode,GENERATE_O
 	XmlNode.append_attribute("SizeCaculateOperation",(LPCTSTR)GenerateOperations.SizeCaculateOperation);
 	XmlNode.append_attribute("ToXMLOperation", (LPCTSTR)GenerateOperations.ToXMLOperation);
 	XmlNode.append_attribute("FromXMLOperation", (LPCTSTR)GenerateOperations.FromXMLOperation);
+	XmlNode.append_attribute("ToJsonOperation", (LPCTSTR)GenerateOperations.ToJsonOperation);
+	XmlNode.append_attribute("FromJsonOperation", (LPCTSTR)GenerateOperations.FromJsonOperation);
 	XmlNode.append_attribute("ReferenceDefine",(LPCTSTR)GenerateOperations.ReferenceDefine);
 	XmlNode.append_attribute("ReferenceUse",(LPCTSTR)GenerateOperations.ReferenceUse);
 	XmlNode.append_attribute("VariableDefine",(LPCTSTR)GenerateOperations.VariableDefine);
@@ -2778,6 +2838,8 @@ bool CCallInterfaceMakerDlg::LoadGenerateOperations(xml_node& XmlNode,GENERATE_O
 	GenerateOperations.SizeCaculateOperation = ((LPCTSTR)XmlNode.attribute("SizeCaculateOperation").getvalue());
 	GenerateOperations.ToXMLOperation = ((LPCTSTR)XmlNode.attribute("ToXMLOperation").getvalue());
 	GenerateOperations.FromXMLOperation = ((LPCTSTR)XmlNode.attribute("FromXMLOperation").getvalue());
+	GenerateOperations.ToJsonOperation = ((LPCTSTR)XmlNode.attribute("ToJsonOperation").getvalue());
+	GenerateOperations.FromJsonOperation = ((LPCTSTR)XmlNode.attribute("FromJsonOperation").getvalue());
 	GenerateOperations.ReferenceDefine = ((LPCTSTR)XmlNode.attribute("ReferenceDefine").getvalue());
 	GenerateOperations.ReferenceUse = ((LPCTSTR)XmlNode.attribute("ReferenceUse").getvalue());
 	GenerateOperations.VariableDefine = ((LPCTSTR)XmlNode.attribute("VariableDefine").getvalue());
@@ -2870,7 +2932,7 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 {
 	if (Depth > 32)
 	{
-		AfxMessageBox("结构依赖搜索层数过多，可能有循环依赖");
+		//AfxMessageBox("结构依赖搜索层数过多，可能有循环依赖");
 		return;
 	}
 	if (!StructInfo.BaseStruct.IsEmpty())
@@ -2954,7 +3016,7 @@ void CCallInterfaceMakerDlg::GetDefineDepends(const vector<BASE_DATA_STRUCT_DEFI
 {
 	if (Depth > 32)
 	{
-		AfxMessageBox("数据定义依赖搜索层数过多，可能有循环依赖");
+		//AfxMessageBox("数据定义依赖搜索层数过多，可能有循环依赖");
 		return;
 	}
 
@@ -3102,7 +3164,7 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 {
 	if (Depth > 32)
 	{
-		AfxMessageBox("数据定义依赖搜索层数过多，可能有循环依赖");
+		//AfxMessageBox("数据定义依赖搜索层数过多，可能有循环依赖");
 		return;
 	}
 	vector<CString> DefineDependList;
@@ -4170,6 +4232,17 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<BASE_DATA_STRUCT_DEFINE_LIS
 							else
 							{
 								Source.Replace("<XMLProcess>", "");
+							}
+
+							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
+							{
+								LineSpace = GetLineSpace(Source, "<JsonProcess>");
+								CString JsonProcess = MakeJsonProcess(StructInfo, SSTIDEnumName, LineSpace);
+								Source.Replace("<JsonProcess>", JsonProcess);
+							}
+							else
+							{
+								Source.Replace("<JsonProcess>", "");
 							}
 
 							LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
@@ -5638,6 +5711,208 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 	return Operations;
 }
 
+
+CString CCallInterfaceMakerDlg::MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+{
+	CString JsonProcess = m_StructJsonProcessTemplate;
+
+	CString LineSpace = GetLineSpace(JsonProcess, "<ToJsonOperations>");
+	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	JsonProcess.Replace("<ToJsonOperations>", ToJsonOperations);
+
+	LineSpace = GetLineSpace(JsonProcess, "<FromJsonOperations>");
+	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	JsonProcess.Replace("<FromJsonOperations>", FromJsonOperations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	JsonProcess.Replace("\r\n", Space);
+	return JsonProcess;
+}
+CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
+	{
+		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		CString Operation = m_ToJsonOperationUnitTemplate;
+		if (StructInfo.MemberList[i].IsArray)
+		{
+			Operation = m_InterfaceConfig.ArrayDefineConfig.ToJsonOperation;
+		}
+
+		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
+			if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			{
+				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+			}
+			else
+			{
+				Operation.Replace("<IfNeedCheckModifyFlag>", "");
+				Operation.Replace("</IfNeedCheckModifyFlag>", "");
+			}
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
+			RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+		}
+
+		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
+		else
+			Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
+
+		Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
+
+		CString ModifyFlagEnumName;
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+		CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		CString LineSpace = GetLineSpace(Operation, "<ToJsonOperation>");
+		CString PackOP = MakeToJsonOperation(StructInfo.MemberList[i].Type,
+			StructInfo.MemberList[i].Name,
+			StructInfo.Name, StructInfo.ShortName,
+			SSTIDEnumName,
+			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+			StructInfo.MemberList[i].IsArray,
+			LineSpace);
+
+		Operation.Replace("<ToJsonOperation>", PackOP);
+
+		CString SST_ID;
+
+		SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+		SST_ID.MakeUpper();
+
+
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
+
+
+		Operations += Operation;
+		Operations += "\r\n";
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
+	{
+
+		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
+		{
+			CString Operation = m_FromJsonOperationUnitTemplate;
+			if (StructInfo.MemberList[i].IsArray)
+			{
+				Operation = m_InterfaceConfig.ArrayDefineConfig.FromJsonOperation;
+
+				TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+				CString Space;
+				if (pTypeInfo)
+				{
+					CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+					VariableDefine.Replace("<Type>", pTypeInfo->CType);
+					VariableDefine.Replace("<Space>", "	");
+					VariableDefine.Replace("<Variable>", "ArrayElement");
+					Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+
+					CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+					VariableInit.Replace("<Variable>", "ArrayElement");
+					Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+				}
+			}
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				}
+				else
+				{
+					Operation.Replace("<IfNeedCheckModifyFlag>", "");
+					Operation.Replace("</IfNeedCheckModifyFlag>", "");
+				}
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+			}
+
+			CString SST_ID;
+
+			SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+			SST_ID.MakeUpper();
+
+
+			Operation.Replace("<SST_NAME>", SSTIDEnumName);
+			Operation.Replace("<SST_ID>", SST_ID);
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
+			else
+				Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
+
+			Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
+
+			CString ModifyFlagEnumName;
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+			CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+			CString LineSpace = GetLineSpace(Operation, "<FromJsonOperation>");
+			CString UnpackOP = MakeFromJsonOperation(StructInfo.MemberList[i].Type,
+				StructInfo.MemberList[i].Name,
+				StructInfo.Name, StructInfo.ShortName,
+				SSTIDEnumName,
+				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+				StructInfo.MemberList[i].IsArray,
+				LineSpace);
+
+			Operation.Replace("<FromJsonOperation>", UnpackOP);
+
+			Operations += Operation;
+			Operations += "\r\n";
+		}
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+
 CString CCallInterfaceMakerDlg::MakePackOperation(CString Type,CString Name,CString ParentName,CString ParentShortName,CString SSTIDEnumName,bool IsInDataObject,bool IsMFCheck,bool IsArray,LPCTSTR szLineSpace)
 {
 	CString Operation;
@@ -5907,9 +6182,19 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 		//CString VarName=Name;
 		if (IsArray)
 		{
+			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+			Operation.Replace("<IfArray>", "");
+			Operation.Replace("</IfArray>", "");
+
 			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+			Operation.Replace("<IfNotArray>", "");
+			Operation.Replace("</IfNotArray>", "");
 		}
 		
 		if (IsInDataObject)
@@ -6005,7 +6290,17 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 
 		if (IsArray)
 		{
+			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+			Operation.Replace("<IfArray>", "");
+			Operation.Replace("</IfArray>", "");
+
 			Operation.Replace("<Variable>", "ArrayElement");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+			Operation.Replace("<IfNotArray>", "");
+			Operation.Replace("</IfNotArray>", "");
 		}
 		
 		if (IsInDataObject)
@@ -6013,6 +6308,226 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 		else
 			Operation.Replace("<Variable>", Name);
 		
+
+		Operation.Replace("<VariableName>", Name);
+		Operation.Replace("<Type>", pTypeInfo->CType);
+
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
+
+		CString ModifyFlagEnumName;
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+
+	}
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
+	return Operation;
+}
+
+CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR szLineSpace)
+{
+	CString Operation;
+
+	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	if (pTypeInfo)
+	{
+		Operation = pTypeInfo->GenerateOperations.ToJsonOperation;
+
+		if (IsMFCheck)
+		{
+			RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
+			Operation.Replace("<IfMFCheck>", "");
+			Operation.Replace("</IfMFCheck>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
+			Operation.Replace("<IfNotMFCheck>", "");
+			Operation.Replace("</IfNotMFCheck>", "");
+		}
+
+		if (IsInDataObject)
+		{
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
+		}
+
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+			Operation.Replace("<IfDataObject>", "");
+			Operation.Replace("</IfDataObject>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+			Operation.Replace("<IfNotDataObject>", "");
+			Operation.Replace("</IfNotDataObject>", "");
+		}
+
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		{
+			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+			Operation.Replace("<If64Bit>", "");
+			Operation.Replace("</If64Bit>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+			Operation.Replace("<IfNot64Bit>", "");
+			Operation.Replace("</IfNot64Bit>", "");
+		}
+
+		CString SST_ID;
+
+
+		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
+		SST_ID.MakeUpper();
+
+
+
+		//CString VarName=Name;
+		if (IsArray)
+		{
+			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+			Operation.Replace("<IfArray>", "");
+			Operation.Replace("</IfArray>", "");
+
+			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+			ArrayVar.Replace("<Index>", "i");
+			Operation.Replace("<Variable>", ArrayVar);
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+			Operation.Replace("<IfNotArray>", "");
+			Operation.Replace("</IfNotArray>", "");
+		}
+
+		if (IsInDataObject)
+			Operation.Replace("<Variable>", "m_" + Name);
+		else
+			Operation.Replace("<Variable>", Name);
+
+
+		Operation.Replace("<VariableName>", Name);
+
+		Operation.Replace("<Type>", pTypeInfo->CType);
+
+
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
+
+		CString ModifyFlagEnumName;
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+	}
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
+	return Operation;
+}
+CString CCallInterfaceMakerDlg::MakeFromJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR szLineSpace)
+{
+	CString Operation;
+
+	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	if (pTypeInfo)
+	{
+		Operation = pTypeInfo->GenerateOperations.FromJsonOperation;
+
+		if (IsMonitorUpdate)
+		{
+			Operation.Replace("<IfMonitorUpdate>", "");
+			Operation.Replace("</IfMonitorUpdate>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfMonitorUpdate>", "</IfMonitorUpdate>");
+		}
+
+		if (IsInDataObject)
+		{
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
+		}
+
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+			Operation.Replace("<IfDataObject>", "");
+			Operation.Replace("</IfDataObject>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+			Operation.Replace("<IfNotDataObject>", "");
+			Operation.Replace("</IfNotDataObject>", "");
+		}
+
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		{
+			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+			Operation.Replace("<If64Bit>", "");
+			Operation.Replace("</If64Bit>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+			Operation.Replace("<IfNot64Bit>", "");
+			Operation.Replace("</IfNot64Bit>", "");
+		}
+
+		CString SST_ID;
+		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
+		SST_ID.MakeUpper();
+
+
+		if (IsArray)
+		{
+			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+			Operation.Replace("<IfArray>", "");
+			Operation.Replace("</IfArray>", "");
+
+			Operation.Replace("<Variable>", "ArrayElement");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+			Operation.Replace("<IfNotArray>", "");
+			Operation.Replace("</IfNotArray>", "");
+		}
+
+		if (IsInDataObject)
+			Operation.Replace("<Variable>", "m_" + Name);
+		else
+			Operation.Replace("<Variable>", Name);
+
 
 		Operation.Replace("<VariableName>", Name);
 		Operation.Replace("<Type>", pTypeInfo->CType);
@@ -6260,6 +6775,17 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO>& St
 			else
 			{
 				Struct.Replace("<XMLProcess>", "");
+			}
+
+			if (StructDefineList[i].Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
+			{
+				LineSpace = GetLineSpace(Struct, "<JsonProcess>");
+				CString JsonProcess = MakeJsonProcess(StructDefineList[i], SSTIDEnumName, LineSpace);
+				Struct.Replace("<JsonProcess>", JsonProcess);
+			}
+			else
+			{
+				Struct.Replace("<JsonProcess>", "");
 			}
 
 			if(StructDefineList[i].MemberList.size())
@@ -6802,9 +7328,19 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_IN
 
 			Method.Replace("<Type>",pTypeInfo->CType);
 			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
+			CString ConstMethod = Method;
+			Method.Replace("<const>", "");
+			Methods += Method + "\r\n";
 
-			Methods+=Method+"\r\n";
-		}		
+			if (ConstMethod.Find("<const>") >= 0)
+			{
+				if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+				{
+					ConstMethod.Replace("<const>", "const");
+					Methods += ConstMethod + "\r\n";
+				}
+			}
+		}
 	}
 
 	CString Space="\r\n";
@@ -6830,8 +7366,18 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INF
 			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
 			Method.Replace("<Variable>","m_"+StructInfo.MemberList[j].Name);
 			Method.Replace("<ClassName>",StructInfo.Name);
-
+			CString ConstMethod = Method;			
+			Method.Replace("<const>", "");
 			Methods+=Method+"\r\n";
+
+			if (ConstMethod.Find("<const>") >= 0)
+			{
+				if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+				{
+					ConstMethod.Replace("<const>", "const");
+					Methods += ConstMethod + "\r\n";
+				}
+			}
 		}		
 	}
 
@@ -7156,26 +7702,37 @@ DATA_OBJECT_MODIFY_FLAG CCallInterfaceMakerDlg::MakeDataObjectFullModifyFlag(STR
 	return ModifyFlag;
 }
 
-bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo,CString Type)
+bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, CString Type, int Depth)
 {
 	if(StructInfo.BaseStruct==Type)
 		return true;
-	STRUCT_DEFINE_INFO * pStructInfo=GetStructDefineInfo(StructInfo.BaseStruct);
-	if(pStructInfo)
+	Depth--;
+	if (Depth <= 0)
 	{
-		if(HaveMemberByType(*pStructInfo,Type))
-			return true;
+		//AfxMessageBox("结构递归过多，可能有循环嵌套");
+		return false;
 	}
+
+	STRUCT_DEFINE_INFO * pStructInfo = NULL;
 	for(size_t i=0;i<StructInfo.MemberList.size();i++)
 	{
 		if(StructInfo.MemberList[i].Type==Type)
 			return true;		
-		pStructInfo=GetStructDefineInfo(StructInfo.MemberList[i].Type);
-		if(pStructInfo)
+	}
+	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
+	{
+		pStructInfo = GetStructDefineInfo(StructInfo.MemberList[i].Type);
+		if (pStructInfo)
 		{
-			if(HaveMemberByType(*pStructInfo,Type))
+			if (HaveMemberByType(*pStructInfo, Type, Depth))
 				return true;
 		}
+	}
+	pStructInfo = GetStructDefineInfo(StructInfo.BaseStruct);
+	if (pStructInfo)
+	{
+		if (HaveMemberByType(*pStructInfo, Type, Depth))
+			return true;
 	}
 	return false;
 }
@@ -7447,7 +8004,7 @@ bool CCallInterfaceMakerDlg::AddModule(LPCTSTR szFileName)
 	MODULE_DEFINE_INFO * pModuleIndo = LoadModule(szFileName);
 	if (pModuleIndo)
 	{
-		CEasyString RelativePath = GetRelativePath(GetPathDirectory(m_MainModule.ModuleDefineFileName), szFileName);
+		CEasyString RelativePath = CFileTools::GetRelativePath(CFileTools::GetPathDirectory(m_MainModule.ModuleDefineFileName), szFileName);
 		m_MainModule.ImportList.push_back((LPCTSTR)RelativePath);
 		return true;
 	}
@@ -7551,7 +8108,7 @@ CString CCallInterfaceMakerDlg::ClassNameToUpper(LPCTSTR szClassName)
 	CString Output=ClassNameToFileName(szClassName);
 	for(int i=Output.GetLength()-1;i>0;i--)
 	{
-		if(IsBigChar(Output[i])&&i&&(!IsBigChar(Output[i-1])))
+		if (IsBigChar(Output[i]) && i && (!IsBigChar(Output[i - 1])) && (Output[i - 1] != '_'))
 		{
 			Output.Insert(i,'_');
 		}

@@ -96,6 +96,10 @@
 #define FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME			"FromXMLOperationUnit.tmpl"
 #define STRUCT_XML_PROCESS_TEMPLE_FILE_NAME					"StructXMLProcess.tmpl"
 
+#define TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME				"ToJsonOperationUnit.tmpl"
+#define FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME			"FromJsonOperationUnit.tmpl"
+#define STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME				"StructJsonProcess.tmpl"
+
 #define ENUM_DFINE_TEMPLE_FILE_NAME							"EnumDefine.tmpl"
 #define ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME					"EnumMemberDefine.tmpl"
 #define ENUM_STR_VALUE_DFINE_TEMPLE_FILE_NAME				"EnumStrValueDefine.tmpl"
@@ -144,6 +148,7 @@ enum STRUCT_FLAG
 	STRUCT_FLAG_IS_DATA_OBJECT = 1,
 	STRUCT_FLAG_DECLARE_LATER = (1<<1),
 	STRUCT_FLAG_EXPORT_XML_PROCESS = (1<<2),
+	STRUCT_FLAG_EXPORT_JSON_PROCESS = (1 << 3),
 };
 
 enum STRUCT_MEMBER_FLAG
@@ -204,6 +209,8 @@ struct GENERATE_OPERATIONS_INFO
 	CString						SizeCaculateOperation;
 	CString						ToXMLOperation;
 	CString						FromXMLOperation;
+	CString						ToJsonOperation;
+	CString						FromJsonOperation;
 	CString						ReferenceDefine;
 	CString						ReferenceUse;
 	CString						VariableDefine;

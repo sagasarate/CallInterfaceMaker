@@ -74,15 +74,17 @@ BOOL CDlgTypeEditor::OnInitDialog()
 	m_tabMain.InsertItem(2,"解包操作");
 	m_tabMain.InsertItem(3, "ToXML操作");
 	m_tabMain.InsertItem(4, "FromXML操作");
-	m_tabMain.InsertItem(5,"引用定义方式");
-	m_tabMain.InsertItem(6,"引用使用方式");
-	m_tabMain.InsertItem(7,"变量定义");
-	m_tabMain.InsertItem(8,"初始化操作");
-	m_tabMain.InsertItem(9,"复制操作");
-	m_tabMain.InsertItem(10,"Get方法声明");
-	m_tabMain.InsertItem(11,"Get方法实现");
-	m_tabMain.InsertItem(12,"Set方法声明");
-	m_tabMain.InsertItem(13,"Set方法实现");
+	m_tabMain.InsertItem(5, "ToJson操作");
+	m_tabMain.InsertItem(6, "FromJson操作");
+	m_tabMain.InsertItem(7,"引用定义方式");
+	m_tabMain.InsertItem(8,"引用使用方式");
+	m_tabMain.InsertItem(9,"变量定义");
+	m_tabMain.InsertItem(10,"初始化操作");
+	m_tabMain.InsertItem(11,"复制操作");
+	m_tabMain.InsertItem(12,"Get方法声明");
+	m_tabMain.InsertItem(13,"Get方法实现");
+	m_tabMain.InsertItem(14,"Set方法声明");
+	m_tabMain.InsertItem(15,"Set方法实现");
 
 
 	m_tabMain.SetCurSel(0);
@@ -193,30 +195,36 @@ void CDlgTypeEditor::ShowItemData(int Item)
 			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.FromXMLOperation);
 			break;
 		case 5:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ToJsonOperation);
 			break;
 		case 6:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.FromJsonOperation);
 			break;
 		case 7:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
 			break;
 		case 8:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
 			break;
 		case 9:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
 			break;
 		case 10:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
 			break;
 		case 11:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
 			break;
 		case 12:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
 			break;
 		case 13:
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
+			break;
+		case 14:
+			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
+			break;
+		case 15:
 			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDefine);
 			break;
 		}
@@ -258,30 +266,36 @@ void CDlgTypeEditor::FetchItemData(int Item)
 			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.FromXMLOperation);
 			break;
 		case 5:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ToJsonOperation);
 			break;
 		case 6:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.FromJsonOperation);
 			break;
 		case 7:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
 			break;
 		case 8:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
 			break;
 		case 9:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
 			break;
 		case 10:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
 			break;
 		case 11:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
 			break;
 		case 12:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
 			break;
 		case 13:
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
+			break;
+		case 14:
+			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
+			break;
+		case 15:
 			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDefine);
 			break;
 		}

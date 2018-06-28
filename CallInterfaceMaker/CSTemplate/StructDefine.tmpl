@@ -7,14 +7,14 @@ public class <StructName><BaseStruct>
 	{
 		Clear();
 	}
-	public void Clear()
+	public <IfHaveBaseClass>new </IfHaveBaseClass>void Clear()
 	{
 		<IfHaveBaseClass>
 		base.Clear();
 		</IfHaveBaseClass>
 		<InitOperations>
 	}
-	public bool MakePacket(CSmartStruct Packet)
+	public <IfHaveBaseClass>new </IfHaveBaseClass>bool MakePacket(CSmartStruct Packet)
 	{
 		uint FailCount=0;
 
@@ -27,7 +27,7 @@ public class <StructName><BaseStruct>
 
 		return FailCount==0;
 	}
-	public bool ParsePacket(CSmartStruct Packet)
+	public <IfHaveBaseClass>new </IfHaveBaseClass>bool ParsePacket(CSmartStruct Packet)
 	{
 		<IfHaveBaseClass>
 		base.ParsePacket(Packet);
@@ -46,7 +46,7 @@ public class <StructName><BaseStruct>
 		</IfHaveMember>
 		return true;
 	}
-	public uint GetSmartStructSize()
+	public <IfHaveBaseClass>new </IfHaveBaseClass>uint GetSmartStructSize()
 	{
 		uint Size=0;
 		<IfHaveBaseClass>
@@ -62,12 +62,13 @@ public class <StructName><BaseStruct>
 		</IfHaveBaseClass>
 		<CloneFromOperations>
 	}
-	public <StructName> Clone()
+	public <IfHaveBaseClass>new </IfHaveBaseClass><StructName> Clone()
 	{
 		<StructName> CloneObject=new <StructName>();
 		CloneObject.CloneFrom(this);
 		return CloneObject;
 	}
-	<XMLProcess> 
+	<XMLProcess>
+	<JsonProcess>
 };
 

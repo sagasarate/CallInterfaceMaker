@@ -1,0 +1,19 @@
+public bool ToJson(ref JsonData StructNode)
+{
+	<IfHaveBaseClass>
+	if (!base.ToJson(StructNode))
+		return false;
+	</IfHaveBaseClass>
+	<ToJsonOperations>
+	return true;
+}
+public bool FromJson(JsonData StructNode)
+{
+	uint FailCount=0;
+	<IfHaveBaseClass>
+	if (!base.FromJson(StructNode))
+		return false;
+	</IfHaveBaseClass>
+	<FromJsonOperations>
+	return FailCount==0;
+}

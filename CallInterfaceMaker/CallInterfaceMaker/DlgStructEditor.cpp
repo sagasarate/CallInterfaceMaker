@@ -38,12 +38,15 @@ void CDlgStructEditor::DoDataExchange(CDataExchange* pDX)
 	BOOL IsDataObject = (m_StructDefineInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) ? TRUE : FALSE;
 	BOOL DeclareLater = (m_StructDefineInfo.Flag&STRUCT_FLAG_DECLARE_LATER) ? TRUE : FALSE;
 	BOOL ExportXMLProcess = (m_StructDefineInfo.Flag&STRUCT_FLAG_EXPORT_XML_PROCESS) ? TRUE : FALSE;
+	BOOL ExportJsonProcess = (m_StructDefineInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS) ? TRUE : FALSE;
 	DDX_Check(pDX, IDC_CHECK_IS_DATA_OBJECT, IsDataObject);
 	DDX_Check(pDX, IDC_CHECK_DECLARE_LATER, DeclareLater);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_XML_PROCESS, ExportXMLProcess);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_JSON_PROCESS, ExportJsonProcess);
 	m_StructDefineInfo.Flag = (IsDataObject ? STRUCT_FLAG_IS_DATA_OBJECT : 0) |
 		(DeclareLater ? STRUCT_FLAG_DECLARE_LATER : 0) |
-		(ExportXMLProcess ? STRUCT_FLAG_EXPORT_XML_PROCESS : 0);
+		(ExportXMLProcess ? STRUCT_FLAG_EXPORT_XML_PROCESS : 0) |
+		(ExportJsonProcess ? STRUCT_FLAG_EXPORT_JSON_PROCESS : 0);
 }
 
 

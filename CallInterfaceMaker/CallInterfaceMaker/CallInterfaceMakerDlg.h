@@ -78,6 +78,10 @@ protected:
 	CString									m_ToXMLOperationUnitTemplate;
 	CString									m_FromXMLOperationUnitTemplate;
 	CString									m_StructXMLProcessTemplate;
+	CString									m_ToJsonOperationUnitTemplate;
+	CString									m_FromJsonOperationUnitTemplate;
+	CString									m_StructJsonProcessTemplate;
+
 
 	CString									m_EnumDefineTemplate;
 	CString									m_EnumMemberDefineTemplate;
@@ -305,11 +309,16 @@ protected:
 	CString MakeXMLProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeToXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeFromXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
+	CString MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
+	CString MakeToJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
+	CString MakeFromJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 
 	CString MakePackOperation(CString Type,CString Name,CString ParentName,CString ParentShortName,CString SSTIDEnumName,bool IsInDataObject,bool IsMFCheck,bool IsArray,LPCTSTR szLineSpace);
 	CString MakeUnpackOperation(CString Type,CString Name,CString ParentName,CString ParentShortName,CString SSTIDEnumName,bool IsInDataObject,bool IsMonitorUpdate,bool IsArray,LPCTSTR szLineSpace);
 	CString MakeToXMLOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR szLineSpace);
 	CString MakeFromXMLOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR szLineSpace);
+	CString MakeToJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR szLineSpace);
+	CString MakeFromJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR szLineSpace);
 
 
 	CString MakeMsgHandlerMethods(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace);
@@ -351,7 +360,7 @@ protected:
 
 	DATA_OBJECT_MODIFY_FLAG MakeDataObjectFullModifyFlag(STRUCT_DEFINE_INFO& StructInfo,vector<STRUCT_DEFINE_INFO *>& DataObjectList);
 
-	bool HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo,CString Type);
+	bool HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, CString Type, int Depth = 32);
 	STRUCT_DEFINE_INFO * GetStructDefineInfo(CString Type);
 	
 
