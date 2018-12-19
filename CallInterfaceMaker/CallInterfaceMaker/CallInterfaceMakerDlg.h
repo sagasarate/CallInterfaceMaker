@@ -81,6 +81,8 @@ protected:
 	CString									m_ToJsonOperationUnitTemplate;
 	CString									m_FromJsonOperationUnitTemplate;
 	CString									m_StructJsonProcessTemplate;
+	CString									m_DataObjectJsonProcessTemplate;
+	CString									m_DataObjectStructJsonProcessHeaderTemplate;
 
 
 	CString									m_EnumDefineTemplate;
@@ -310,6 +312,7 @@ protected:
 	CString MakeToXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeFromXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
+	CString MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeToJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 	CString MakeFromJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace);
 

@@ -1,0 +1,29 @@
+public bool ToJson(ref JsonData StructNode, ulong[] MemberFlags)
+{
+	<IfHaveBaseClass>
+	if (!base.ToJson(StructNode, MemberFlags))
+		return false;
+	</IfHaveBaseClass>
+
+	ulong Flag=MemberFlags[(int)DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+
+	<ToJsonOperations>
+	return true;
+}
+public bool FromJson(JsonData StructNode, ulong[] MemberFlags)
+{
+	uint FailCount=0;
+	<IfHaveBaseClass>
+	if (!base.FromJson(StructNode, MemberFlags))
+		return false;
+	</IfHaveBaseClass>
+
+	ulong Flag=MemberFlags[(int)DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+	ulong UpdateFlag=0;
+
+	<FromJsonOperations>
+
+	m_ModifyFlag|=UpdateFlag;
+
+	return FailCount==0;
+}

@@ -1123,6 +1123,42 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 		MessageBox(Msg);
 	}
 
+	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME);
+	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
+	{
+		ULONG64 Size = TempleFile.GetLength();
+		char * Buffer = new char[Size + 1];
+		TempleFile.Read(Buffer, Size);
+		Buffer[Size] = 0;
+		m_DataObjectJsonProcessTemplate = Buffer;
+		delete[] Buffer;
+		TempleFile.Close();
+	}
+	else
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", FileName);
+		MessageBox(Msg);
+	}
+
+	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME);
+	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
+	{
+		ULONG64 Size = TempleFile.GetLength();
+		char * Buffer = new char[Size + 1];
+		TempleFile.Read(Buffer, Size);
+		Buffer[Size] = 0;
+		m_DataObjectStructJsonProcessHeaderTemplate = Buffer;
+		delete[] Buffer;
+		TempleFile.Close();
+	}
+	else
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", FileName);
+		MessageBox(Msg);
+	}
+
 	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_DFINE_TEMPLE_FILE_NAME);
 	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
 	{
@@ -4172,6 +4208,16 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<BASE_DATA_STRUCT_DEFINE_LIS
 								Header.Replace("<BaseClass>", StructInfo.BaseStruct);
 							}
 
+							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
+							{
+								LineSpace = GetLineSpace(Header, "<JsonProcess>");
+								Header.Replace("<JsonProcess>", m_DataObjectStructJsonProcessHeaderTemplate);
+							}
+							else
+							{
+								Header.Replace("<JsonProcess>", "");
+							}
+
 
 							LineSpace = GetLineSpace(Header, "<Members>");
 							CString Members = MakeStructMembers(StructInfo, LineSpace);
@@ -4201,6 +4247,8 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<BASE_DATA_STRUCT_DEFINE_LIS
 							LineSpace = GetLineSpace(Header, "<GetMethodsDefine>");
 							CString GetMethodsDefine = MakeDataObjectGetMethodsDefine(StructInfo, LineSpace);
 							Header.Replace("<GetMethodsDefine>", GetMethodsDefine);
+
+							
 
 							WriteStringToFile(HeaderFile, Header);
 							HeaderFile.Close();
@@ -4237,7 +4285,7 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<BASE_DATA_STRUCT_DEFINE_LIS
 							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
 							{
 								LineSpace = GetLineSpace(Source, "<JsonProcess>");
-								CString JsonProcess = MakeJsonProcess(StructInfo, SSTIDEnumName, LineSpace);
+								CString JsonProcess = MakeDataObjectJsonProcess(StructInfo, SSTIDEnumName, LineSpace);
 								Source.Replace("<JsonProcess>", JsonProcess);
 							}
 							else
@@ -5715,6 +5763,37 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 CString CCallInterfaceMakerDlg::MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
 {
 	CString JsonProcess = m_StructJsonProcessTemplate;
+
+	CString LineSpace = GetLineSpace(JsonProcess, "<ToJsonOperations>");
+	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	JsonProcess.Replace("<ToJsonOperations>", ToJsonOperations);
+
+	LineSpace = GetLineSpace(JsonProcess, "<FromJsonOperations>");
+	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	JsonProcess.Replace("<FromJsonOperations>", FromJsonOperations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	JsonProcess.Replace("\r\n", Space);
+	return JsonProcess;
+}
+
+CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+{
+	CString JsonProcess = m_DataObjectJsonProcessTemplate;
+
+	if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+	{
+		RemoveBlock(JsonProcess, "<IfNotInDataObject>", "</IfNotInDataObject>");
+		JsonProcess.Replace("<IfInDataObject>", "");
+		JsonProcess.Replace("</IfInDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(JsonProcess, "<IfInDataObject>", "</IfInDataObject>");
+		JsonProcess.Replace("<IfNotInDataObject>", "");
+		JsonProcess.Replace("</IfNotInDataObject>", "");
+	}
 
 	CString LineSpace = GetLineSpace(JsonProcess, "<ToJsonOperations>");
 	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, LineSpace);

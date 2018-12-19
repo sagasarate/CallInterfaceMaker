@@ -99,6 +99,8 @@
 #define TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME				"ToJsonOperationUnit.tmpl"
 #define FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME			"FromJsonOperationUnit.tmpl"
 #define STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME				"StructJsonProcess.tmpl"
+#define DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME			"DataObjectJsonProcess.tmpl"
+#define DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME	"DataObjectJsonProcessHeader.tmpl"
 
 #define ENUM_DFINE_TEMPLE_FILE_NAME							"EnumDefine.tmpl"
 #define ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME					"EnumMemberDefine.tmpl"
