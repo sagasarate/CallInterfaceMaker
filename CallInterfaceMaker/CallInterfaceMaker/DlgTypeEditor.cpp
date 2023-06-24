@@ -27,6 +27,9 @@ CDlgTypeEditor::CDlgTypeEditor(CWnd* pParent /*=NULL*/)
 	, m_TypeName(_T(""))
 	, m_CType(_T(""))
 	, m_IsRefType(FALSE)
+	, m_UseParamBind(FALSE)
+	, m_IsBaseType(FALSE)
+	, m_IsVariableLen(FALSE)
 {
 	m_IsModified=false;
 	m_CurSelectItem=-1;
@@ -39,12 +42,15 @@ CDlgTypeEditor::~CDlgTypeEditor()
 void CDlgTypeEditor::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TAB1, m_tabMain);
+	DDX_Control(pDX, IDC_TAB1, m_tbOperations);
 	DDX_Control(pDX, IDC_EDIT_OPERATION, m_edOperation);
 	DDX_Control(pDX, IDC_LIST_TYPES, m_lvTypeList);
 	DDX_Text(pDX, IDC_EDIT_NAME, m_TypeName);
 	DDX_Text(pDX, IDC_EDIT_CTYPE, m_CType);
 	DDX_Check(pDX, IDC_CHECK_IS_REF_TYPE, m_IsRefType);
+	DDX_Check(pDX, IDC_CHECK_DB_USE_PARAM_BIND, m_UseParamBind);
+	DDX_Check(pDX, IDC_CHECK_BASE_TYPE, m_IsBaseType);
+	DDX_Check(pDX, IDC_CHECK_VARIABLE_LEN, m_IsVariableLen);
 }
 
 
@@ -69,25 +75,9 @@ BOOL CDlgTypeEditor::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_tabMain.InsertItem(0,"长度计算操作");
-	m_tabMain.InsertItem(1,"打包操作");
-	m_tabMain.InsertItem(2,"解包操作");
-	m_tabMain.InsertItem(3, "ToXML操作");
-	m_tabMain.InsertItem(4, "FromXML操作");
-	m_tabMain.InsertItem(5, "ToJson操作");
-	m_tabMain.InsertItem(6, "FromJson操作");
-	m_tabMain.InsertItem(7,"引用定义方式");
-	m_tabMain.InsertItem(8,"引用使用方式");
-	m_tabMain.InsertItem(9,"变量定义");
-	m_tabMain.InsertItem(10,"初始化操作");
-	m_tabMain.InsertItem(11,"复制操作");
-	m_tabMain.InsertItem(12,"Get方法声明");
-	m_tabMain.InsertItem(13,"Get方法实现");
-	m_tabMain.InsertItem(14,"Set方法声明");
-	m_tabMain.InsertItem(15,"Set方法实现");
+	TabInitOperations(m_tbOperations);
 
-
-	m_tabMain.SetCurSel(0);
+	m_tbOperations.SetCurSel(0);
 	m_lvTypeList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
 
 	m_lvTypeList.InsertColumn(0,"名称",LVCFMT_LEFT,80);
@@ -168,6 +158,9 @@ void CDlgTypeEditor::ShowItemData(int Item)
 		m_CType.Empty();
 		m_edOperation.SetWindowText("");		
 		m_IsRefType = FALSE;
+		m_UseParamBind = FALSE;
+		m_IsBaseType = FALSE;
+		m_IsVariableLen = FALSE;
 		UpdateData(false);
 		return;
 	}
@@ -177,58 +170,13 @@ void CDlgTypeEditor::ShowItemData(int Item)
 		m_TypeName=m_TypeList[Index].Name;
 		m_CType=m_TypeList[Index].CType;
 		m_IsRefType = (m_TypeList[Index].Flag&TYPE_DEFINE_FLAG_REF_TYPE) ? TRUE : FALSE;
-		switch(m_tabMain.GetCurSel())
-		{
-		case 0:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SizeCaculateOperation);
-			break;
-		case 1:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.PackOperation);
-			break;
-		case 2:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.UnpackOperation);
-			break;	
-		case 3:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ToXMLOperation);
-			break;
-		case 4:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.FromXMLOperation);
-			break;
-		case 5:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ToJsonOperation);
-			break;
-		case 6:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.FromJsonOperation);
-			break;
-		case 7:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
-			break;
-		case 8:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
-			break;
-		case 9:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
-			break;
-		case 10:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
-			break;
-		case 11:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
-			break;
-		case 12:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
-			break;
-		case 13:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
-			break;
-		case 14:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
-			break;
-		case 15:
-			m_edOperation.SetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDefine);
-			break;
-		}
+		m_UseParamBind = (m_TypeList[Index].Flag&TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND) ? TRUE : FALSE;
+		m_IsBaseType = (m_TypeList[Index].Flag & TYPE_DEFINE_FLAG_BASE_TYPE) ? TRUE : FALSE;
+		m_IsVariableLen = (m_TypeList[Index].Flag & TYPE_DEFINE_FLAG_VARIABLE_LEN) ? TRUE : FALSE;
+		GetDlgItem(IDC_EDIT_NAME)->EnableWindow((m_TypeList[Index].Flag & TYPE_DEFINE_FLAG_SYSTEM_TYPE) ? FALSE : TRUE);
+		GetDlgItem(IDC_EDIT_CTYPE)->EnableWindow((m_TypeList[Index].Flag & TYPE_DEFINE_FLAG_SYSTEM_TYPE) ? FALSE : TRUE);
 		
+		TabShowOperations(m_tbOperations, m_edOperation, m_TypeList[Index].GenerateOperations);
 		UpdateData(false);
 	}
 }
@@ -248,61 +196,36 @@ void CDlgTypeEditor::FetchItemData(int Item)
 		{
 			m_TypeList[Index].Flag &= ~TYPE_DEFINE_FLAG_REF_TYPE;
 		}
-		switch(m_tabMain.GetCurSel())
+		if(m_UseParamBind)
 		{
-		case 0:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SizeCaculateOperation);
-			break;
-		case 1:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.PackOperation);
-			break;
-		case 2:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.UnpackOperation);
-			break;	
-		case 3:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ToXMLOperation);
-			break;
-		case 4:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.FromXMLOperation);
-			break;
-		case 5:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ToJsonOperation);
-			break;
-		case 6:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.FromJsonOperation);
-			break;
-		case 7:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceDefine);
-			break;
-		case 8:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.ReferenceUse);
-			break;
-		case 9:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.VariableDefine);
-			break;
-		case 10:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.InitOperation);
-			break;
-		case 11:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.CloneOperation);
-			break;
-		case 12:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDeclare);
-			break;
-		case 13:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.GetMethodDefine);
-			break;
-		case 14:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDeclare);
-			break;
-		case 15:
-			m_edOperation.GetWindowText(m_TypeList[Index].GenerateOperations.SetMethodDefine);
-			break;
+			m_TypeList[Index].Flag |= TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND;
 		}
+		else
+		{
+			m_TypeList[Index].Flag &= ~TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND;
+		}
+		if(m_IsBaseType)
+		{
+			m_TypeList[Index].Flag |= TYPE_DEFINE_FLAG_BASE_TYPE;
+		}
+		else
+		{
+			m_TypeList[Index].Flag &= ~TYPE_DEFINE_FLAG_BASE_TYPE;
+		}
+		if (m_IsVariableLen)
+		{
+			m_TypeList[Index].Flag |= TYPE_DEFINE_FLAG_VARIABLE_LEN;
+		}
+		else
+		{
+			m_TypeList[Index].Flag &= ~TYPE_DEFINE_FLAG_VARIABLE_LEN;
+		}
+		TabFetchOperations(m_tbOperations, m_edOperation, m_TypeList[Index].GenerateOperations);
+		
 		m_lvTypeList.SetItemText(Item,0,m_TypeList[Index].Name);
-		m_lvTypeList.SetItemText(Item,1,m_TypeList[Index].CType);
+		m_lvTypeList.SetItemText(Item,1,m_TypeList[Index].CType);		
 	}
-	
+	m_IsModified = false;
 }
 void CDlgTypeEditor::OnBnClickedNew()
 {
@@ -330,7 +253,7 @@ void CDlgTypeEditor::OnBnClickedDel()
 		{
 			UINT Index=m_lvTypeList.GetItemData(Item);
 			m_TypeList.erase(m_TypeList.begin()+Index);
-			m_IsModified=true;
+			m_CurSelectItem = -1;
 			FillList();
 		}
 	}
@@ -379,3 +302,5 @@ void CDlgTypeEditor::OnBnClickedCheckIsRefType()
 	// TODO:  在此添加控件通知处理程序代码
 	m_IsModified = true;
 }
+
+

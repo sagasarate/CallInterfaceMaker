@@ -8,10 +8,6 @@ class CDlgStructMemberEditor : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgStructMemberEditor)
 protected:
-	BOOL				m_bNotMonitorUpdate;
-	BOOL				m_bExcludeInPacket;
-	BOOL				m_bMergeToParent;
-	BOOL				m_beMustPack;
 	CComboBox			m_cbType;
 public:
 	STRUCT_MEMBER_INFO			m_StructMemberInfo;
@@ -32,4 +28,5 @@ protected:
 public:
 	
 	
+	CComboBox m_cbDBIndexType;
 };

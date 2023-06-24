@@ -10,7 +10,7 @@ class CDlgEnumEditor : public CDialog
 	DECLARE_DYNAMIC(CDlgEnumEditor)
 protected:
 	
-	CComboBox				m_cbBaseStruct;
+	CComboBox				m_cbBindDataType;
 	CListCtrl				m_lvMemberList;	
 public:
 	ENUM_DEFINE_INFO				m_EnumDefineInfo;
@@ -41,4 +41,5 @@ public:
 	afx_msg void OnBnClickedButtonMemberMoveDown();
 	
 	afx_msg void OnNMClickListMemberList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedButtonSort();
 };

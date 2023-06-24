@@ -1,0 +1,11 @@
+﻿<IsFlagEnum>
+if ((Value & <If64Bit>(long)</If64Bit><IfNot64Bit>(uint)</IfNot64Bit><EnumName>.<EnumValue>) != 0)
+{
+	if(Str.Length > 0)
+		Str.Append("|");
+	Str.Append(<EnumStrValue>);
+}
+<!IsFlagEnum>
+case <EnumName>.<EnumValue>:
+	return <EnumStrValue>;
+</IsFlagEnum>

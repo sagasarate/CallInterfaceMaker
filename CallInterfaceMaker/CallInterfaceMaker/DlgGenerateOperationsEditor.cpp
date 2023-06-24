@@ -46,27 +46,7 @@ BOOL CDlgGenerateOperationsEditor::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-	m_tbOperations.InsertItem(0,"长度计算操作");
-	m_tbOperations.InsertItem(1,"打包操作");
-	m_tbOperations.InsertItem(2,"解包操作");
-	m_tbOperations.InsertItem(3, "ToXML操作");
-	m_tbOperations.InsertItem(4, "FromXML操作");
-	m_tbOperations.InsertItem(5, "ToJson操作");
-	m_tbOperations.InsertItem(6, "FromJson操作");
-	m_tbOperations.InsertItem(7,"引用定义方式");
-	m_tbOperations.InsertItem(8,"引用使用方式");
-	m_tbOperations.InsertItem(9,"变量定义");
-	m_tbOperations.InsertItem(10,"初始化操作");
-	m_tbOperations.InsertItem(11,"复制操作");
-	m_tbOperations.InsertItem(12,"Get方法声明");
-	m_tbOperations.InsertItem(13,"Get方法实现");
-	m_tbOperations.InsertItem(14,"Set方法声明");
-	m_tbOperations.InsertItem(15,"Set方法实现");
-	if(m_ShowIndexOperation)
-	{
-		m_tbOperations.InsertItem(16,"索引操作");
-		m_tbOperations.InsertItem(17,"只读索引操作");
-	}
+	TabInitOperations(m_tbOperations);
 
 	m_tbOperations.SetCurSel(0);
 
@@ -128,63 +108,7 @@ void CDlgGenerateOperationsEditor::OnEnChangeEdit()
 
 void CDlgGenerateOperationsEditor::ShowItemData()
 {
-	switch(m_tbOperations.GetCurSel())
-	{
-	case 0:
-		m_edOperation.SetWindowText(m_GenerateOperations.SizeCaculateOperation);
-		break;
-	case 1:
-		m_edOperation.SetWindowText(m_GenerateOperations.PackOperation);
-		break;
-	case 2:
-		m_edOperation.SetWindowText(m_GenerateOperations.UnpackOperation);
-		break;	
-	case 3:
-		m_edOperation.SetWindowText(m_GenerateOperations.ToXMLOperation);
-		break;
-	case 4:
-		m_edOperation.SetWindowText(m_GenerateOperations.FromXMLOperation);
-		break;
-	case 5:
-		m_edOperation.SetWindowText(m_GenerateOperations.ToJsonOperation);
-		break;
-	case 6:
-		m_edOperation.SetWindowText(m_GenerateOperations.FromJsonOperation);
-		break;
-	case 7:
-		m_edOperation.SetWindowText(m_GenerateOperations.ReferenceDefine);
-		break;
-	case 8:
-		m_edOperation.SetWindowText(m_GenerateOperations.ReferenceUse);
-		break;
-	case 9:
-		m_edOperation.SetWindowText(m_GenerateOperations.VariableDefine);
-		break;
-	case 10:
-		m_edOperation.SetWindowText(m_GenerateOperations.InitOperation);
-		break;
-	case 11:
-		m_edOperation.SetWindowText(m_GenerateOperations.CloneOperation);
-		break;
-	case 12:
-		m_edOperation.SetWindowText(m_GenerateOperations.GetMethodDeclare);
-		break;
-	case 13:
-		m_edOperation.SetWindowText(m_GenerateOperations.GetMethodDefine);
-		break;
-	case 14:
-		m_edOperation.SetWindowText(m_GenerateOperations.SetMethodDeclare);
-		break;
-	case 15:
-		m_edOperation.SetWindowText(m_GenerateOperations.SetMethodDefine);
-		break;
-	case 16:
-		m_edOperation.SetWindowText(m_GenerateOperations.IndexOperation);
-		break;
-	case 17:
-		m_edOperation.SetWindowText(m_GenerateOperations.ConstIndexOperation);
-		break;
-	}
+	TabShowOperations(m_tbOperations, m_edOperation, m_GenerateOperations);	
 	
 	UpdateData(false);
 }
@@ -192,62 +116,6 @@ void CDlgGenerateOperationsEditor::FetchItemData()
 {	
 	UpdateData(true);
 	
-	switch(m_tbOperations.GetCurSel())
-	{
-	case 0:
-		m_edOperation.GetWindowText(m_GenerateOperations.SizeCaculateOperation);
-		break;
-	case 1:
-		m_edOperation.GetWindowText(m_GenerateOperations.PackOperation);
-		break;
-	case 2:
-		m_edOperation.GetWindowText(m_GenerateOperations.UnpackOperation);
-		break;	
-	case 3:
-		m_edOperation.GetWindowText(m_GenerateOperations.ToXMLOperation);
-		break;
-	case 4:
-		m_edOperation.GetWindowText(m_GenerateOperations.FromXMLOperation);
-		break;
-	case 5:
-		m_edOperation.GetWindowText(m_GenerateOperations.ToJsonOperation);
-		break;
-	case 6:
-		m_edOperation.GetWindowText(m_GenerateOperations.FromJsonOperation);
-		break;
-	case 7:
-		m_edOperation.GetWindowText(m_GenerateOperations.ReferenceDefine);
-		break;
-	case 8:
-		m_edOperation.GetWindowText(m_GenerateOperations.ReferenceUse);
-		break;
-	case 9:
-		m_edOperation.GetWindowText(m_GenerateOperations.VariableDefine);
-		break;
-	case 10:
-		m_edOperation.GetWindowText(m_GenerateOperations.InitOperation);
-		break;
-	case 11:
-		m_edOperation.GetWindowText(m_GenerateOperations.CloneOperation);
-		break;
-	case 12:
-		m_edOperation.GetWindowText(m_GenerateOperations.GetMethodDeclare);
-		break;
-	case 13:
-		m_edOperation.GetWindowText(m_GenerateOperations.GetMethodDefine);
-		break;
-	case 14:
-		m_edOperation.GetWindowText(m_GenerateOperations.SetMethodDeclare);
-		break;
-	case 15:
-		m_edOperation.GetWindowText(m_GenerateOperations.SetMethodDefine);
-		break;
-	case 16:
-		m_edOperation.GetWindowText(m_GenerateOperations.IndexOperation);
-		break;
-	case 17:
-		m_edOperation.GetWindowText(m_GenerateOperations.ConstIndexOperation);
-		break;
-	}
+	TabFetchOperations(m_tbOperations, m_edOperation, m_GenerateOperations);
 }
 

@@ -1,4 +1,4 @@
-public bool ToJson(JsonData StructNode)
+public <IfHaveBaseClass>new </IfHaveBaseClass>bool ToJson(JObject StructNode)
 {
 	<IfHaveBaseClass>
 	if (!base.ToJson(StructNode))
@@ -7,7 +7,7 @@ public bool ToJson(JsonData StructNode)
 	<ToJsonOperations>
 	return true;
 }
-public bool FromJson(JsonData StructNode)
+public <IfHaveBaseClass>new </IfHaveBaseClass>bool FromJson(JObject StructNode)
 {
 	uint FailCount=0;
 	<IfHaveBaseClass>

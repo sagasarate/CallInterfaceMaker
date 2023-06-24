@@ -1,0 +1,39 @@
+#if ENABLE_XLS_PROCESS
+public static <IfHaveBaseClass>new </IfHaveBaseClass>int CreateXLSColumn(CellRange XLSRange, int StartRow, int StartCol)
+{
+	int ColCount = 0;
+	<IfHaveBaseClass>
+	ColCount += base.CreateColumn(XLSRange, StartRow, StartCol));		
+	</IfHaveBaseClass>
+	<CreateXLSColumnOperations>
+	return ColCount;
+}
+public static <IfHaveBaseClass>new </IfHaveBaseClass>bool CheckXLSColumn(CellRange XLSRange, string MsgPrefix)
+{
+	int ColCount = 0;
+	<IfHaveBaseClass>
+	ColCount += base.CheckXLSColumn(XLSRange, MsgPrefix));
+	</IfHaveBaseClass>
+	<CheckXLSColumnOperations>
+	return true;
+}
+public <IfHaveBaseClass>new </IfHaveBaseClass>int ToXLS(CellRange XLSRange, int StartRow, int StartCol)
+{
+	int ColCount = 0;
+	<IfHaveBaseClass>
+	ColCount += base.ToXLS(XLSRange, StartRow, StartCol));
+	</IfHaveBaseClass>
+	<ToXLSOperations>
+	return ColCount;
+}
+public <IfHaveBaseClass>new </IfHaveBaseClass>bool FromXLS(CellRange XLSRange, int StartRow, string MsgPrefix)
+{
+	int Col;
+	<IfHaveBaseClass>
+	if(!base.FromXLS(XLSRange, StartRow, MsgPrefix)))
+		return false;
+	</IfHaveBaseClass>
+	<FromXLSOperations>
+	return true;
+}
+#endif

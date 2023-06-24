@@ -23,28 +23,43 @@ CDlgEnumEditor::~CDlgEnumEditor()
 void CDlgEnumEditor::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST_MEMBER_LIST, m_lvMemberList);
+	DDX_Control(pDX, IDC_COMBO_BIND_DATA_TYPE, m_cbBindDataType);
+
 	DDX_Text(pDX, IDC_EDIT_NAME, m_EnumDefineInfo.Name);
 	DDX_Text(pDX, IDC_EDIT_SHORT_NAME, m_EnumDefineInfo.ShortName);	
-	DDX_Control(pDX, IDC_LIST_MEMBER_LIST, m_lvMemberList);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_EnumDefineInfo.Description);
 
-	BOOL Is64Bit=(m_EnumDefineInfo.Flag&ENUM_DEFINE_FLAG_IS_64BIT)?TRUE:FALSE;
-	BOOL ExportStrValue=(m_EnumDefineInfo.Flag&ENUM_DEFINE_FLAG_EXPORT_STR_VALUE)?TRUE:FALSE;
 
-	DDX_Check(pDX, IDC_CHECK_IS_64BIT,Is64Bit);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_STR_VALUE,ExportStrValue);
+	DDX_Check(pDX, IDC_CHECK_IS_64BIT, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_IS_64BIT);
+	DDX_Check(pDX, IDC_CHECK_IS_FLAG, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_IS_FLAG);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_STR_VALUE, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_STR_VALUE);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_STR_TRANS_FN, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_ENUM_LIST, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_BIND_DATA_PROCESS, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_BIND_DATA_PROCESS);
 
-	m_EnumDefineInfo.Flag=(Is64Bit?ENUM_DEFINE_FLAG_IS_64BIT:0)|
-		(ExportStrValue?ENUM_DEFINE_FLAG_EXPORT_STR_VALUE:0);
 
-
+	
+		
 
 	DDX_Text(pDX, IDC_EDIT_MEMBER_NAME, m_EnumMemberInfo.Name);
 	DDX_Text(pDX, IDC_EDIT_MEMBER_VALUE, m_EnumMemberInfo.Value);
 	DDX_Text(pDX, IDC_EDIT_MEMBER_STR_VALUE, m_EnumMemberInfo.StrValue);
 	DDX_Text(pDX, IDC_EDIT_MEMBER_DESCRIPTION, m_EnumMemberInfo.Description);
 
-	
+	DDX_Check(pDX, IDC_CHECK_NOT_EXPORT_OTHER, m_EnumMemberInfo.Flag, ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER);
+	DDX_Check(pDX, IDC_CHECK_IS_BIT_MASK, m_EnumMemberInfo.Flag, ENUM_MEMBER_FLAG_IS_BIT_MASK);
+
+	if (pDX->m_bSaveAndValidate)
+	{
+		m_cbBindDataType.GetWindowText(m_EnumMemberInfo.BindDataType);
+		if (m_EnumMemberInfo.BindDataType == "无")
+			m_EnumMemberInfo.BindDataType = "";
+	}
+	else
+	{
+		m_cbBindDataType.SetWindowText(m_EnumMemberInfo.BindDataType);
+	}
 }
 
 
@@ -57,6 +72,7 @@ BEGIN_MESSAGE_MAP(CDlgEnumEditor, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_MEMBER_MOVE_UP, &CDlgEnumEditor::OnBnClickedButtonMemberMoveUp)
 	ON_BN_CLICKED(IDC_BUTTON_MEMBER_MOVE_DOWN, &CDlgEnumEditor::OnBnClickedButtonMemberMoveDown)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_MEMBER_LIST, &CDlgEnumEditor::OnNMClickListMemberList)
+	ON_BN_CLICKED(IDC_BUTTON_SORT, &CDlgEnumEditor::OnBnClickedButtonSort)
 END_MESSAGE_MAP()
 
 
@@ -64,14 +80,20 @@ END_MESSAGE_MAP()
 void CDlgEnumEditor::FillList()
 {
 	m_lvMemberList.DeleteAllItems();
-	for(size_t i=0;i<m_EnumDefineInfo.MemberList.size();i++)
+	CString Temp;
+	for (size_t i = 0; i < m_EnumDefineInfo.MemberList.size(); i++)
 	{
-		int Item=m_lvMemberList.InsertItem(i,m_EnumDefineInfo.MemberList[i].Name);
-		m_lvMemberList.SetItemText(Item,1,m_EnumDefineInfo.MemberList[i].Value);
-		m_lvMemberList.SetItemText(Item,2,m_EnumDefineInfo.MemberList[i].StrValue);
-		m_lvMemberList.SetItemData(Item,i);
-		
+		int Item = m_lvMemberList.InsertItem(i, m_EnumDefineInfo.MemberList[i].Name);
+		m_lvMemberList.SetItemText(Item, 1, m_EnumDefineInfo.MemberList[i].Value);
+		Temp.Format("0x%X", m_EnumDefineInfo.MemberList[i].Flag);
+		m_lvMemberList.SetItemText(Item, 2, Temp);
+		m_lvMemberList.SetItemText(Item, 3, m_EnumDefineInfo.MemberList[i].StrValue);
+		m_lvMemberList.SetItemText(Item, 4, m_EnumDefineInfo.MemberList[i].BindDataType);
+		m_lvMemberList.SetItemText(Item, 5, m_EnumDefineInfo.MemberList[i].Description);
+		m_lvMemberList.SetItemData(Item, i);
 	}
+
+	ListCtrlColAutoFit(m_lvMemberList);
 }
 
 void CDlgEnumEditor::SelectItemByName(LPCTSTR szName)
@@ -98,9 +120,17 @@ BOOL CDlgEnumEditor::OnInitDialog()
 	m_lvMemberList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
 	m_lvMemberList.InsertColumn(0,_T("名称"),LVCFMT_LEFT,300);
 	m_lvMemberList.InsertColumn(1,_T("值"),LVCFMT_LEFT,60);	
-	m_lvMemberList.InsertColumn(2,_T("内容"),LVCFMT_LEFT,100);
+	m_lvMemberList.InsertColumn(2, _T("标志位"), LVCFMT_LEFT, 60);
+	m_lvMemberList.InsertColumn(3,_T("显示名"),LVCFMT_LEFT,100);
+	m_lvMemberList.InsertColumn(4, _T("关联数据类型"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(5, _T("描述"), LVCFMT_LEFT, 100);
 
-
+	m_cbBindDataType.ResetContent();
+	m_cbBindDataType.AddString(_T("无"));
+	for (UINT i = 0; i < GetMainDlg()->GetVarTypeCount(); i++)
+	{
+		m_cbBindDataType.AddString(GetMainDlg()->GetVarType(i)->Name);
+	}
 	
 	FillList();
 
@@ -172,7 +202,8 @@ void CDlgEnumEditor::OnBnClickedOk()
 	m_EnumDefineInfo.Name.Trim();
 
 	if(m_EnumDefineInfo.ShortName.IsEmpty())
-		m_EnumDefineInfo.ShortName=m_EnumDefineInfo.Name;
+		m_EnumDefineInfo.ShortName=m_EnumDefineInfo.Name;	
+
 	UpdateData(false);
 	OnOK();
 }
@@ -236,4 +267,18 @@ void CDlgEnumEditor::OnNMClickListMemberList(NMHDR *pNMHDR, LRESULT *pResult)
 			UpdateData(false);
 		}
 	}
+}
+
+static int MemberComp(LPCVOID p1, LPCVOID p2)
+{
+	const ENUM_MEMBER_INFO* pInfo1 = (const ENUM_MEMBER_INFO*)p1;
+	const ENUM_MEMBER_INFO* pInfo2 = (const ENUM_MEMBER_INFO*)p2;
+	return strcmp(pInfo1->Name, pInfo2->Name);
+}
+
+void CDlgEnumEditor::OnBnClickedButtonSort()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	qsort(m_EnumDefineInfo.MemberList.begin()._Ptr, m_EnumDefineInfo.MemberList.size(), sizeof(ENUM_MEMBER_INFO), MemberComp);
+	FillList();
 }

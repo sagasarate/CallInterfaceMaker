@@ -1,0 +1,12 @@
+case <EnumName>.<EnumValue>:
+	{
+		<HaveBindStruct>
+		PropertyGridTools.ResizeArray(BindData, BindDataType, StartIndex + <BindDataLen>);			
+		let BindParent = null;
+		let FillCount = 0;
+		<PropertyGridFillOperations>
+		<!HaveBindStruct>
+		return PropertyGridTools.FillBindData(PGNode, "<EnumName>.<EnumValue>", BindData, BindDataType, StartIndex, MemberID);
+		</HaveBindStruct>
+	}
+	break;

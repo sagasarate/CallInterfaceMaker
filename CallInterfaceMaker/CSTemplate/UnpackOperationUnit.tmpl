@@ -1,6 +1,7 @@
 case (ushort)<SST_NAME>.<SST_ID>:
-	<IfNeedCheckModifyFlag>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfNeedCheckModifyFlag>
+	<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>
 	{
 		<UnpackOperation>
+		<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>
 	}
 	break;

@@ -1,5 +1,5 @@
 <StructDescription>
-public class <StructName><BaseStruct>
+public class <StructName><IfHaveBaseClass>:</IfHaveBaseClass><BaseStruct>
 {
 	<Members>
 	<SSTIDEnumDefine>
@@ -37,7 +37,7 @@ public class <StructName><BaseStruct>
 		while(Pos>0)
 		{
 			ushort MemberID=0;
-			CSmartValue Value=Packet.GetNextMember(ref Pos,ref MemberID);
+			CSmartValue PacketMember=Packet.GetNextMember(ref Pos,ref MemberID);
 			switch(MemberID)
 			{
 			<UnpackOperations>
@@ -70,5 +70,6 @@ public class <StructName><BaseStruct>
 	}
 	<XMLProcess>
 	<JsonProcess>
+	<XLSProcess>
 };
 

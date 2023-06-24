@@ -50,6 +50,7 @@ void CDlgParamEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_CAN_NULL, m_CanNull);
 	DDX_Check(pDX, IDC_CHECK_IS_REFERENCE, m_IsReference);
 	DDX_Text(pDX, IDC_EDIT_PARAM_ID, m_ID);
+	DDX_Text(pDX, IDC_EDIT_PACK_FLAG, m_PackFlag);
 }
 
 

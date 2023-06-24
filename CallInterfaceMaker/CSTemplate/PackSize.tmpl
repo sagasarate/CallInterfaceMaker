@@ -1,1 +1,4 @@
-Size+=<PackSize>;
+<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>
+{
+	Size+=<PackSize>;
+}

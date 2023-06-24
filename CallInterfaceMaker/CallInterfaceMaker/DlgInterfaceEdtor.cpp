@@ -68,8 +68,9 @@ BOOL CDlgInterfaceEdtor::OnInitDialog()
 	m_lvMethodList.InsertColumn(1, "类型", LVCFMT_LEFT, 80);
 	m_lvMethodList.InsertColumn(2, "调用参数", LVCFMT_LEFT, 60);
 	m_lvMethodList.InsertColumn(3, "回调参数", LVCFMT_LEFT, 60);
-	m_lvMethodList.InsertColumn(4, "ID", LVCFMT_LEFT, 300);
-	m_lvMethodList.InsertColumn(5, "描述", LVCFMT_LEFT, 200);
+	m_lvMethodList.InsertColumn(4, "Flag", LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(5, "ID", LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(6, "描述", LVCFMT_LEFT, 200);
 
 
 	FillListItem();
@@ -175,9 +176,11 @@ void CDlgInterfaceEdtor::AddListItem(INTERFACE_METHOD& MethodInfo,UINT Index)
 	m_lvMethodList.SetItemText(Item,2,Temp);
 	Temp.Format("%d", MethodInfo.AckParamList.size());
 	m_lvMethodList.SetItemText(Item, 3, Temp);
+	Temp.Format("%u", MethodInfo.Flag);
+	m_lvMethodList.SetItemText(Item, 4, Temp);
 	Temp.Format("%d",MethodInfo.ID);
-	m_lvMethodList.SetItemText(Item,4,Temp);
-	m_lvMethodList.SetItemText(Item,5,MethodInfo.Description);
+	m_lvMethodList.SetItemText(Item,5,Temp);
+	m_lvMethodList.SetItemText(Item,6,MethodInfo.Description);
 
 }
 void CDlgInterfaceEdtor::EditListItem(int Item,INTERFACE_METHOD& MethodInfo)
@@ -192,9 +195,11 @@ void CDlgInterfaceEdtor::EditListItem(int Item,INTERFACE_METHOD& MethodInfo)
 	m_lvMethodList.SetItemText(Item,2,Temp);
 	Temp.Format("%d", MethodInfo.AckParamList.size());
 	m_lvMethodList.SetItemText(Item, 3, Temp);
+	Temp.Format("%u", MethodInfo.Flag);
+	m_lvMethodList.SetItemText(Item, 4, Temp);
 	Temp.Format("%d",MethodInfo.ID);
-	m_lvMethodList.SetItemText(Item,4,Temp);
-	m_lvMethodList.SetItemText(Item,5,MethodInfo.Description);
+	m_lvMethodList.SetItemText(Item,5,Temp);
+	m_lvMethodList.SetItemText(Item,6,MethodInfo.Description);
 }
 void CDlgInterfaceEdtor::FillListItem()
 {

@@ -1,0 +1,88 @@
+<StructDescription>
+
+<IfHaveBaseClass>
+<SpaceName>.<StructName>=ExtendClass(<SpaceName>.<BaseClass>);
+MergeObject(<SpaceName>.<StructName>,{
+	<Members,>
+});
+</IfHaveBaseClass>
+<IfNotHaveBaseClass>
+<SpaceName>.<StructName>={
+	<Members,>
+};
+</IfNotHaveBaseClass>
+
+<SSTIDEnumDefine>
+
+function <SpaceName>.<StructName>:_constructor()	
+	self:Clear();
+end
+
+
+function <SpaceName>.<StructName>:Clear()
+	<IfHaveBaseClass>
+	<SpaceName>.<BaseClass>.Clear(self);
+	</IfHaveBaseClass>
+
+	<InitOperations>
+end
+
+function <SpaceName>.<StructName>:MakePacket(Packet)
+	local FailCount = 0;
+
+	<IfHaveBaseClass>
+	if not <SpaceName>.<BaseClass>.MakePacket(self,Packet) then
+		FailCount = FailCount + 1;
+	end
+	</IfHaveBaseClass>
+
+	<PackOperations>
+
+	return FailCount == 0;
+end
+
+function <SpaceName>.<StructName>:ParsePacket(Packet)
+	<IfHaveBaseClass>
+	<SpaceName>.<BaseClass>.ParsePacket(self,Packet);
+	</IfHaveBaseClass>
+
+	<IfHaveMember>
+	local Pos=Packet:GetFirstMemberPosition();
+	while Pos~=nil do
+		local Value;
+		local MemberID;
+		Value,MemberID,Pos=Packet:GetNextMemberObject(Pos);
+		if false then
+		<UnpackOperations>
+		end
+	end
+	</IfHaveMember>
+	return true;
+end
+
+function <SpaceName>.<StructName>:GetSmartStructSize()
+	local Size = 0;
+	<IfHaveBaseClass>
+	Size = Size + <SpaceName>.<BaseClass>.GetSmartStructSize(self);
+	</IfHaveBaseClass>
+	<PacketSizes>
+	return Size;
+end
+
+function <SpaceName>.<StructName>:CloneFrom(Value)
+	<IfHaveBaseClass>
+	<SpaceName>.<BaseClass>.CloneFrom(self,Value);
+	</IfHaveBaseClass>
+	<CloneFromOperations>
+end
+
+function <SpaceName>.<StructName>:Clone()
+	<IfHaveBaseClass>
+	local clone = <SpaceName>.<BaseClass>.Clone();
+	</IfHaveBaseClass>
+	<IfNotHaveBaseClass>
+	local clone = NewObject(<SpaceName>.<StructName>);
+	</IfNotHaveBaseClass>
+	clone:CloneFrom(self);
+	return clone;
+end

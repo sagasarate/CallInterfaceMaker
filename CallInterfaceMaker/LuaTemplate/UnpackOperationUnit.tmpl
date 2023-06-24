@@ -1,0 +1,5 @@
+elseif MemberID==<SpaceName>.<SST_NAME>.<SST_ID> then
+	<IfCheckMF>if (Flag&<ModifyFlagEnumName>.<ModifyFlag>) ~= 0 then</IfCheckMF>
+		<UnpackOperation>
+		<IfUpdateMF>UpdateFlag = UpdateFlag | <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>
+	<IfCheckMF>end</IfCheckMF>

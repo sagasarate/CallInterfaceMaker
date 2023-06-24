@@ -60,7 +60,7 @@ END_MESSAGE_MAP()
 
 CCallInterfaceMakerDlg::CCallInterfaceMakerDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CCallInterfaceMakerDlg::IDD, pParent)
-	, m_UTF8Export(FALSE)
+	, m_UTF8Export(TRUE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_SelectAll=true;
@@ -432,859 +432,142 @@ bool CCallInterfaceMakerDlg::LoadTypeDef()
 }
 bool CCallInterfaceMakerDlg::SaveTypeDef()
 {
-	std::ofstream os;	
-	os.open(m_TypeDefFileName, std::ios::trunc);	
-	if (os.is_open())
+	pug::xml_parser Xml;
+
+	Xml.create();
+	xml_node Doc;
+	Doc = Xml.document();
+	xml_node pi = Doc.append_child(node_pi);
+	pi.name(_T("xml"));
+	pi.attribute(_T("version")) = _T("1.0");
+	pi.attribute(_T("encoding")) = _T("utf-8");
+	xml_node TypeDef = Doc.append_child(node_element, "TypeDef");
+
+	for (size_t i = 0; i < m_BaseTypeList.size(); i++)
 	{
-		pug::xml_parser Xml;
+		xml_node Type = TypeDef.append_child(node_element, "Type");
 
-		Xml.create();
-		xml_node Doc;
-		Doc = Xml.document();
-		xml_node pi = Doc.append_child(node_pi);
-		pi.name(_T("xml"));
-		pi.attribute(_T("version")) = _T("1.0");
-		pi.attribute(_T("encoding")) = _T("gb2312");
-		xml_node TypeDef=Doc.append_child(node_element,"TypeDef");
-		
-		for(size_t i=0;i<m_BaseTypeList.size();i++)
-		{			
-			xml_node Type=TypeDef.append_child(node_element,"Type");
+		Type.append_attribute("Name", (LPCTSTR)m_BaseTypeList[i].Name);
+		Type.append_attribute("CType", (LPCTSTR)m_BaseTypeList[i].CType);
+		Type.append_attribute("Flag", m_BaseTypeList[i].Flag);
+		SaveGenerateOperations(Type, m_BaseTypeList[i].GenerateOperations);
+	}
 
-			Type.append_attribute("Name",(LPCTSTR)m_BaseTypeList[i].Name);			
-			Type.append_attribute("CType",(LPCTSTR)m_BaseTypeList[i].CType);
-			Type.append_attribute("Flag", m_BaseTypeList[i].Flag);
-			SaveGenerateOperations(Type,m_BaseTypeList[i].GenerateOperations);
-		}
-		
-		os << Xml.document();
-		os.close();
+	if (!Xml.SaveToFile(Xml.document(), m_TypeDefFileName, CP_UTF8))
+	{
+		CString Msg;
+		Msg.Format("保存文件失败%s", m_TypeDefFileName);
+		MessageBox(Msg);
+		return false;
+	}
+	return true;
+}
+bool CCallInterfaceMakerDlg::LoadTemple(LPCTSTR FileName, CString& TemplateStr)
+{
+	CStringFile TempleFile;
+
+	CEasyString FilePath = CFileTools::MakeModuleFullPath(NULL, FileName);
+	if (TempleFile.LoadFile(FilePath, false))
+	{
+		TemplateStr = TempleFile.GetData();
 		return true;
 	}
 	else
-	{		
+	{
+		CString Msg;
+		Msg.Format("无法打开文件%s", (LPCTSTR)FilePath);
+		MessageBox(Msg);
 		return false;
 	}
 }
 bool CCallInterfaceMakerDlg::LoadTemples()
 {
-	CFile TempleFile;
-
-	CString FileName;
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,INTERFACE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_InterfaceHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}	
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,INTERFACE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_InterfaceTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}	
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,PARAM_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_ParamTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,PARAM_DESCRIPTION_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_ParamDescriptionTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,PACK_SIZE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_PackSizeTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MethodHeaderTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MethodHeaderPureTailTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MethodCallerSourceTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgPackMethodHeaderTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgPackMethodSourceTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgHandlerMethodHeaderTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgHandlerMethodSourceTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_MAP_INIT_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgMapInitTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
+	LoadTemple(ALL_DEFINES_TEMPLE_FILE_NAME, m_AllDefinesTemplate);
+	LoadTemple(INTERFACE_HEADER_TEMPLE_FILE_NAME, m_InterfaceHeaderTemplate);
+	LoadTemple(INTERFACE_TEMPLE_FILE_NAME, m_InterfaceTemplate);
+	LoadTemple(PARAM_DEFINE_TEMPLE_FILE_NAME, m_ParamDefineTemple);
+	LoadTemple(PARAM_TRANS_TEMPLE_FILE_NAME, m_ParamTransTemple);
+	LoadTemple(PARAM_DESCRIPTION_TEMPLE_FILE_NAME, m_ParamDescriptionTemple);
+	LoadTemple(PACK_SIZE_TEMPLE_FILE_NAME, m_PackSizeTemple);
+	LoadTemple(METHOD_HEADER_TEMPLE_FILE_NAME, m_MethodHeaderTemple);
+	LoadTemple(METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME, m_MethodHeaderPureTailTemple);
+	LoadTemple(METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME, m_MethodCallerSourceTemple);
+	LoadTemple(MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME, m_MsgPackMethodHeaderTemple);
+	LoadTemple(MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME, m_MsgPackMethodSourceTemple);
+	LoadTemple(MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME, m_MsgHandlerMethodHeaderTemple);
+	LoadTemple(MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME, m_MsgHandlerMethodSourceTemple);
+	LoadTemple(MSG_MAP_INIT_TEMPLE_FILE_NAME, m_MsgMapInitTemple);
+	LoadTemple(MSG_CALLER_HEADER_TEMPLE_FILE_NAME, m_MsgCallerHeaderTemplate);
+	LoadTemple(MSG_CALLER_SOURCE_TEMPLE_FILE_NAME, m_MsgCallerSourceTemplate);
+	LoadTemple(MSG_HANDLER_HEADER_TEMPLE_FILE_NAME, m_MsgHandlerHeaderTemplate);
+	LoadTemple(MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME, m_MsgHandlerSourceTemplate);
+	LoadTemple(DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME, m_DataObjectDefineHeaderTemple);
+	LoadTemple(DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME, m_DataObjectDefineSourceTemple);
+	LoadTemple(STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME, m_StructDefineHeaderTemplate);
+	LoadTemple(ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME, m_EnumDefineHeaderTemplate);
+	LoadTemple(SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME, m_SystemEnumDefineHeaderTemplate);
+	LoadTemple(STRUCT_DEFINE_TEMPLE_FILE_NAME, m_StructDefineTemplate);
+	LoadTemple(STRUCT_MEMBER_TEMPLE_FILE_NAME, m_StructMemberTemplate);
+	LoadTemple(DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME, m_DataObjectMemberTemplate);
+	LoadTemple(DATA_OBJECT_MODIFY_FLAGS_HEADER_TEMPLE_FILE_NAME, m_DataObjectModifyFlagsHeaderTemple);
+	LoadTemple(DATA_OBJECT_MODIFY_FLAGS_SOURCE_TEMPLE_FILE_NAME, m_DataObjectModifyFlagsSourceTemple);
+	LoadTemple(DATA_OBJECT_MODIFY_FLAG_HEADER_DEFINE_TEMPLE_FILE_NAME, m_DataObjectModifyFlagHeaderDefineTemple);
+	LoadTemple(DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME, m_DataObjectModifyFlagDefineTemple);
+	LoadTemple(DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME, m_DataObjectModifyFlagUnitTemple);
+	LoadTemple(PACK_OPERATION_UNIT_TEMPLE_FILE_NAME, m_PackOperationUnitTemplate);
+	LoadTemple(UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME, m_UnpackOperationUnitTemplate);
+	LoadTemple(TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME, m_ToXMLOperationUnitTemplate);
+	LoadTemple(FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME, m_FromXMLOperationUnitTemplate);
+	LoadTemple(STRUCT_XML_PROCESS_TEMPLE_FILE_NAME, m_StructXMLProcessTemplate);
+	LoadTemple(TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME, m_ToJsonOperationUnitTemplate);
+	LoadTemple(FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME, m_FromJsonOperationUnitTemplate);
+	LoadTemple(STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME, m_StructJsonProcessTemplate);
+	LoadTemple(DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME, m_DataObjectJsonProcessTemplate);
+	LoadTemple(DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME, m_DataObjectJsonProcessHeaderTemplate);
+	LoadTemple(STRUCT_DB_PROCESS_TEMPLE_FILE_NAME, m_StructDBProcessTemplate);
+	LoadTemple(DATA_OBJECT_DB_PROCESS_TEMPLE_FILE_NAME, m_DataObjectDBProcessTemplate);
+	LoadTemple(DATA_OBJECT_DB_PROCESS_HEADER_TEMPLE_FILE_NAME, m_DataObjectDBProcessHeaderTemplate);
+	LoadTemple(DB_FIELD_NAME_TEMPLE_FILE_NAME, m_DBFieldNameTemplate);
+	LoadTemple(DB_FIELD_DEFINE_UNIT_TEMPLE_FILE_NAME, m_DBFieldDefineUnitTemplate);
+	LoadTemple(DB_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME, m_DBKeyDefineUnitTemplate);
+	LoadTemple(DB_PRIMARY_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME, m_DBPrimaryKeyDefineUnitTemplate);
+	LoadTemple(DB_UNIQUE_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME, m_DBUniqueKeyDefineUnitTemplate);
+	LoadTemple(ENUM_DFINE_TEMPLE_FILE_NAME, m_EnumDefineTemplate);
+	LoadTemple(ENUM_DFINE_64_TEMPLE_FILE_NAME, m_EnumDefine64Template);
+	LoadTemple(ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME, m_EnumMemberDefineTemplate);
+	LoadTemple(ENUM_MEMBER_DFINE_64_TEMPLE_FILE_NAME, m_EnumMemberDefine64Template);
+	LoadTemple(ENUM_BIT_MASK_MEMBER_DFINE_TEMPLE_FILE_NAME, m_EnumBitMaskMemberDefineTemplate);
+	LoadTemple(ENUM_BIT_MASK_MEMBER_DFINE_64_TEMPLE_FILE_NAME, m_EnumBitMaskMemberDefine64Template);
+	LoadTemple(ENUM_STR_VALUE_UNIT_TEMPLE_FILE_NAME, m_EnumStrValueUnitTemplate);
+	LoadTemple(ENUM_LIST_UNIT_TEMPLE_FILE_NAME, m_EnumListUnitTemplate);
+	LoadTemple(ENUM_TO_STR_UNIT_TEMPLE_FILE_NAME, m_EnumToStrUnitTemplate);
+	LoadTemple(STR_TO_ENUM_UNIT_TEMPLE_FILE_NAME, m_StrToEnumUnitTemplate);
+	LoadTemple(ENUM_BIND_DATA_FILL_UNIT_TEMPLE_FILE_NAME, m_EnumBindDataFillUnit);
+	//LoadTemple(ENUM_BIND_DATA_FETCH_UNIT_TEMPLE_FILE_NAME, m_EnumBindDataFetchUnit);
+	LoadTemple(CONST_DFINE_TEMPLE_FILE_NAME, m_ConstDefineTemplate);
+	LoadTemple(MACRO_DFINE_TEMPLE_FILE_NAME, m_MacroDefineTemplate);
+	LoadTemple(CONST_DFINE_HEADER_TEMPLE_FILE_NAME, m_ConstDefineHeaderTemplate);
+	LoadTemple(STRING_CONST_DFINE_TEMPLE_FILE_NAME, m_StringConstDefineTemplate);
+	LoadTemple(IMPORT_DECLARE_TEMPLE_FILE_NAME, m_ImportDeclareTemplate);
+	LoadTemple(DATA_OBJECT_CLEAR_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME, m_DataObjectClearModifyFlagDefineTemplate);
+	LoadTemple(DATA_OBJECT_GET_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME, m_DataObjectGetModifyFlagDefineTemplate);
+	LoadTemple(DATA_OBJECT_IS_MODIFIED_DEFINE_TEMPLE_FILE_NAME, m_DataObjectIsModifiedDefineTemplate);
+	LoadTemple(STRUCT_EDITOR_PROCESS_TEMPLE_FILE_NAME, m_StructEditorProcessTemplate);
+	LoadTemple(CREATE_LIST_HEADER_UNIT_TEMPLE_FILE_NAME, m_CreateListHeaderUnitTemplate);
+	LoadTemple(FILL_LIST_ITEM_UNIT_TEMPLE_FILE_NAME, m_FillListItemUnitTemplate);	
+	//LoadTemple(PROPERTY_GRID_FETCH_UNIT_TEMPLE_FILE_NAME, m_PropertyGridFetchUnitTemplate);
+	//LoadTemple(PROPERTY_GRID_ADD_ITEM_UNIT_TEMPLE_FILE_NAME, m_PropertyGridAddItemUnitTemplate);
+	//LoadTemple(PROPERTY_GRID_DEL_ITEM_UNIT_TEMPLE_FILE_NAME, m_PropertyGridDelItemUnitTemplate);
+	//LoadTemple(PROPERTY_GRID_MOVE_ITEM_UNIT_TEMPLE_FILE_NAME, m_PropertyGridMoveItemUnitTemplate);
+	LoadTemple(STRUCT_LOG_PROCESS_TEMPLE_FILE_NAME, m_StructLogProcessTemplate);
+	LoadTemple(STRUCT_LUA_PROCESS_TEMPLE_FILE_NAME, m_StructLuaProcessTemplate);
+	LoadTemple(DATA_OBJECT_LUA_PROCESS_TEMPLE_FILE_NAME, m_DataObjectLuaProcessTemplate);
+	LoadTemple(DATA_OBJECT_LUA_PROCESS_HEADER_TEMPLE_FILE_NAME, m_DataObjectLuaProcessHeaderTemplate);
+	LoadTemple(TO_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME, m_ToLuaTableOperationUnitTemplate);
+	LoadTemple(FROM_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME, m_FromLuaTableOperationUnitTemplate);
+	LoadTemple(STRUCT_XLS_PROCESS_TEMPLE_FILE_NAME, m_StructXLSProcessTemplate);
 	
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_CALLER_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgCallerHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_CALLER_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgCallerSourceTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgHandlerHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MsgHandlerSourceTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_DataObjectDefineHeaderTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_DataObjectDefineSourceTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_StructDefineHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_EnumDefineHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_SystemEnumDefineHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_DEFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_StructDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
 	
-	FileName=CFileTools::MakeModuleFullPath(NULL,STRUCT_MEMBER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_StructMemberTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_DataObjectMemberTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAGS_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_DataObjectModifyFlagsTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}	
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_DataObjectModifyFlagDefineTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_DataObjectModifyFlagUnitTemple=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,PACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_PackOperationUnitTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_UnpackOperationUnitTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_ToXMLOperationUnitTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_FromXMLOperationUnitTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, STRUCT_XML_PROCESS_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_StructXMLProcessTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_ToJsonOperationUnitTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_FromJsonOperationUnitTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_StructJsonProcessTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_DataObjectJsonProcessTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName = CFileTools::MakeModuleFullPath(NULL, DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME);
-	if (TempleFile.Open(FileName, CFile::modeRead | CFile::shareDenyNone))
-	{
-		ULONG64 Size = TempleFile.GetLength();
-		char * Buffer = new char[Size + 1];
-		TempleFile.Read(Buffer, Size);
-		Buffer[Size] = 0;
-		m_DataObjectStructJsonProcessHeaderTemplate = Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s", FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_EnumDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_EnumMemberDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,ENUM_STR_VALUE_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_EnumStrValueDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,CONST_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_ConstDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,MACRO_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_MacroDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,CONST_DFINE_HEADER_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_ConstDefineHeaderTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
-	FileName=CFileTools::MakeModuleFullPath(NULL,STRING_CONST_DFINE_TEMPLE_FILE_NAME);
-	if(TempleFile.Open(FileName,CFile::modeRead|CFile::shareDenyNone))
-	{
-		ULONG64 Size=TempleFile.GetLength();
-		char * Buffer=new char[Size+1];
-		TempleFile.Read(Buffer,Size);
-		Buffer[Size]=0;
-		m_StringConstDefineTemplate=Buffer;
-		delete[] Buffer;
-		TempleFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
-		MessageBox(Msg);
-	}
-
 
 	return true;
 }
@@ -1295,13 +578,21 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 
 	CString FileName=CFileTools::MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
 
-	if(Parser.parse_file(FileName,pug::parse_trim_attribute))
+	if(Parser.parse_file(FileName,0))
 	{
 
 		xml_node Config=Parser.document();
 			
 		if(Config.moveto_child("Config"))
 		{
+			{
+				xml_node OneFileExport = Config;
+				if (OneFileExport.moveto_child("OneFileExport"))
+				{
+					m_InterfaceConfig.OneFileExportConfig.IsExport = (bool)OneFileExport.attribute("IsExport");
+					m_InterfaceConfig.OneFileExportConfig.ExportExt = (LPCTSTR)OneFileExport.attribute("FileExt").getvalue();
+				}
+			}
 			{
 				xml_node InterfaceHeaderExport=Config;
 				if(InterfaceHeaderExport.moveto_child("InterfaceHeaderExport"))
@@ -1400,10 +691,18 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 			}
 			{
 				xml_node DataObjectModifyFlagsExportConfig=Config;
-				if(DataObjectModifyFlagsExportConfig.moveto_child("DataObjectModifyFlagsExport"))
+				if(DataObjectModifyFlagsExportConfig.moveto_child("DataObjectModifyFlagsHeaderExport"))
 				{
-					m_InterfaceConfig.DataObjectModifyFlagsExportConfig.IsExport=(bool)DataObjectModifyFlagsExportConfig.attribute("IsExport");
-					m_InterfaceConfig.DataObjectModifyFlagsExportConfig.ExportExt = (LPCTSTR)DataObjectModifyFlagsExportConfig.attribute("FileExt").getvalue();
+					m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport=(bool)DataObjectModifyFlagsExportConfig.attribute("IsExport");
+					m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt = (LPCTSTR)DataObjectModifyFlagsExportConfig.attribute("FileExt").getvalue();
+				}
+			}
+			{
+				xml_node DataObjectModifyFlagsExportConfig = Config;
+				if (DataObjectModifyFlagsExportConfig.moveto_child("DataObjectModifyFlagsSourceExport"))
+				{
+					m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport = (bool)DataObjectModifyFlagsExportConfig.attribute("IsExport");
+					m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt = (LPCTSTR)DataObjectModifyFlagsExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
@@ -1421,10 +720,40 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 				}
 			}
 			{
+				xml_node DefaultEnum64GenerateOperations = Config;
+				if (DefaultEnum64GenerateOperations.moveto_child("DefaultEnum64GenerateOperations"))
+				{
+					LoadGenerateOperations(DefaultEnum64GenerateOperations, m_InterfaceConfig.DefaultEnum64GenerateOperations);
+				}
+			}
+			{
 				xml_node ArrayDefineConfig=Config;
 				if(ArrayDefineConfig.moveto_child("ArrayDefineConfig"))
 				{
 					LoadGenerateOperations(ArrayDefineConfig,m_InterfaceConfig.ArrayDefineConfig);
+				}
+			}
+			{
+				xml_node OtherConfig = Config;
+				if (OtherConfig.moveto_child("OtherConfig"))
+				{
+					if (OtherConfig.has_attribute("CommentPrefix"))
+						m_InterfaceConfig.CommentPrefix = OtherConfig.attribute("CommentPrefix").getvalue();
+
+					if (OtherConfig.has_attribute("LocalVariableDefinePrefix"))
+						m_InterfaceConfig.LocalVariableDefinePrefix = OtherConfig.attribute("LocalVariableDefinePrefix").getvalue();
+
+					if (OtherConfig.has_attribute("MemberVariablePrefix"))
+						m_InterfaceConfig.MemberVariablePrefix = OtherConfig.attribute("MemberVariablePrefix").getvalue();
+
+					if (OtherConfig.has_attribute("DefaultPacketName"))
+						m_InterfaceConfig.DefaultPacketName = OtherConfig.attribute("DefaultPacketName").getvalue();
+
+					if (OtherConfig.has_attribute("DefaultPacketMemberName"))
+						m_InterfaceConfig.DefaultPacketMemberName = OtherConfig.attribute("DefaultPacketMemberName").getvalue();
+
+					if (OtherConfig.has_attribute("SupportBigInt"))
+						m_InterfaceConfig.SupportBigInt = (bool)OtherConfig.attribute("DefaultPacketMeSupportBigIntmberName");
 				}
 			}
 		}
@@ -1441,157 +770,190 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 }
 bool CCallInterfaceMakerDlg::SaveConfig()
 {
-	std::ofstream os;	
-	CString FileName=CFileTools::MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
-	os.open(FileName, std::ios::trunc);	
-	if (os.is_open())
+	pug::xml_parser Xml;
+
+	Xml.create();
+	xml_node Doc;
+	Doc = Xml.document();
+	xml_node pi = Doc.append_child(node_pi);
+	pi.name(_T("xml"));
+	pi.attribute(_T("version")) = _T("1.0");
+	pi.attribute(_T("encoding")) = _T("utf-8");
+
+	xml_node Config = Doc.append_child(node_element, "Config");
+
 	{
-		pug::xml_parser Xml;
-
-		Xml.create();
-		xml_node Doc;
-		Doc = Xml.document();
-		xml_node pi = Doc.append_child(node_pi);
-		pi.name(_T("xml"));
-		pi.attribute(_T("version")) = _T("1.0");
-		pi.attribute(_T("encoding")) = _T("gb2312");
-
-		xml_node Config=Doc.append_child(node_element,"Config");
-
-		{
-			xml_node InterfaceHeaderExport=Config.append_child(node_element,"InterfaceHeaderExport");
-			InterfaceHeaderExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport);
-			InterfaceHeaderExport.append_attribute("FileExt",
-				m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
-		}
-
-		{
-			xml_node StructExport=Config.append_child(node_element,"StructExport");
-			StructExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.StructExportConfig.IsExport);
-			StructExport.append_attribute("FileExt",
-				m_InterfaceConfig.StructExportConfig.ExportExt);
-		}
-
-		{
-			xml_node EnumExport=Config.append_child(node_element,"EnumExport");
-			EnumExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.EnumExportConfig.IsExport);
-			EnumExport.append_attribute("FileExt",
-				m_InterfaceConfig.EnumExportConfig.ExportExt);
-		}
-
-		{
-			xml_node ConstExport=Config.append_child(node_element,"ConstExport");
-			ConstExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.ConstExportConfig.IsExport);
-			ConstExport.append_attribute("FileExt",
-				m_InterfaceConfig.ConstExportConfig.ExportExt);
-		}
-
-		{
-			xml_node DOHeaderExport=Config.append_child(node_element,"DataStructHeaderExport");
-			DOHeaderExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.DataStructHeaderExportConfig.IsExport);
-			DOHeaderExport.append_attribute("FileExt",
-				m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
-		}
-
-		{
-			xml_node InterfaceExportConfig=Config.append_child(node_element,"InterfaceExport");
-			InterfaceExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.InterfaceExportConfig.IsExport);
-			InterfaceExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.InterfaceExportConfig.ExportExt);
-		}
-
-		{
-			xml_node CallHeaderExportConfig=Config.append_child(node_element,"CallHeaderExport");
-			CallHeaderExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.CallHeaderExportConfig.IsExport);
-			CallHeaderExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
-		}
-
-		{
-			xml_node CallSourceExportConfig=Config.append_child(node_element,"CallSourceExport");
-			CallSourceExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.CallSourceExportConfig.IsExport);
-			CallSourceExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.CallSourceExportConfig.ExportExt);
-		}
-
-		{
-			xml_node HandlerHeaderExportConfig=Config.append_child(node_element,"HandlerHeaderExport");
-			HandlerHeaderExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.HandlerHeaderExportConfig.IsExport);
-			HandlerHeaderExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
-		}
-
-		{
-			xml_node HandlerSourceExportConfig=Config.append_child(node_element,"HandlerSourceExport");
-			HandlerSourceExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.HandlerSourceExportConfig.IsExport);
-			HandlerSourceExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
-		}
-
-		{
-			xml_node DataObjectHeaderExportConfig=Config.append_child(node_element,"DataObjectHeaderExport");
-			DataObjectHeaderExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport);
-			DataObjectHeaderExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
-		}
-
-		{
-			xml_node DataObjectSourceExportConfig=Config.append_child(node_element,"DataObjectSourceExport");
-			DataObjectSourceExportConfig.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.DataObjectSourceExportConfig.IsExport);
-			DataObjectSourceExportConfig.append_attribute("FileExt",
-				m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
-		}
-
-		{
-			xml_node DataObjectModifyFlagsExport=Config.append_child(node_element,"DataObjectModifyFlagsExport");
-			DataObjectModifyFlagsExport.append_attribute("IsExport",
-				(bool)m_InterfaceConfig.DataObjectModifyFlagsExportConfig.IsExport);
-			DataObjectModifyFlagsExport.append_attribute("FileExt",
-				m_InterfaceConfig.DataObjectModifyFlagsExportConfig.ExportExt);
-		}
-
-		{
-			xml_node DefaultStructPackOperation=Config.append_child(node_element,"DefaultStructGenerateOperations");
-
-			SaveGenerateOperations(DefaultStructPackOperation,m_InterfaceConfig.DefaultStructGenerateOperations);			
-		}
-
-		{
-			xml_node DefaultEnumGenerateOperations = Config.append_child(node_element, "DefaultEnumGenerateOperations");
-
-			SaveGenerateOperations(DefaultEnumGenerateOperations, m_InterfaceConfig.DefaultEnumGenerateOperations);
-		}
-
-		{
-			xml_node ArrayDefineConfig=Config.append_child(node_element,"ArrayDefineConfig");
-
-			SaveGenerateOperations(ArrayDefineConfig,m_InterfaceConfig.ArrayDefineConfig);			
-		}
-
-
-		os << Xml.document();
-		os.close();
-		return true;
+		xml_node InterfaceHeaderExport = Config.append_child(node_element, "OneFileExport");
+		InterfaceHeaderExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.OneFileExportConfig.IsExport);
+		InterfaceHeaderExport.append_attribute("FileExt",
+			m_InterfaceConfig.OneFileExportConfig.ExportExt);
 	}
-	else
-	{		
+	{
+		xml_node InterfaceHeaderExport = Config.append_child(node_element, "InterfaceHeaderExport");
+		InterfaceHeaderExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport);
+		InterfaceHeaderExport.append_attribute("FileExt",
+			m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node StructExport = Config.append_child(node_element, "StructExport");
+		StructExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.StructExportConfig.IsExport);
+		StructExport.append_attribute("FileExt",
+			m_InterfaceConfig.StructExportConfig.ExportExt);
+	}
+
+	{
+		xml_node EnumExport = Config.append_child(node_element, "EnumExport");
+		EnumExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.EnumExportConfig.IsExport);
+		EnumExport.append_attribute("FileExt",
+			m_InterfaceConfig.EnumExportConfig.ExportExt);
+	}
+
+	{
+		xml_node ConstExport = Config.append_child(node_element, "ConstExport");
+		ConstExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.ConstExportConfig.IsExport);
+		ConstExport.append_attribute("FileExt",
+			m_InterfaceConfig.ConstExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DOHeaderExport = Config.append_child(node_element, "DataStructHeaderExport");
+		DOHeaderExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.DataStructHeaderExportConfig.IsExport);
+		DOHeaderExport.append_attribute("FileExt",
+			m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node InterfaceExportConfig = Config.append_child(node_element, "InterfaceExport");
+		InterfaceExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.InterfaceExportConfig.IsExport);
+		InterfaceExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.InterfaceExportConfig.ExportExt);
+	}
+
+	{
+		xml_node CallHeaderExportConfig = Config.append_child(node_element, "CallHeaderExport");
+		CallHeaderExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.CallHeaderExportConfig.IsExport);
+		CallHeaderExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node CallSourceExportConfig = Config.append_child(node_element, "CallSourceExport");
+		CallSourceExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.CallSourceExportConfig.IsExport);
+		CallSourceExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.CallSourceExportConfig.ExportExt);
+	}
+
+	{
+		xml_node HandlerHeaderExportConfig = Config.append_child(node_element, "HandlerHeaderExport");
+		HandlerHeaderExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.HandlerHeaderExportConfig.IsExport);
+		HandlerHeaderExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node HandlerSourceExportConfig = Config.append_child(node_element, "HandlerSourceExport");
+		HandlerSourceExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.HandlerSourceExportConfig.IsExport);
+		HandlerSourceExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DataObjectHeaderExportConfig = Config.append_child(node_element, "DataObjectHeaderExport");
+		DataObjectHeaderExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport);
+		DataObjectHeaderExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DataObjectSourceExportConfig = Config.append_child(node_element, "DataObjectSourceExport");
+		DataObjectSourceExportConfig.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.DataObjectSourceExportConfig.IsExport);
+		DataObjectSourceExportConfig.append_attribute("FileExt",
+			m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, "DataObjectModifyFlagsHeaderExport");
+		DataObjectModifyFlagsExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport);
+		DataObjectModifyFlagsExport.append_attribute("FileExt",
+			m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, "DataObjectModifyFlagsSourceExport");
+		DataObjectModifyFlagsExport.append_attribute("IsExport",
+			(bool)m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport);
+		DataObjectModifyFlagsExport.append_attribute("FileExt",
+			m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt);
+	}
+
+	{
+		xml_node DefaultStructPackOperation = Config.append_child(node_element, "DefaultStructGenerateOperations");
+
+		SaveGenerateOperations(DefaultStructPackOperation, m_InterfaceConfig.DefaultStructGenerateOperations);
+	}
+
+	{
+		xml_node DefaultEnumGenerateOperations = Config.append_child(node_element, "DefaultEnumGenerateOperations");
+
+		SaveGenerateOperations(DefaultEnumGenerateOperations, m_InterfaceConfig.DefaultEnumGenerateOperations);
+	}
+	{
+		xml_node DefaultEnum64GenerateOperations = Config.append_child(node_element, "DefaultEnum64GenerateOperations");
+
+		SaveGenerateOperations(DefaultEnum64GenerateOperations, m_InterfaceConfig.DefaultEnum64GenerateOperations);
+	}
+	{
+		xml_node ArrayDefineConfig = Config.append_child(node_element, "ArrayDefineConfig");
+
+		SaveGenerateOperations(ArrayDefineConfig, m_InterfaceConfig.ArrayDefineConfig);
+	}
+
+	{
+		xml_node OtherConfig = Config.append_child(node_element, "OtherConfig");
+
+		OtherConfig.append_attribute("CommentPrefix",
+			m_InterfaceConfig.CommentPrefix);
+
+		OtherConfig.append_attribute("LocalVariableDefinePrefix",
+			m_InterfaceConfig.LocalVariableDefinePrefix);
+
+		OtherConfig.append_attribute("MemberVariablePrefix",
+			m_InterfaceConfig.MemberVariablePrefix);
+
+		OtherConfig.append_attribute("DefaultPacketName",
+			m_InterfaceConfig.DefaultPacketName);
+
+		OtherConfig.append_attribute("DefaultPacketMemberName",
+			m_InterfaceConfig.DefaultPacketMemberName);
+
+		OtherConfig.append_attribute("SupportBigInt",
+			(bool)m_InterfaceConfig.SupportBigInt);
+	}
+
+	CString FileName = CFileTools::MakeModuleFullPath(NULL, CONFIG_FILE_NAME);
+	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
+	{
 		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
+		Msg.Format("保存文件失败%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
+	return true;
 }
 
 bool CCallInterfaceMakerDlg::LoadEnv()
@@ -1648,51 +1010,45 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 }
 bool CCallInterfaceMakerDlg::SaveEnv()
 {
-	std::ofstream os;	
-	CString FileName=CFileTools::MakeModuleFullPath(NULL,ENV_FILE_NAME);
-	os.open(FileName, std::ios::trunc);	
-	if (os.is_open())
-	{
-		pug::xml_parser Xml;
-
-		Xml.create();
-		xml_node Doc;
-		Doc = Xml.document();
-		xml_node pi = Doc.append_child(node_pi);
-		pi.name(_T("xml"));
-		pi.attribute(_T("version")) = _T("1.0");
-		pi.attribute(_T("encoding")) = _T("gb2312");
-
-		xml_node RunEnvironment=Doc.append_child(node_element,"RunEnvironment");
-
-		RunEnvironment.append_attribute("UTF8Export", m_UTF8Export ? true : false);
-
-		{
-			xml_node ExportEnv=RunEnvironment.append_child(node_element,"ExportEnv");
-			ExportEnv.append_attribute("RecentExportDir", m_RunEnvInfo.RecentExportDir);
-
-			xml_node DataEnv=RunEnvironment.append_child(node_element,"DataEnv");
-			DataEnv.append_attribute("RecentDataDir", m_RunEnvInfo.RecentDataDir);
-		}
-
-		xml_node SelectedInterfaces=RunEnvironment.append_child(node_element,"SelectedInterfaces");
-
-		for (size_t i = 0; i < m_RunEnvInfo.SelectedInterfaces.size(); i++)
-		{
-			SelectedInterfaces.append_child(node_element, m_RunEnvInfo.SelectedInterfaces[i]);
-		}
 	
-		os << Xml.document();
-		os.close();
-		return true;
+	pug::xml_parser Xml;
+
+	Xml.create();
+	xml_node Doc;
+	Doc = Xml.document();
+	xml_node pi = Doc.append_child(node_pi);
+	pi.name(_T("xml"));
+	pi.attribute(_T("version")) = _T("1.0");
+	pi.attribute(_T("encoding")) = _T("utf-8");
+
+	xml_node RunEnvironment = Doc.append_child(node_element, "RunEnvironment");
+
+	RunEnvironment.append_attribute("UTF8Export", m_UTF8Export ? true : false);
+
+	{
+		xml_node ExportEnv = RunEnvironment.append_child(node_element, "ExportEnv");
+		ExportEnv.append_attribute("RecentExportDir", m_RunEnvInfo.RecentExportDir);
+
+		xml_node DataEnv = RunEnvironment.append_child(node_element, "DataEnv");
+		DataEnv.append_attribute("RecentDataDir", m_RunEnvInfo.RecentDataDir);
 	}
-	else
-	{	
+
+	xml_node SelectedInterfaces = RunEnvironment.append_child(node_element, "SelectedInterfaces");
+
+	for (size_t i = 0; i < m_RunEnvInfo.SelectedInterfaces.size(); i++)
+	{
+		SelectedInterfaces.append_child(node_element, m_RunEnvInfo.SelectedInterfaces[i]);
+	}
+
+	CString FileName = CFileTools::MakeModuleFullPath(NULL, ENV_FILE_NAME);
+	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
+	{
 		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
+		Msg.Format("保存文件失败%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
+	return true;
 }
 
 
@@ -1795,8 +1151,8 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)m_AllDataStructList[i];
 			for(size_t j=0;j<pStructList->StructList.size();j++)
 			{
-				if (pStructList->IgnoreOnExport)
-					continue;
+				//if (pStructList->IgnoreOnExport)
+				//	continue;
 				if ((pStructList->StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)==0 || IncludeDataObject)
 				{
 					TYPE_DEFINE Type;
@@ -1839,6 +1195,34 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 						Type.GenerateOperations.SetMethodDeclare=m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDeclare;
 					if(Type.GenerateOperations.SetMethodDefine.IsEmpty())
 						Type.GenerateOperations.SetMethodDefine=m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDefine;
+					if (Type.GenerateOperations.ToStringOperation.IsEmpty())
+						Type.GenerateOperations.ToStringOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToStringOperation;
+					if (Type.GenerateOperations.DBFieldDefineOperation.IsEmpty())
+						Type.GenerateOperations.DBFieldDefineOperation = m_InterfaceConfig.DefaultStructGenerateOperations.DBFieldDefineOperation;
+					if (Type.GenerateOperations.DBInsertFormatOperation.IsEmpty())
+						Type.GenerateOperations.DBInsertFormatOperation = m_InterfaceConfig.DefaultStructGenerateOperations.DBInsertFormatOperation;
+					if (Type.GenerateOperations.DBPutOperation.IsEmpty())
+						Type.GenerateOperations.DBPutOperation = m_InterfaceConfig.DefaultStructGenerateOperations.DBPutOperation;
+					if (Type.GenerateOperations.DBGetOperation.IsEmpty())
+						Type.GenerateOperations.DBGetOperation = m_InterfaceConfig.DefaultStructGenerateOperations.DBGetOperation;
+					if (Type.GenerateOperations.PropertyGridFillOperation.IsEmpty())
+						Type.GenerateOperations.PropertyGridFillOperation = m_InterfaceConfig.DefaultStructGenerateOperations.PropertyGridFillOperation;
+					//if (Type.GenerateOperations.PropertyGridFetchOperation.IsEmpty())
+					//	Type.GenerateOperations.PropertyGridFetchOperation = m_InterfaceConfig.DefaultStructGenerateOperations.PropertyGridFetchOperation;
+					if (Type.GenerateOperations.LogSendOperation.IsEmpty())
+						Type.GenerateOperations.LogSendOperation = m_InterfaceConfig.DefaultStructGenerateOperations.LogSendOperation;
+					if (Type.GenerateOperations.ToLuaOperation.IsEmpty())
+						Type.GenerateOperations.ToLuaOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToLuaOperation;
+					if (Type.GenerateOperations.FromLuaOperation.IsEmpty())
+						Type.GenerateOperations.FromLuaOperation = m_InterfaceConfig.DefaultStructGenerateOperations.FromLuaOperation;
+					if (Type.GenerateOperations.CreateXLSColumnOperation.IsEmpty())
+						Type.GenerateOperations.CreateXLSColumnOperation = m_InterfaceConfig.DefaultStructGenerateOperations.CreateXLSColumnOperation;
+					if (Type.GenerateOperations.CheckXLSColumnOperation.IsEmpty())
+						Type.GenerateOperations.CheckXLSColumnOperation = m_InterfaceConfig.DefaultStructGenerateOperations.CheckXLSColumnOperation;
+					if (Type.GenerateOperations.ToXLSOperation.IsEmpty())
+						Type.GenerateOperations.ToXLSOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToXLSOperation;
+					if (Type.GenerateOperations.FromXLSOperation.IsEmpty())
+						Type.GenerateOperations.FromXLSOperation = m_InterfaceConfig.DefaultStructGenerateOperations.FromXLSOperation;
 
 					m_CurVarTypeList.push_back(Type);
 				}
@@ -1849,16 +1233,24 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 			ENUM_DEFINE_LIST * pEnumList = (ENUM_DEFINE_LIST *)m_AllDataStructList[i];
 			for (size_t j = 0; j<pEnumList->EnumList.size(); j++)
 			{
-				if (pEnumList->IgnoreOnExport)
-					continue;
+				//if (pEnumList->IgnoreOnExport)
+				//	continue;
 
 				TYPE_DEFINE Type;
 				Type.Name = pEnumList->EnumList[j].Name;
 				Type.CType = pEnumList->EnumList[j].Name;
 				Type.Flag = TYPE_DEFINE_FLAG_ENUM;
-				if (pEnumList->EnumList[j].Flag&ENUM_DEFINE_FLAG_IS_64BIT)
+				if (pEnumList->EnumList[j].Flag & ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN)
+					Type.Flag |= TYPE_DEFINE_FLAG_ENUM_HAVE_STR_TRANS;
+				if (pEnumList->EnumList[j].Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+				{
 					Type.Flag |= TYPE_DEFINE_FLAG_64BIT;
-				Type.GenerateOperations = m_InterfaceConfig.DefaultEnumGenerateOperations;
+					Type.GenerateOperations = m_InterfaceConfig.DefaultEnum64GenerateOperations;
+				}
+				else
+				{
+					Type.GenerateOperations = m_InterfaceConfig.DefaultEnumGenerateOperations;
+				}
 
 				m_CurVarTypeList.push_back(Type);
 			}
@@ -1985,6 +1377,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 		
 		m_RunEnvInfo.RecentExportDir=FilePath;
 
+		OnBnClickedButtonSave();
 		SaveInterfaceSelections();
 		SaveEnv();		
 		MakeCurVarType(true);
@@ -2024,7 +1417,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 	xml_node pi = Doc.append_child(node_pi);
 	pi.name(_T("xml"));
 	pi.attribute(_T("version")) = _T("1.0");
-	pi.attribute(_T("encoding")) = _T("gb2312");
+	pi.attribute(_T("encoding")) = _T("utf-8");
 
 
 	xml_node Interfaces = Doc.append_child(node_element, "Interfaces");
@@ -2086,7 +1479,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 	xml_node Postfix = Interfaces.append_child(node_element, "Postfix");
 	Postfix.append_attribute("Content", (LPCTSTR)ModuleInfo.InterfacePostFix);
 
-	return Xml.SaveToFile(Xml.document(), ModuleInfo.ModuleDefineFileName);
+	return Xml.SaveToFile(Xml.document(), ModuleInfo.ModuleDefineFileName, CP_UTF8);
 }
 
 
@@ -2286,7 +1679,9 @@ bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INF
 		else
 		{
 			OldInterfaceDefines.Clear();
-			AfxMessageBox("加载失败");
+			CString Msg;
+			Msg.Format("加载失败%s", FileName);
+			AfxMessageBox(Msg);
 			return false;
 		}
 	}
@@ -2299,7 +1694,9 @@ bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INF
 		else
 		{
 			ModuleInfo.Clear();
-			AfxMessageBox("加载失败");
+			CString Msg;
+			Msg.Format("加载失败%s", FileName);
+			AfxMessageBox(Msg);
 			return false;
 		}
 	}
@@ -2386,8 +1783,9 @@ bool CCallInterfaceMakerDlg::SaveInterfaces(xml_node& Interfaces, vector<CALLER_
 				Param.append_attribute("Length", (UINT)ParamInfo.Length);
 				Param.append_attribute("CanNull", ParamInfo.CanNull);
 				Param.append_attribute("IsReference", ParamInfo.IsReference);
-				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);
+				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);				
 				Param.append_attribute("Description", (LPCTSTR)ParamInfo.Description);
+				Param.append_attribute("PackFlag", (LPCTSTR)ParamInfo.PackFlag);
 
 			}
 			for (size_t k = 0; k < MethodInfo.AckParamList.size(); k++)
@@ -2406,6 +1804,7 @@ bool CCallInterfaceMakerDlg::SaveInterfaces(xml_node& Interfaces, vector<CALLER_
 				Param.append_attribute("IsReference", ParamInfo.IsReference);
 				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);
 				Param.append_attribute("Description", (LPCTSTR)ParamInfo.Description);
+				Param.append_attribute("PackFlag", (LPCTSTR)ParamInfo.PackFlag);
 			}
 		}
 	}
@@ -2459,12 +1858,10 @@ bool CCallInterfaceMakerDlg::LoadInterfaces(xml_node& Interfaces, vector<CALLER_
 							ParamInfo.Length = (UINT)Param.attribute("Length");
 							ParamInfo.CanNull = Param.attribute("CanNull");
 							ParamInfo.IsReference = Param.attribute("IsReference");
-
 							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
 							ParamInfo.DefaultValue.Trim();
-
-
 							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
+							ParamInfo.PackFlag = ((LPCTSTR)Param.attribute("PackFlag").getvalue());
 
 
 							MethodInfo.CallParamList.push_back(ParamInfo);
@@ -2482,13 +1879,10 @@ bool CCallInterfaceMakerDlg::LoadInterfaces(xml_node& Interfaces, vector<CALLER_
 							ParamInfo.Length = (UINT)Param.attribute("Length");
 							ParamInfo.CanNull = Param.attribute("CanNull");
 							ParamInfo.IsReference = Param.attribute("IsReference");
-
 							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
 							ParamInfo.DefaultValue.Trim();
-
-
 							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
-
+							ParamInfo.PackFlag = ((LPCTSTR)Param.attribute("PackFlag").getvalue());
 
 							MethodInfo.AckParamList.push_back(ParamInfo);
 						}
@@ -2577,7 +1971,7 @@ bool CCallInterfaceMakerDlg::SaveStructDefine(xml_node& Structs,vector<STRUCT_DE
 		xml_node Struct=Structs.append_child(node_element,"Struct");
 		Struct.append_attribute("Name",(LPCTSTR)StructDefineList[i].Name);
 		Struct.append_attribute("ShortName",(LPCTSTR)StructDefineList[i].ShortName);
-		Struct.append_attribute("BaseStruct",(LPCTSTR)StructDefineList[i].BaseStruct);
+		Struct.append_attribute("BaseStruct",(LPCTSTR)StructDefineList[i].BaseStruct);		
 		Struct.append_attribute("Description",(LPCTSTR)StructDefineList[i].Description);
 		Struct.append_attribute("IDSeed",(UINT)StructDefineList[i].IDSeed);		
 		Struct.append_attribute("Flag", (UINT)StructDefineList[i].Flag);
@@ -2591,12 +1985,18 @@ bool CCallInterfaceMakerDlg::SaveStructDefine(xml_node& Structs,vector<STRUCT_DE
 			xml_node Member=Struct.append_child(node_element,"Member");
 			Member.append_attribute("Name",(LPCTSTR)StructDefineList[i].MemberList[j].Name);
 			Member.append_attribute("Type",(LPCTSTR)StructDefineList[i].MemberList[j].Type);
+			Member.append_attribute("DBIndexType", StructDefineList[i].MemberList[j].DBIndexType);
 			Member.append_attribute("Flag",(UINT)StructDefineList[i].MemberList[j].Flag);
 			Member.append_attribute("IsArray",(bool)StructDefineList[i].MemberList[j].IsArray);
 			Member.append_attribute("ArrayStartLength",(UINT)StructDefineList[i].MemberList[j].ArrayStartLength);
 			Member.append_attribute("ArrayGrowLength",(UINT)StructDefineList[i].MemberList[j].ArrayGrowLength);
+			Member.append_attribute("DBLength", (LPCTSTR)StructDefineList[i].MemberList[j].DBLength);
+			Member.append_attribute("ShowName", (LPCTSTR)StructDefineList[i].MemberList[j].ShowName);
 			Member.append_attribute("Description",(LPCTSTR)StructDefineList[i].MemberList[j].Description);
+			Member.append_attribute("PackFlag", (LPCTSTR)StructDefineList[i].MemberList[j].PackFlag);
 			Member.append_attribute("ID",(UINT)StructDefineList[i].MemberList[j].ID);			
+			Member.append_attribute("BindData", (LPCTSTR)StructDefineList[i].MemberList[j].BindData);
+			Member.append_attribute("ExtendType", (LPCTSTR)StructDefineList[i].MemberList[j].ExtendType);
 		}
 	}
 	
@@ -2625,17 +2025,23 @@ bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs,vector<STRUCT_DE
 			for(UINT j=0;j<Struct.children();j++)
 			{
 				xml_node Member=Struct.child(j);
-				if(_stricmp(Member.name(),"Member")==0)
+				if (_stricmp(Member.name(), "Member") == 0)
 				{
 					STRUCT_MEMBER_INFO MemberInfo;
 					MemberInfo.Name = (LPCTSTR)Member.attribute("Name").getvalue();
 					MemberInfo.Type = ((LPCTSTR)Member.attribute("Type").getvalue());
-					MemberInfo.Flag=(UINT)Member.attribute("Flag");
-					MemberInfo.IsArray=(bool)Member.attribute("IsArray");
-					MemberInfo.ArrayStartLength=(UINT)Member.attribute("ArrayStartLength");
-					MemberInfo.ArrayGrowLength=(UINT)Member.attribute("ArrayGrowLength");
+					MemberInfo.DBIndexType = Member.attribute("DBIndexType");
+					MemberInfo.Flag = (UINT)Member.attribute("Flag");
+					MemberInfo.IsArray = (bool)Member.attribute("IsArray");
+					MemberInfo.ArrayStartLength = (UINT)Member.attribute("ArrayStartLength");
+					MemberInfo.ArrayGrowLength = (UINT)Member.attribute("ArrayGrowLength");
+					MemberInfo.DBLength = (LPCTSTR)Member.attribute("DBLength").getvalue();
+					MemberInfo.ShowName = ((LPCTSTR)Member.attribute("ShowName").getvalue());
 					MemberInfo.Description = ((LPCTSTR)Member.attribute("Description").getvalue());
-					MemberInfo.ID=(UINT)Member.attribute("ID");
+					MemberInfo.PackFlag = ((LPCTSTR)Member.attribute("PackFlag").getvalue());
+					MemberInfo.ID = (UINT)Member.attribute("ID");
+					MemberInfo.BindData = ((LPCTSTR)Member.attribute("BindData").getvalue());
+					MemberInfo.ExtendType = ((LPCTSTR)Member.attribute("ExtendType").getvalue());
 					StructDefine.MemberList.push_back(MemberInfo);
 				}
 				else if(_stricmp(Member.name(),"GenerateOperations")==0)
@@ -2711,8 +2117,10 @@ bool CCallInterfaceMakerDlg::SaveEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_I
 			xml_node Member=Enum.append_child(node_element,"Member");
 			Member.append_attribute("Name",(LPCTSTR)EnumDefineList[i].MemberList[j].Name);
 			Member.append_attribute("Value",(LPCTSTR)EnumDefineList[i].MemberList[j].Value);
+			Member.append_attribute("Flag", EnumDefineList[i].MemberList[j].Flag);
 			Member.append_attribute("StrValue",(LPCTSTR)EnumDefineList[i].MemberList[j].StrValue);
 			Member.append_attribute("Description",(LPCTSTR)EnumDefineList[i].MemberList[j].Description);
+			Member.append_attribute("BindDataType", (LPCTSTR)EnumDefineList[i].MemberList[j].BindDataType);
 			
 		}
 	}
@@ -2744,8 +2152,10 @@ bool CCallInterfaceMakerDlg::LoadEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_I
 					ENUM_MEMBER_INFO MemberInfo;
 					MemberInfo.Name = (LPCTSTR)Member.attribute("Name").getvalue();
 					MemberInfo.Value = ((LPCTSTR)Member.attribute("Value").getvalue());
+					MemberInfo.Flag = (UINT)Member.attribute("Flag");
 					MemberInfo.StrValue = ((LPCTSTR)Member.attribute("StrValue").getvalue());
 					MemberInfo.Description = ((LPCTSTR)Member.attribute("Description").getvalue());
+					MemberInfo.BindDataType = ((LPCTSTR)Member.attribute("BindDataType").getvalue());
 					
 					EnumDefine.MemberList.push_back(MemberInfo);
 				}
@@ -2863,6 +2273,20 @@ bool CCallInterfaceMakerDlg::SaveGenerateOperations(xml_node& XmlNode,GENERATE_O
 	XmlNode.append_attribute("SetMethodDefine",(LPCTSTR)GenerateOperations.SetMethodDefine);
 	XmlNode.append_attribute("IndexOperation",(LPCTSTR)GenerateOperations.IndexOperation);
 	XmlNode.append_attribute("ConstIndexOperation",(LPCTSTR)GenerateOperations.ConstIndexOperation);
+	XmlNode.append_attribute("ToStringOperation", (LPCTSTR)GenerateOperations.ToStringOperation);
+	XmlNode.append_attribute("DBFieldDefineOperation", (LPCTSTR)GenerateOperations.DBFieldDefineOperation);
+	XmlNode.append_attribute("DBInsertFormatOperation", (LPCTSTR)GenerateOperations.DBInsertFormatOperation);
+	XmlNode.append_attribute("DBPutOperation", (LPCTSTR)GenerateOperations.DBPutOperation);
+	XmlNode.append_attribute("DBGetOperation", (LPCTSTR)GenerateOperations.DBGetOperation);
+	XmlNode.append_attribute("PropertyGridFillOperation", (LPCTSTR)GenerateOperations.PropertyGridFillOperation);
+	//XmlNode.append_attribute("PropertyGridFetchOperation", (LPCTSTR)GenerateOperations.PropertyGridFetchOperation);
+	XmlNode.append_attribute("LogSendOperation", (LPCTSTR)GenerateOperations.LogSendOperation);
+	XmlNode.append_attribute("ToLuaOperation", (LPCTSTR)GenerateOperations.ToLuaOperation);
+	XmlNode.append_attribute("FromLuaOperation", (LPCTSTR)GenerateOperations.FromLuaOperation);
+	XmlNode.append_attribute("CreateXLSColumnOperation", (LPCTSTR)GenerateOperations.CreateXLSColumnOperation);
+	XmlNode.append_attribute("CheckXLSColumnOperation", (LPCTSTR)GenerateOperations.CheckXLSColumnOperation);
+	XmlNode.append_attribute("ToXLSOperation", (LPCTSTR)GenerateOperations.ToXLSOperation);
+	XmlNode.append_attribute("FromXLSOperation", (LPCTSTR)GenerateOperations.FromXLSOperation);
 
 	return true;
 }
@@ -2887,6 +2311,20 @@ bool CCallInterfaceMakerDlg::LoadGenerateOperations(xml_node& XmlNode,GENERATE_O
 	GenerateOperations.SetMethodDefine = ((LPCTSTR)XmlNode.attribute("SetMethodDefine").getvalue());
 	GenerateOperations.IndexOperation = ((LPCTSTR)XmlNode.attribute("IndexOperation").getvalue());
 	GenerateOperations.ConstIndexOperation = ((LPCTSTR)XmlNode.attribute("ConstIndexOperation").getvalue());
+	GenerateOperations.ToStringOperation = ((LPCTSTR)XmlNode.attribute("ToStringOperation").getvalue());
+	GenerateOperations.DBFieldDefineOperation = ((LPCTSTR)XmlNode.attribute("DBFieldDefineOperation").getvalue());
+	GenerateOperations.DBInsertFormatOperation = ((LPCTSTR)XmlNode.attribute("DBInsertFormatOperation").getvalue());
+	GenerateOperations.DBPutOperation = ((LPCTSTR)XmlNode.attribute("DBPutOperation").getvalue());
+	GenerateOperations.DBGetOperation = ((LPCTSTR)XmlNode.attribute("DBGetOperation").getvalue());
+	GenerateOperations.PropertyGridFillOperation = ((LPCTSTR)XmlNode.attribute("PropertyGridFillOperation").getvalue());
+	//GenerateOperations.PropertyGridFetchOperation = ((LPCTSTR)XmlNode.attribute("PropertyGridFetchOperation").getvalue());
+	GenerateOperations.LogSendOperation = ((LPCTSTR)XmlNode.attribute("LogSendOperation").getvalue());
+	GenerateOperations.ToLuaOperation = ((LPCTSTR)XmlNode.attribute("ToLuaOperation").getvalue());
+	GenerateOperations.FromLuaOperation = ((LPCTSTR)XmlNode.attribute("FromLuaOperation").getvalue());
+	GenerateOperations.CreateXLSColumnOperation = ((LPCTSTR)XmlNode.attribute("CreateXLSColumnOperation").getvalue());
+	GenerateOperations.CheckXLSColumnOperation = ((LPCTSTR)XmlNode.attribute("CheckXLSColumnOperation").getvalue());
+	GenerateOperations.ToXLSOperation = ((LPCTSTR)XmlNode.attribute("ToXLSOperation").getvalue());
+	GenerateOperations.FromXLSOperation = ((LPCTSTR)XmlNode.attribute("FromXLSOperation").getvalue());
 
 	return true;
 }
@@ -2914,21 +2352,23 @@ bool CCallInterfaceMakerDlg::LoadGenerateOperations(xml_node& XmlNode,GENERATE_O
 //	return Str;
 //}
 
-void CCallInterfaceMakerDlg::WriteStringToFile(CFile& OutputFile, CString& Str)
+void CCallInterfaceMakerDlg::WriteStringToFile(LPCTSTR OutputFileName, CString& Str)
 {
-	if (m_UTF8Export)
+	if (m_InterfaceConfig.OneFileExportConfig.IsExport)
 	{
-		size_t Len = AnsiToUTF8(Str, Str.GetLength(), NULL, 0);
-		char * OutBuff = new char[Len];
-		AnsiToUTF8(Str, Str.GetLength(), OutBuff, Len);
-		UINT BomHeader = BMT_UTF_8;
-		OutputFile.Write(&BomHeader, 3);
-		OutputFile.Write(OutBuff, Len);
-		delete[] OutBuff;
+		m_OneFileExportCache.Append(Str);
 	}
 	else
 	{
-		OutputFile.Write((LPCTSTR)Str, Str.GetLength());
+		CStringFile OutputFile;
+		if (m_UTF8Export)
+			OutputFile.SetSaveCodePage(CP_UTF8);
+		if (!OutputFile.SaveToFile(Str, OutputFileName))
+		{
+			CString Msg;
+			Msg.Format("无法打开文件%s", OutputFileName);
+			MessageBox(Msg);
+		}
 	}
 }
 
@@ -2943,7 +2383,7 @@ bool CCallInterfaceMakerDlg::EndWith(CString& Str, CString EndStr)
 	return false;
 }
 
-void CCallInterfaceMakerDlg::SortStructForExport(const vector<STRUCT_DEFINE_INFO>& SrcStructList, vector<STRUCT_DEFINE_INFO>& DestStructList)
+void CCallInterfaceMakerDlg::SortStructForExport(vector<STRUCT_DEFINE_INFO>& SrcStructList, vector<STRUCT_DEFINE_INFO*>& DestStructList)
 {
 	for (size_t s = 0; s < SrcStructList.size(); s++)
 	{
@@ -2955,12 +2395,12 @@ void CCallInterfaceMakerDlg::SortStructForExport(const vector<STRUCT_DEFINE_INFO
 			{
 				if (SrcStructList[j].Name == DependList[i])
 				{
-					AddUnique(DestStructList, SrcStructList[j]);
+					AddUnique(DestStructList, &(SrcStructList[j]));
 					break;
 				}
 			}
 		}
-		AddUnique(DestStructList, SrcStructList[s]);
+		AddUnique(DestStructList, &(SrcStructList[s]));
 	}
 }
 
@@ -2998,14 +2438,18 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 		{
 			if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
 			{
-				AddUnique(DependList, pType->Name);
-				//找到依赖结构的信息
-				for (size_t j = 0; j < StructList.size(); j++)
+				if (pType->Name != StructInfo.Name)
 				{
-					if (StructList[j].Name == pType->Name)
+					//排除自我依赖
+					AddUnique(DependList, pType->Name);
+					//找到依赖结构的信息
+					for (size_t j = 0; j < StructList.size(); j++)
 					{
-						GetStructDepends(StructList, StructList[j], DependList, Depth + 1);
-						break;
+						if (StructList[j].Name == pType->Name)
+						{
+							GetStructDepends(StructList, StructList[j], DependList, Depth + 1);
+							break;
+						}
 					}
 				}
 			}
@@ -3013,38 +2457,61 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 	}
 }
 
-void CCallInterfaceMakerDlg::AddUnique(vector<STRUCT_DEFINE_INFO>& StructList, const STRUCT_DEFINE_INFO& StructInfo)
+void CCallInterfaceMakerDlg::AddUnique(vector<STRUCT_DEFINE_INFO*>& StructList, STRUCT_DEFINE_INFO* pStructInfo)
 {
 	for (size_t i = 0; i < StructList.size(); i++)
 	{
-		if (StructList[i].Name == StructInfo.Name)
+		if (StructList[i]->Name == pStructInfo->Name)
 			return;
 	}
-	StructList.push_back(StructInfo);
+	StructList.push_back(pStructInfo);
 }
 
-void CCallInterfaceMakerDlg::SortDefinesForExport(const vector<BASE_DATA_STRUCT_DEFINE_LIST *>& SrcList, vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DestList)
+void CCallInterfaceMakerDlg::SortDefinesForExport(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& SrcList,
+	vector<CONST_DEFINE_LIST*>& ConstList, vector<ENUM_DEFINE_LIST*>& EnumList, vector<STRUCT_DEFINE_LIST2*>& StructList)
 {
-	for (size_t i = 0; i < SrcList.size(); i++)
+	//列表间排序
+	for (BASE_DATA_STRUCT_DEFINE_LIST* pDefineList : SrcList)
 	{
-		if (SrcList[i]->ListType == DATA_STRUCT_STRUCT)
+		if (pDefineList->ListType == DATA_STRUCT_CONST)
+			AddUnique(ConstList, pDefineList);
+	}
+	for (BASE_DATA_STRUCT_DEFINE_LIST* pDefineList : SrcList)
+	{
+		if (pDefineList->ListType == DATA_STRUCT_ENUM)
+			AddUnique(EnumList, pDefineList);
+	}
+	vector<STRUCT_DEFINE_LIST*> TempList;
+	for (BASE_DATA_STRUCT_DEFINE_LIST* pDefineList : SrcList)
+	{
+		if (pDefineList->ListType == DATA_STRUCT_STRUCT)
 		{
-			const STRUCT_DEFINE_LIST * pStructDefine = (const STRUCT_DEFINE_LIST *)SrcList[i];
 			vector<CString> DependList;
-			GetDefineDepends(SrcList, pStructDefine, DependList, 0);
+			GetDefineDepends(SrcList, (STRUCT_DEFINE_LIST*)pDefineList, DependList, 0);
 			for (int i = (int)DependList.size() - 1; i >= 0; i--)
 			{
 				for (size_t j = 0; j < SrcList.size(); j++)
 				{
-					if (SrcList[j]->ListType == DATA_STRUCT_STRUCT && MakeDefineName((const STRUCT_DEFINE_LIST *)SrcList[j]) == DependList[i])
+					if (SrcList[j]->ListType == DATA_STRUCT_STRUCT && MakeDefineName((const STRUCT_DEFINE_LIST*)SrcList[j]) == DependList[i])
 					{
-						AddUnique(DestList, SrcList[j]);
+						AddUnique(TempList, SrcList[j]);
 						break;
 					}
 				}
 			}
+			AddUnique(TempList, pDefineList);
 		}
-		AddUnique(DestList, SrcList[i]);		
+	}
+	//对列表内部排序
+	for (STRUCT_DEFINE_LIST* pDefineList : TempList)
+	{
+		if (pDefineList->ListType == DATA_STRUCT_STRUCT)
+		{
+			STRUCT_DEFINE_LIST2* pList = new STRUCT_DEFINE_LIST2();
+			*((BASE_DATA_STRUCT_DEFINE_LIST*)pList) = *((BASE_DATA_STRUCT_DEFINE_LIST*)pDefineList);
+			SortStructForExport(pDefineList->StructList, pList->StructList);
+			StructList.push_back(pList);
+		}
 	}
 }
 
@@ -3097,6 +2564,33 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 					if (!IsExist)
 						AddUnique(DependList, pType->Name);
 				}
+				//else if (pType->Flag & TYPE_DEFINE_FLAG_ENUM)
+				//{
+				//	ENUM_DEFINE_INFO* pEnum = GetEnumDefine(pType->CType);
+				//	if (pEnum)
+				//	{
+				//		for (ENUM_MEMBER_INFO& Member : pEnum->MemberList)
+				//		{
+				//			if (!Member.BindDataType.IsEmpty())
+				//			{
+				//				if (GetStructDefineInfo(Member.BindDataType))
+				//				{
+				//					bool IsExist = false;
+				//					for (size_t j = 0; j < StructList.size(); j++)
+				//					{
+				//						if (StructList[j].Name == Member.BindDataType)
+				//						{
+				//							IsExist = true;
+				//							break;
+				//						}
+				//					}
+				//					if (!IsExist)
+				//						AddUnique(DependList, Member.BindDataType);
+				//				}
+				//			}
+				//		}
+				//	}
+				//}
 			}
 		}
 		for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
@@ -3118,6 +2612,33 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 					if (!IsExist)
 						AddUnique(DependList,pType->Name);
 				}
+				//else if (pType->Flag & TYPE_DEFINE_FLAG_ENUM)
+				//{
+				//	ENUM_DEFINE_INFO* pEnum = GetEnumDefine(pType->CType);
+				//	if (pEnum)
+				//	{
+				//		for (ENUM_MEMBER_INFO& Member : pEnum->MemberList)
+				//		{
+				//			if (!Member.BindDataType.IsEmpty())
+				//			{
+				//				if (GetStructDefineInfo(Member.BindDataType))
+				//				{
+				//					bool IsExist = false;
+				//					for (size_t j = 0; j < StructList.size(); j++)
+				//					{
+				//						if (StructList[j].Name == Member.BindDataType)
+				//						{
+				//							IsExist = true;
+				//							break;
+				//						}
+				//					}
+				//					if (!IsExist)
+				//						AddUnique(DependList, Member.BindDataType);
+				//				}
+				//			}
+				//		}
+				//	}
+				//}
 			}
 		}
 	}
@@ -3141,15 +2662,7 @@ void CCallInterfaceMakerDlg::AddUnique(vector<CString>& NameList, const CString&
 	NameList.push_back(Name);
 }
 
-void CCallInterfaceMakerDlg::AddUnique(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DefineList, BASE_DATA_STRUCT_DEFINE_LIST * pDefine)
-{
-	for (size_t i = 0; i < DefineList.size(); i++)
-	{
-		if (DefineList[i]->ListType == pDefine->ListType && DefineList[i] == pDefine)
-			return;
-	}
-	DefineList.push_back(pDefine);
-}
+
 
 bool CCallInterfaceMakerDlg::HaveStructs(const STRUCT_DEFINE_LIST * pStructDefine, vector<CString>& StructNameList)
 {
@@ -3455,7 +2968,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 	return true;
 }
 
-INTERFACE_METHOD_OLD * CCallInterfaceMakerDlg::FindInterfaceMethod(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, CString MethodName, bool FindAck)
+INTERFACE_METHOD_OLD * CCallInterfaceMakerDlg::FindInterfaceMethod(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, LPCTSTR MethodName, bool FindAck)
 {
 	if (FindAck)
 		InterfaceName += "Ack";
@@ -3504,11 +3017,23 @@ INTERFACE_METHOD_OLD * CCallInterfaceMakerDlg::FindMethod(vector<INTERFACE_METHO
 
 bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 {
+	m_OneFileExportCache.Clear();
+
+	vector<CONST_DEFINE_LIST*> ConstList;
+	vector<ENUM_DEFINE_LIST*> EnumList;
+	vector<STRUCT_DEFINE_LIST2*> StructList;
+	SortDefinesForExport(m_AllDataStructList, ConstList, EnumList, StructList);
+	if (ConstList.size() + EnumList.size() + StructList.size() != m_AllDataStructList.size())
+	{
+		AfxMessageBox("数据定义排序错误");
+		return false;
+	}
+
 	if (m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport)
 	{
 		CString FileName;
 
-		FileName.Format("%sInterfaces.%s", m_MainModule.Name, m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
+		FileName.Format("%sInterfaces.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
 		ExportInterfaceHeader(m_AllInterfaceList, ExportDir, FileName);
 	}
 
@@ -3516,221 +3041,238 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 	{
 		CString FileName;
 
-		FileName.Format("%sDataStructs.%s", m_MainModule.Name, m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
-		ExportDataStructDefineHeader(m_AllDataStructList, ExportDir, FileName, m_MainModule.Name);
+		FileName.Format("%sDataStructs.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
+		ExportDataStructDefineHeader(ConstList, EnumList, StructList, ExportDir, FileName, m_MainModule.Name);
 
 	}
 	CString Temp;
 
-	Temp.Format("%sSystemEnums.%s", m_MainModule.Name, m_InterfaceConfig.EnumExportConfig.ExportExt);
+	Temp.Format("%sSystemEnums.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.EnumExportConfig.ExportExt);
 	ExportSystemEnums(ExportDir, Temp, m_AllModuleList);
 
-	ExportDataStructDefines(m_AllDataStructList, ExportDir, m_MainModule.Name);
-	ExportDataObject(m_AllDataStructList, ExportDir, m_MainModule.Name);
+	ExportDataStructDefines(ConstList, EnumList, StructList, ExportDir, m_MainModule.Name);
+	ExportDataObject(StructList, ExportDir, m_MainModule.Name);
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_CALL, m_MainModule.Name);
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_ACK, m_MainModule.Name);
 
 	ExportDataObjectModifyFlags(m_MainModule.DataObjectModifyFlags, ExportDir, m_MainModule.Name);
+	for (STRUCT_DEFINE_LIST2* pList : StructList)
+	{
+		SAFE_DELETE(pList);
+	}
+	StructList.clear();
+
+	if (m_InterfaceConfig.OneFileExportConfig.IsExport)
+	{
+		//单一文件导出保存
+		CString Source = m_AllDefinesTemplate;
+		CString LineSpace = GetLineSpace(Source, "<AllDefines>");
+		Source.Replace("<SpaceName>", m_MainModule.Name);
+		CString AllDefines;
+		IncSpace(m_OneFileExportCache.GetStr(), AllDefines, LineSpace);
+		Source.Replace("<AllDefines>", AllDefines);
+		
+
+		CStringFile OutputFile;
+		if (m_UTF8Export)
+			OutputFile.SetSaveCodePage(CP_UTF8);
+		CString OutputFileName;
+		OutputFileName.Format("%s\\%sAllDefines.%s", ExportDir, (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.OneFileExportConfig.ExportExt);
+		if (!OutputFile.SaveToFile(Source, OutputFileName))
+		{
+			CString Msg;
+			Msg.Format("无法打开文件%s", OutputFileName);
+			MessageBox(Msg);
+		}
+	}
+
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName)
+bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LIST*>& ConstList, vector<ENUM_DEFINE_LIST*>& EnumList, vector<STRUCT_DEFINE_LIST2*>& StructList,
+	LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName)
 {
-	CFile OutputFile;
 	CString OutputFileName;
 
 	OutputFileName=ExportDir;
 	OutputFileName+="\\";
 	OutputFileName+=FileName;
 
-	if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
+	
+	CString Source = m_InterfaceHeaderTemplate;
+
+	CString Includes;
+	CString Include;
+	CString ImportFileName;
+
+	Include = m_ImportDeclareTemplate;
+	ImportFileName.Format("%sSystemEnums.%s", SpaceName, m_InterfaceConfig.EnumExportConfig.ExportExt);
+	Include.Replace("<ImportFileName>", ImportFileName);
+	Includes += Include;
+
+	if (m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport)
 	{
-		CString Source=m_InterfaceHeaderTemplate;
-
-		CString Includes;
-		CString Temp;			
-
-		Temp.Format("#include \"%sSystemEnums.%s\"\r\n", SpaceName, m_InterfaceConfig.EnumExportConfig.ExportExt);
-
-		Includes+=Temp;
-
-		vector<BASE_DATA_STRUCT_DEFINE_LIST *>	DataStructDefineList;
-		SortDefinesForExport(DataStructList, DataStructDefineList);
-		if (DataStructList.size() != DataStructDefineList.size())
-			AfxMessageBox("数据定义排序错误");
-
-		for(size_t i=0;i<DataStructDefineList.size();i++)
-		{
-			if (DataStructDefineList[i]->IgnoreOnExport)
-				continue;
-
-			CString ModuleName = GetModuleName(DataStructDefineList[i]->ModuleID);
-			switch(DataStructDefineList[i]->ListType)
-			{
-			case DATA_STRUCT_CONST:
-				{
-					CONST_DEFINE_LIST * pConstList=(CONST_DEFINE_LIST *)DataStructDefineList[i];
-
-					Temp.Format("#include \"%s%sConsts.%s\"\r\n", ModuleName, pConstList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
-
-					Includes+=Temp;
-				}
-				break;
-			case DATA_STRUCT_ENUM:
-				{
-					ENUM_DEFINE_LIST * pEnumList=(ENUM_DEFINE_LIST *)DataStructDefineList[i];
-
-					Temp.Format("#include \"%s%sEnums.%s\"\r\n", ModuleName, pEnumList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
-					Includes+=Temp;
-				}
-				break;
-			case DATA_STRUCT_STRUCT:
-				{
-					STRUCT_DEFINE_LIST * pStructList=(STRUCT_DEFINE_LIST *)DataStructDefineList[i];
-
-					Temp.Format("#include \"%s%sStructs.%s\"\r\n", ModuleName, pStructList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
-					Includes+=Temp;
-
-					vector<STRUCT_DEFINE_INFO> StructList;
-					SortStructForExport(pStructList->StructList, StructList);
-					if (pStructList->StructList.size() != StructList.size())
-						AfxMessageBox("结构排序错误：" + pStructList->ListName);
-
-					for(size_t j=0;j<StructList.size();j++)
-					{
-						if (StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-						{
-							if(m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport)
-							{
-								Temp.Format("#include \"%s.%s\"\r\n",ClassNameToFileName(StructList[j].Name),
-									m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
-								Includes+=Temp;
-							}
-						}
-
-					}
-				}		
-				break;
-			}	
-			
-		}		
-
-		if (m_InterfaceConfig.DataObjectModifyFlagsExportConfig.IsExport)
-		{
-			Temp.Format("#include \"DataObjectModifyFlags.%s\"\r\n", m_InterfaceConfig.DataObjectModifyFlagsExportConfig.ExportExt);
-			Includes += Temp;
-		}
-
-		Source.Replace("<Prefix>","");
-		Source.Replace("<Postfix>","");
-
-		Source.Replace("<Includes>",Includes);
-
-		WriteStringToFile(OutputFile, Source);
-		OutputFile.Close();
+		Include = m_ImportDeclareTemplate;
+		ImportFileName.Format("DataObjectModifyFlags.%s", m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
+		Include.Replace("<ImportFileName>", ImportFileName);
+		Includes += Include;
 	}
-	else
+	for (CONST_DEFINE_LIST* pList : ConstList)
 	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",OutputFileName);
-		MessageBox(Msg);
-	}	
+		if (pList->IgnoreOnExport)
+			continue;
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		Include = m_ImportDeclareTemplate;
+		ImportFileName.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
+		Include.Replace("<ImportFileName>", ImportFileName);
+		Includes += Include;
+	}
+	for (ENUM_DEFINE_LIST* pList : EnumList)
+	{
+		if (pList->IgnoreOnExport)
+			continue;
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		Include = m_ImportDeclareTemplate;
+		ImportFileName.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
+		Include.Replace("<ImportFileName>", ImportFileName);
+		Includes += Include;
+	}
+
+	
+
+	for (STRUCT_DEFINE_LIST2* pList : StructList)
+	{
+		if (pList->IgnoreOnExport)
+			continue;
+
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		
+		Include = m_ImportDeclareTemplate;
+		ImportFileName.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
+		Include.Replace("<ImportFileName>", ImportFileName);
+		Includes += Include;
+		
+		for (STRUCT_DEFINE_INFO* pInfo : pList->StructList)
+		{
+			if (pInfo->Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				Include = m_ImportDeclareTemplate;
+				ImportFileName.Format("%s.%s", ClassNameToFileName(pInfo->Name),
+					m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport ?
+					m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt : m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
+				Include.Replace("<ImportFileName>", ImportFileName);
+				Includes += Include;
+			}
+		}
+	}
+
+
+	Source.Replace("<Prefix>", "");
+	Source.Replace("<Postfix>", "");
+
+	Source.Replace("<Includes>", Includes);
+
+	WriteStringToFile(OutputFileName, Source);	
+
 	return false;
 }
 
 bool CCallInterfaceMakerDlg::ExportInterfaceHeader(vector<CALLER_INTERFACE *>& InterfaceList, LPCTSTR ExportDir, LPCTSTR FileName)
 {
-	CFile OutputFile;
 	CString OutputFileName;
 
 	OutputFileName=ExportDir;
 	OutputFileName+="\\";
 	OutputFileName+=FileName;
 
-	if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
+	
+	CString ProtocolFile = m_InterfaceHeaderTemplate;
+
+	ProtocolFile.Replace("<Prefix>", "");
+	ProtocolFile.Replace("<Postfix>", "");
+
+	CString Includes;
+	CString Include;
+	CString ImportFileName;
+
+	for (size_t i = 0; i < InterfaceList.size(); i++)
 	{
-		CString ProtocolFile=m_InterfaceHeaderTemplate;
-		
-		ProtocolFile.Replace("<Prefix>", "");
-		ProtocolFile.Replace("<Postfix>", "");
-		
-		CString Includes;
-		CString Temp;	
-		
-		for (size_t i = 0; i<InterfaceList.size(); i++)
+		CALLER_INTERFACE* pInterfaceInfo = InterfaceList[i];
+		if (IsListItemChecked(pInterfaceInfo->ModuleID, pInterfaceInfo->ID))
 		{
-			CALLER_INTERFACE * pInterfaceInfo = InterfaceList[i];
-			if (IsListItemChecked(pInterfaceInfo->ModuleID, pInterfaceInfo->ID))
-			{
-				Temp.Format("#include \"%sInterface.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.InterfaceExportConfig.ExportExt);
-				Includes += Temp;
-				Temp.Format("#include \"%sMsgCaller.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
-				Includes += Temp;
-				Temp.Format("#include \"%sMsgHandler.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
-				Includes += Temp;
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sInterface.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.InterfaceExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
 
-				Temp.Format("#include \"%sAckInterface.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.InterfaceExportConfig.ExportExt);
-				Includes += Temp;
-				Temp.Format("#include \"%sAckMsgCaller.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
-				Includes += Temp;
-				Temp.Format("#include \"%sAckMsgHandler.%s\"\r\n", pInterfaceInfo->Name,
-					m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
-				Includes += Temp;
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sMsgCaller.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.CallHeaderExportConfig.ExportExt.IsEmpty() ?
+				m_InterfaceConfig.CallSourceExportConfig.ExportExt : m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
 
-				Includes += "\r\n";
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sMsgHandler.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt.IsEmpty() ?
+				m_InterfaceConfig.HandlerSourceExportConfig.ExportExt : m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sAckInterface.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.InterfaceExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sAckMsgCaller.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.CallHeaderExportConfig.ExportExt.IsEmpty() ?
+				m_InterfaceConfig.CallSourceExportConfig.ExportExt : m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%sAckMsgHandler.%s", pInterfaceInfo->Name,
+				m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt.IsEmpty() ?
+				m_InterfaceConfig.HandlerSourceExportConfig.ExportExt : m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+
+			Includes += "\r\n";
 
 
-			}
-		}		
-		
-		ProtocolFile.Replace("<Includes>",Includes);
-
-		WriteStringToFile(OutputFile, ProtocolFile);
-		OutputFile.Close();
+		}
 	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",OutputFileName);
-		MessageBox(Msg);
-	}	
+
+	ProtocolFile.Replace("<Includes>", Includes);
+
+	WriteStringToFile(OutputFileName, ProtocolFile);
+	
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName, vector<STRUCT_DEFINE_INFO>& StructList)
+bool CCallInterfaceMakerDlg::ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName, vector<STRUCT_DEFINE_INFO*>& StructList)
 {
-	CFile OutputFile;
 	CString OutputFileName;
 
 	OutputFileName=ExportDir;
 	OutputFileName+="\\";
 	OutputFileName+=FileName;
 
-	if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-	{
-		CString DefineHeader=m_StructDefineHeaderTemplate;
-
-		DefineHeader.Replace("<SpaceName>", SpaceName);
 	
+	CString DefineHeader = m_StructDefineHeaderTemplate;
 
-		CString LineSpace=GetLineSpace(DefineHeader,"<Structs>");
-		CString Structs=MakeStructDefines(StructList,LineSpace);
-		DefineHeader.Replace("<Structs>",Structs);
+	DefineHeader.Replace("<SpaceName>", SpaceName);
 
-		WriteStringToFile(OutputFile, DefineHeader);
-		OutputFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",OutputFileName);
-		MessageBox(Msg);
-	}	
+
+	CString LineSpace = GetLineSpace(DefineHeader, "<Structs>");
+	CString Structs = MakeStructDefines(StructList, SpaceName, LineSpace);
+	DefineHeader.Replace("<Structs>", Structs);
+
+	WriteStringToFile(OutputFileName, DefineHeader);
+		
 	return false;
 }
 
@@ -3790,140 +3332,101 @@ bool CCallInterfaceMakerDlg::ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileNa
 
 bool CCallInterfaceMakerDlg::ExportEnums(LPCTSTR ExportDir, LPCTSTR FileName, vector<ENUM_DEFINE_INFO>& EnumList, LPCTSTR SpaceName, LPCTSTR ListName, bool IsSystem)
 {
-	CFile OutputFile;
 	CString OutputFileName;
 
 	OutputFileName=ExportDir;
 	OutputFileName+="\\";
 	OutputFileName+=FileName;
 
-	if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-	{
-		CString EnumDefineHeader;
+	CString EnumDefineHeader;
 
-		if(IsSystem)
-			EnumDefineHeader=m_SystemEnumDefineHeaderTemplate;
-		else
-			EnumDefineHeader=m_EnumDefineHeaderTemplate;
-
-		CString SpaceNameUp = ClassNameToUpper(SpaceName);
-		CString ListNameUp=ClassNameToUpper(ListName);
-
-		EnumDefineHeader.Replace("<SpaceName>", SpaceName);
-
-		EnumDefineHeader.Replace("<!SpaceName>",SpaceNameUp);
-		EnumDefineHeader.Replace("<!ListName>",ListNameUp);
-	
-
-		CString LineSpace=GetLineSpace(EnumDefineHeader,"<Enums>");
-		CString Enums=MakeEnumDefines(EnumList,LineSpace);
-		EnumDefineHeader.Replace("<Enums>",Enums);
-
-		CString EnumStrValuesName;
-		EnumStrValuesName.Format("%s_ENUM_STR_VALUES",ListNameUp);
-		EnumDefineHeader.Replace("<EnumStrValuesName>",EnumStrValuesName);
-
-		LineSpace=GetLineSpace(EnumDefineHeader,"<EnumStrValues>");
-		CString EnumStrValues=MakeEnumStrValues(EnumList,LineSpace);
-		EnumDefineHeader.Replace("<EnumStrValues>",EnumStrValues);
-
-		WriteStringToFile(OutputFile, EnumDefineHeader);
-		OutputFile.Close();
-	}
+	if (IsSystem)
+		EnumDefineHeader = m_SystemEnumDefineHeaderTemplate;
 	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",OutputFileName);
-		MessageBox(Msg);
-	}	
+		EnumDefineHeader = m_EnumDefineHeaderTemplate;
+
+	CString SpaceNameUp = ClassNameToUpper(SpaceName);
+	CString ListNameUp = ClassNameToUpper(ListName);
+
+	EnumDefineHeader.Replace("<SpaceName>", SpaceName);
+
+	EnumDefineHeader.Replace("<!SpaceName>", SpaceNameUp);
+	EnumDefineHeader.Replace("<!ListName>", ListNameUp);
+
+
+	CString LineSpace = GetLineSpace(EnumDefineHeader, "<Enums>");
+	CString Enums = MakeEnumDefines(EnumList, SpaceName, LineSpace);
+	EnumDefineHeader.Replace("<Enums>", Enums);
+
+	CString EnumStrValuesName;
+	EnumStrValuesName.Format("%s_ENUM_STR_VALUES", ListNameUp);
+	EnumDefineHeader.Replace("<EnumStrValuesName>", EnumStrValuesName);
+
+	//LineSpace = GetLineSpace(EnumDefineHeader, "<EnumStrValues>");
+	//CString EnumStrValues = MakeEnumStrValues(EnumList, SpaceName, LineSpace);
+	//EnumDefineHeader.Replace("<EnumStrValues>", EnumStrValues);
+
+
+	WriteStringToFile(OutputFileName, EnumDefineHeader);
+	
 	return false;
 }
 
 bool CCallInterfaceMakerDlg::ExportConsts(LPCTSTR ExportDir, LPCTSTR FileName, vector<CONST_DEFINE_INFO>& ConstList, LPCTSTR SpaceName, LPCTSTR ListName)
 {
-	CFile OutputFile;
 	CString OutputFileName;
 
 	OutputFileName=ExportDir;
 	OutputFileName+="\\";
 	OutputFileName+=FileName;
 
-	if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-	{
-		CString ConstDefineHeader=m_ConstDefineHeaderTemplate;
+	CString ConstDefineHeader = m_ConstDefineHeaderTemplate;
 
-		CString SpaceNameUp = ClassNameToUpper(SpaceName);
-		CString ListNameUp=ClassNameToUpper(ListName);
+	CString SpaceNameUp = ClassNameToUpper(SpaceName);
+	CString ListNameUp = ClassNameToUpper(ListName);
 
-		ConstDefineHeader.Replace("<SpaceName>", SpaceName);
+	ConstDefineHeader.Replace("<SpaceName>", SpaceName);
 
-		ConstDefineHeader.Replace("<!SpaceName>",SpaceNameUp);
-		ConstDefineHeader.Replace("<!ListName>",ListNameUp);		
+	ConstDefineHeader.Replace("<!SpaceName>", SpaceNameUp);
+	ConstDefineHeader.Replace("<!ListName>", ListNameUp);
 
-		CString LineSpace=GetLineSpace(ConstDefineHeader,"<Consts>");
-		CString Consts=MakeConstDefines(ConstList,LineSpace);
-		ConstDefineHeader.Replace("<Consts>",Consts);
+	CString LineSpace = GetLineSpace(ConstDefineHeader, "<Consts>");
+	CString Consts = MakeConstDefines(ConstList, SpaceName, LineSpace);
+	ConstDefineHeader.Replace("<Consts>", Consts);
 
-		WriteStringToFile(OutputFile, ConstDefineHeader);
-		OutputFile.Close();
-	}
-	else
-	{
-		CString Msg;
-		Msg.Format("无法打开文件%s",OutputFileName);
-		MessageBox(Msg);
-	}	
+	WriteStringToFile(OutputFileName, ConstDefineHeader);
+	
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, LPCTSTR ExportDir, LPCTSTR SpaceName)
+bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>& ConstList, vector<ENUM_DEFINE_LIST*>& EnumList, vector<STRUCT_DEFINE_LIST2*>& StructList,
+	LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
 	CString Temp;
-	for (size_t i = 0; i<DataStructList.size(); i++)
+	for (CONST_DEFINE_LIST* pList : ConstList)
 	{
-		if (DataStructList[i]->IgnoreOnExport)
+		if (pList->IgnoreOnExport)
 			continue;
-
-		CString ModuleName = GetModuleName(DataStructList[i]->ModuleID);
-
-		switch (DataStructList[i]->ListType)
-		{
-		case DATA_STRUCT_CONST:
-			{
-				CONST_DEFINE_LIST * pConstList = (CONST_DEFINE_LIST *)DataStructList[i];
-
-				Temp.Format("%s%sConsts.%s", ModuleName, pConstList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
-
-				ExportConsts(ExportDir, Temp, pConstList->ConstList, SpaceName, pConstList->ListName);
-			}
-			break;
-		case DATA_STRUCT_ENUM:
-			{
-				ENUM_DEFINE_LIST * pEnumList = (ENUM_DEFINE_LIST *)DataStructList[i];
-
-				Temp.Format("%s%sEnums.%s", ModuleName, pEnumList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
-
-				ExportEnums(ExportDir, Temp, pEnumList->EnumList, SpaceName, pEnumList->ListName, false);
-			}
-			break;
-		case DATA_STRUCT_STRUCT:
-			{
-				STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)DataStructList[i];
-
-				Temp.Format("%s%sStructs.%s", ModuleName, pStructList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
-
-				vector<STRUCT_DEFINE_INFO> StructList;
-				SortStructForExport(pStructList->StructList, StructList);
-				if (pStructList->StructList.size() != StructList.size())
-					AfxMessageBox("结构排序错误：" + pStructList->ListName);
-				ExportStructs(ExportDir, Temp, SpaceName, StructList);
-			}		
-			break;
-		}		
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		Temp.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
+		ExportConsts(ExportDir, Temp, pList->ConstList, SpaceName, pList->ListName);
 	}
-
-	
-
+	for (ENUM_DEFINE_LIST* pList : EnumList)
+	{
+		if (pList->IgnoreOnExport)
+			continue;
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		Temp.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
+		ExportEnums(ExportDir, Temp, pList->EnumList, SpaceName, pList->ListName, false);
+	}
+	for (STRUCT_DEFINE_LIST2* pList : StructList)
+	{
+		if (pList->IgnoreOnExport)
+			continue;
+		CString ModuleName = GetModuleName(pList->ModuleID);
+		Temp.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
+		ExportStructs(ExportDir, Temp, SpaceName, pList->StructList);
+	}
 	return true;
 }
 
@@ -3937,7 +3440,6 @@ bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& Interf
 		{
 			if(m_InterfaceConfig.InterfaceExportConfig.IsExport)
 			{
-				CFile OutputFile;
 				CString OutputFileName;
 				CString LineSpace;
 
@@ -3949,53 +3451,44 @@ bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& Interf
 
 				OutputFileName.Format("%s\\%sInterface.%s", ExportDir, InterfaceName,
 					m_InterfaceConfig.InterfaceExportConfig.ExportExt);
-				if(OutputFile.Open(OutputFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-				{			
-					CString Interface=m_InterfaceTemplate;
 
-					if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
+				CString Interface = m_InterfaceTemplate;
+
+				if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
+				{
+					ENUM_DEFINE_INFO EnumInfo;
+
+					EnumInfo.Name.Format("%s_METHODS", ClassNameToUpper(InterfaceName));
+
+					EnumInfo.MemberList.resize(InterfaceInfo.MethodList.size());
+					for (size_t j = 0; j < InterfaceInfo.MethodList.size(); j++)
 					{
-						ENUM_DEFINE_INFO EnumInfo;
-
-						EnumInfo.Name.Format("%s_METHODS", ClassNameToUpper(InterfaceName));
-
-						EnumInfo.MemberList.resize(InterfaceInfo.MethodList.size());
-						for (size_t j = 0; j < InterfaceInfo.MethodList.size(); j++)
-						{
-							EnumInfo.MemberList[j].Name.Format("METHOD_%s", ClassNameToUpper(InterfaceInfo.MethodList[j].Name));
-							EnumInfo.MemberList[j].Value.Format("%d", InterfaceInfo.MethodList[j].ID);
-						}
-
-						LineSpace = GetLineSpace(Interface, "<MethodIDEnums>");
-						CString MethodIDEnums = MakeEnumDefine(EnumInfo, LineSpace);
-						Interface.Replace("<MethodIDEnums>", MethodIDEnums);
-					}
-					else
-					{
-						Interface.Replace("<MethodIDEnums>", "");
+						EnumInfo.MemberList[j].Name.Format("METHOD_%s", ClassNameToUpper(InterfaceInfo.MethodList[j].Name));
+						EnumInfo.MemberList[j].Value.Format("%d", InterfaceInfo.MethodList[j].ID);
 					}
 
-					Interface.Replace("<SpaceName>", SpaceName);
-					Interface.Replace("<InterfaceName>", InterfaceName);
-					Interface.Replace("<InterfaceDescription>",InterfaceInfo.Description);
-					Interface.Replace("<@InterfaceName>", InterfaceInfo.Name);
-					LineSpace=GetLineSpace(Interface,"<Methods>");
-					CString Methods = MakeMethods(InterfaceInfo.MethodList, ExportType, LineSpace, true);
-					Interface.Replace("<Methods>",Methods);
-					LineSpace=GetLineSpace(Interface,"<MethodSSTIDEnumDefine>");
-					CString SSTIDDefines = MakeMethodSSTIDEnumDefines(InterfaceInfo, ExportType, LineSpace);
-					Interface.Replace("<MethodSSTIDEnumDefine>",SSTIDDefines);
-
-					WriteStringToFile(OutputFile, Interface);
-					OutputFile.Close();
+					LineSpace = GetLineSpace(Interface, "<MethodIDEnums>");
+					CString MethodIDEnums = MakeEnumDefine(EnumInfo, SpaceName, LineSpace);
+					Interface.Replace("<MethodIDEnums>", MethodIDEnums);
 				}
 				else
 				{
-					CString Msg;
-					Msg.Format("无法打开文件%s",OutputFileName);
-					MessageBox(Msg);
-					return false;
-				}	
+					Interface.Replace("<MethodIDEnums>", "");
+				}
+
+				Interface.Replace("<SpaceName>", SpaceName);
+				Interface.Replace("<InterfaceName>", InterfaceName);
+				Interface.Replace("<InterfaceDescription>", InterfaceInfo.Description);
+				Interface.Replace("<@InterfaceName>", InterfaceInfo.Name);
+				LineSpace = GetLineSpace(Interface, "<Methods>");
+				CString Methods = MakeMethods(InterfaceInfo, SpaceName, ExportType, LineSpace, true);
+				Interface.Replace("<Methods>", Methods);
+				LineSpace = GetLineSpace(Interface, "<MethodSSTIDEnumDefine>");
+				CString SSTIDDefines = MakeMethodSSTIDEnumDefines(InterfaceInfo, ExportType, SpaceName, LineSpace);
+				Interface.Replace("<MethodSSTIDEnumDefine>", SSTIDDefines);
+
+				WriteStringToFile(OutputFileName, Interface);
+					
 			}
 			ExportMsgCaller(ExportDir, SpaceName, InterfaceInfo, ExportType);
 			ExportMsgHandler(ExportDir, SpaceName, InterfaceInfo, ExportType);
@@ -4006,7 +3499,6 @@ bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& Interf
 
 bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType)
 {
-	CFile HeaderFile,SourceFile;
 
 	CString HeaderFileName,SourceFileName;
 
@@ -4022,70 +3514,49 @@ bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceNam
 		HeaderFileName.Format("%s\\%sMsgCaller.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
 		
+		
+		CString Header=m_MsgCallerHeaderTemplate;
 
-		if(HeaderFile.Open(HeaderFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-		{
-			CString Header=m_MsgCallerHeaderTemplate;
+		Header.Replace("<SpaceName>", SpaceName);
+		Header.Replace("<InterfaceName>", InterfaceName);
+		Header.Replace("<@InterfaceName>", InterfaceInfo.Name);
+		CString LineSpace=GetLineSpace(Header,"<Methods>");
+		CString Methods = MakeMethods(InterfaceInfo, SpaceName, ExportType, LineSpace, false);
+		Header.Replace("<Methods>",Methods);
 
-			Header.Replace("<SpaceName>", SpaceName);
-			Header.Replace("<InterfaceName>", InterfaceName);
-			Header.Replace("<@InterfaceName>", InterfaceInfo.Name);
-			CString LineSpace=GetLineSpace(Header,"<Methods>");
-			CString Methods = MakeMethods(InterfaceInfo.MethodList, ExportType, LineSpace, false);
-			Header.Replace("<Methods>",Methods);
+		LineSpace=GetLineSpace(Header,"<PackMethods>");
+		Methods = MakeMsgPackMethods(InterfaceInfo.MethodList, ExportType, LineSpace);
+		Header.Replace("<PackMethods>",Methods);
 
-			LineSpace=GetLineSpace(Header,"<PackMethods>");
-			Methods = MakeMsgPackMethods(InterfaceInfo.MethodList, ExportType, LineSpace);
-			Header.Replace("<PackMethods>",Methods);
-
-			WriteStringToFile(HeaderFile, Header);
-			HeaderFile.Close();
-		}
-		else
-		{
-			CString Msg;
-			Msg.Format("无法打开文件%s",HeaderFileName);
-			MessageBox(Msg);
-		}
+		WriteStringToFile(HeaderFileName, Header);
 	}
 
 	if(m_InterfaceConfig.CallSourceExportConfig.IsExport)
 	{
 		SourceFileName.Format("%s\\%sMsgCaller.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.CallSourceExportConfig.ExportExt);
-		if(SourceFile.Open(SourceFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-		{
-			CString Source=m_MsgCallerSourceTemplate;
+		
+		CString Source = m_MsgCallerSourceTemplate;
 
-			Source.Replace("<SpaceName>", SpaceName);
-			Source.Replace("<InterfaceName>", InterfaceName);
-			Source.Replace("<@InterfaceName>", InterfaceInfo.Name);
+		Source.Replace("<SpaceName>", SpaceName);
+		Source.Replace("<InterfaceName>", InterfaceName);
+		Source.Replace("<@InterfaceName>", InterfaceInfo.Name);
 
-			CString LineSpace=GetLineSpace(Source,"<Methods>");
-			CString Methods = MakeMethodsSource(SpaceName, InterfaceInfo, ExportType, LineSpace);
-			Source.Replace("<Methods>",Methods);	
+		CString LineSpace = GetLineSpace(Source, "<Methods>");
+		CString Methods = MakeMethodsSource(InterfaceInfo, SpaceName, ExportType, LineSpace);
+		Source.Replace("<Methods>", Methods);
 
-			LineSpace=GetLineSpace(Source,"<PackMethods>");
-			Methods = MakeMsgPackMethodsSource(SpaceName, InterfaceInfo, ExportType, LineSpace);
-			Source.Replace("<PackMethods>",Methods);
+		LineSpace = GetLineSpace(Source, "<PackMethods>");
+		Methods = MakeMsgPackMethodsSource(SpaceName, InterfaceInfo, ExportType, LineSpace);
+		Source.Replace("<PackMethods>", Methods);
 
-			WriteStringToFile(SourceFile, Source);
-			SourceFile.Close();
-		}
-		else
-		{
-			CString Msg;
-			Msg.Format("无法打开文件%s",SourceFileName);
-			MessageBox(Msg);
-		}
+		WriteStringToFile(SourceFileName, Source);
 	}
 	return true;
 }
 
 bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType)
 {
-	CFile HeaderFile,SourceFile;
-
 	CString HeaderFileName,SourceFileName;
 
 	
@@ -4099,381 +3570,400 @@ bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceNa
 	{
 		HeaderFileName.Format("%s\\%sMsgHandler.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
-		if(HeaderFile.Open(HeaderFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-		{
-			CString Header=m_MsgHandlerHeaderTemplate;
 
-			Header.Replace("<SpaceName>", SpaceName);
-			Header.Replace("<InterfaceName>", InterfaceName);
-			Header.Replace("<@InterfaceName>", InterfaceInfo.Name);
-			CString LineSpace=GetLineSpace(Header,"<Methods>");
-			CString Methods = MakeMsgHandlerMethods(InterfaceInfo, ExportType, LineSpace);
-			Header.Replace("<Methods>",Methods);
+		CString Header = m_MsgHandlerHeaderTemplate;
 
-			WriteStringToFile(HeaderFile, Header);
-			HeaderFile.Close();
-		}
-		else
-		{
-			CString Msg;
-			Msg.Format("无法打开文件%s",HeaderFileName);
-			MessageBox(Msg);
-		}
+		Header.Replace("<SpaceName>", SpaceName);
+		Header.Replace("<InterfaceName>", InterfaceName);
+		Header.Replace("<@InterfaceName>", InterfaceInfo.Name);
+		CString LineSpace = GetLineSpace(Header, "<Methods>");
+		CString Methods = MakeMsgHandlerMethods(InterfaceInfo, ExportType, LineSpace);
+		Header.Replace("<Methods>", Methods);
+
+		WriteStringToFile(HeaderFileName, Header);
 	}
 
 	if(m_InterfaceConfig.HandlerSourceExportConfig.IsExport)
 	{
 		SourceFileName.Format("%s\\%sMsgHandler.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
-		if(SourceFile.Open(SourceFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-		{
-			CString Source=m_MsgHandlerSourceTemplate;
+		
+		CString Source = m_MsgHandlerSourceTemplate;
 
-			Source.Replace("<SpaceName>", SpaceName);
-			Source.Replace("<InterfaceName>", InterfaceName);
-			Source.Replace("<@InterfaceName>", InterfaceInfo.Name);
+		Source.Replace("<SpaceName>", SpaceName);
+		Source.Replace("<InterfaceName>", InterfaceName);
+		Source.Replace("<@InterfaceName>", InterfaceInfo.Name);
 
-			CString MethodCount;
-			MethodCount.Format("%d",InterfaceInfo.MethodList.size());
-			Source.Replace("<MethodCount>",MethodCount);
+		CString MethodCount;
+		MethodCount.Format("%d", InterfaceInfo.MethodList.size());
+		Source.Replace("<MethodCount>", MethodCount);
 
-			CString LineSpace=GetLineSpace(Source,"<MsgMapInits>");
-			CString MsgMapInits = MakeMsgMapInits(SpaceName, InterfaceInfo, ExportType, LineSpace);
-			Source.Replace("<MsgMapInits>",MsgMapInits);	
+		CString LineSpace = GetLineSpace(Source, "<MsgMapInits>");
+		CString MsgMapInits = MakeMsgMapInits(InterfaceInfo, SpaceName, ExportType, LineSpace);
+		Source.Replace("<MsgMapInits>", MsgMapInits);
 
-			LineSpace=GetLineSpace(Source,"<Methods>");
-			CString Methods = MakeMsgHandlerMethodsSource(InterfaceInfo, ExportType, LineSpace);
-			Source.Replace("<Methods>",Methods);	
+		LineSpace = GetLineSpace(Source, "<Methods>");
+		CString Methods = MakeMsgHandlerMethodsSource(InterfaceInfo, ExportType, SpaceName, LineSpace);
+		Source.Replace("<Methods>", Methods);
 
-			WriteStringToFile(SourceFile, Source);
-			SourceFile.Close();
-		}
-		else
-		{
-			CString Msg;
-			Msg.Format("无法打开文件%s",SourceFileName);
-			MessageBox(Msg);
-		}
+		WriteStringToFile(SourceFileName, Source);
 	}
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::ExportDataObject(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, LPCTSTR ExportDir, LPCTSTR SpaceName)
+bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& StructList, LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
-	CFile HeaderFile,SourceFile;
-
 	CString HeaderFileName,SourceFileName;
-
 	
-	for (size_t i = 0; i<DataStructList.size(); i++)
+	for (STRUCT_DEFINE_LIST2* pList : StructList)
 	{
-		if (DataStructList[i]->ListType == DATA_STRUCT_STRUCT && (!DataStructList[i]->IgnoreOnExport))
+		if (!pList->IgnoreOnExport)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)DataStructList[i];
-			for (size_t j = 0; j<pStructList->StructList.size(); j++)
+			for (STRUCT_DEFINE_INFO* pInfo : pList->StructList)
 			{
-				STRUCT_DEFINE_INFO& StructInfo = pStructList->StructList[j];
-				if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				if (pInfo->Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				{
-					if (m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport)						
+					CString SSTIDEnumName;
+					SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(pInfo->Name));
+
+					if (m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport)
 					{
-						HeaderFileName.Format("%s\\%s.%s", ExportDir, ClassNameToFileName(StructInfo.Name),
+						HeaderFileName.Format("%s\\%s.%s", ExportDir, ClassNameToFileName(pInfo->Name),
 							m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
 
 						CString Header = RestoreFileToTemplate(HeaderFileName, m_DataObjectDefineHeaderTemple);
 
-						if (HeaderFile.Open(HeaderFileName, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyNone))
+
+
+						Header.Replace("<SpaceName>", SpaceName);
+
+						CString LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
+						CString Description = ToComment(pInfo->Description, LineSpace);
+						Header.Replace("<Description>", Description);
+
+
+						Header.Replace("<ClassName>", pInfo->Name);
+						if (pInfo->BaseStruct.IsEmpty())
 						{
+							RemoveBlock(Header, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+							Header.Replace("<IfNotHaveBaseClass>", "");
+							Header.Replace("</IfNotHaveBaseClass>", "");
+							Header.Replace("<BaseClass>", "");
 
-
-							CString LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
-							CString Description = ToComment(StructInfo.Description, LineSpace);
-							Header.Replace("<Description>", Description);
-
-
-							Header.Replace("<ClassName>", StructInfo.Name);
-							if (StructInfo.BaseStruct.IsEmpty())
-							{
-								RemoveBlock(Header, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
-								Header.Replace("<IfNotHaveBaseClass>", "");
-								Header.Replace("</IfNotHaveBaseClass>", "");
-								Header.Replace("<BaseClass>", "");
-
-							}
-							else
-							{
-								Header.Replace("<IfHaveBaseClass>", "");
-								Header.Replace("</IfHaveBaseClass>", "");
-								RemoveBlock(Header, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
-								Header.Replace("<BaseClass>", StructInfo.BaseStruct);
-							}
-
-							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
-							{
-								LineSpace = GetLineSpace(Header, "<JsonProcess>");
-								Header.Replace("<JsonProcess>", m_DataObjectStructJsonProcessHeaderTemplate);
-							}
-							else
-							{
-								Header.Replace("<JsonProcess>", "");
-							}
-
-
-							LineSpace = GetLineSpace(Header, "<Members>");
-							CString Members = MakeStructMembers(StructInfo, LineSpace);
-							Header.Replace("<Members>", Members);
-
-							LineSpace = GetLineSpace(Header, "<SSTIDEnumDefine>");
-							CString SSTIDEnum = MakeStructSSTIDEnumDefines(StructInfo, LineSpace);
-							Header.Replace("<SSTIDEnumDefine>", SSTIDEnum);
-
-							LineSpace = GetLineSpace(Header, "<ModifyFlagEnumDefine>");
-							CString ModifyFlagEnumDefine = MakeDataObjectModifyFlagEnumDefine(StructInfo, LineSpace);
-							Header.Replace("<ModifyFlagEnumDefine>", ModifyFlagEnumDefine);
-
-							LineSpace = GetLineSpace(Header, "<SetMethodsDeclare>");
-							CString SetMethodsDeclare = MakeDataObjectSetMethodsDeclare(StructInfo, LineSpace);
-							Header.Replace("<SetMethodsDeclare>", SetMethodsDeclare);
-
-							LineSpace = GetLineSpace(Header, "<GetMethodsDeclare>");
-							CString GetMethodsDeclare = MakeDataObjectGetMethodsDeclare(StructInfo, LineSpace);
-							Header.Replace("<GetMethodsDeclare>", GetMethodsDeclare);
-
-
-							LineSpace = GetLineSpace(Header, "<SetMethodsDefine>");
-							CString SetMethodsDefine = MakeDataObjectSetMethodsDefine(StructInfo, LineSpace);
-							Header.Replace("<SetMethodsDefine>", SetMethodsDefine);
-
-							LineSpace = GetLineSpace(Header, "<GetMethodsDefine>");
-							CString GetMethodsDefine = MakeDataObjectGetMethodsDefine(StructInfo, LineSpace);
-							Header.Replace("<GetMethodsDefine>", GetMethodsDefine);
-
-							
-
-							WriteStringToFile(HeaderFile, Header);
-							HeaderFile.Close();
 						}
 						else
 						{
-							CString Msg;
-							Msg.Format("无法打开文件%s", HeaderFileName);
-							MessageBox(Msg);
+							Header.Replace("<IfHaveBaseClass>", "");
+							Header.Replace("</IfHaveBaseClass>", "");
+							RemoveBlock(Header, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+							Header.Replace("<BaseClass>", pInfo->BaseStruct);
 						}
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_JSON_PROCESS)
+						{
+							LineSpace = GetLineSpace(Header, "<JsonProcess>");
+							CString Process = m_DataObjectJsonProcessHeaderTemplate;
+							Process.Replace("\r\n", "\r\n" + LineSpace);
+							Header.Replace("<JsonProcess>", Process);
+						}
+						else
+						{
+							Header.Replace("<JsonProcess>", "");
+						}
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_DB_PROCESS)
+						{
+							LineSpace = GetLineSpace(Header, "<DBProcess>");
+							CString Process = m_DataObjectDBProcessHeaderTemplate;
+							Process.Replace("\r\n", "\r\n" + LineSpace);
+							Header.Replace("<DBProcess>", Process);
+						}
+						else
+						{
+							Header.Replace("<DBProcess>", "");
+						}
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_LUA_PROCESS)
+						{
+							LineSpace = GetLineSpace(Header, "<LuaProcess>");
+							CString Process = m_DataObjectLuaProcessHeaderTemplate;
+							Process.Replace("\r\n", "\r\n" + LineSpace);
+							Header.Replace("<LuaProcess>", Process);
+
+							LineSpace = GetLineSpace(Header, "<LuaProcessSource>");
+							Process = MakeDataObjectLuaProcess(*pInfo, SSTIDEnumName, SpaceName, LineSpace);
+							Header.Replace("<LuaProcessSource>", Process);
+						}
+						else
+						{
+							Header.Replace("<LuaProcess>", "");
+							Header.Replace("<LuaProcessSource>", "");
+						}
+
+						LineSpace = GetLineSpace(Header, "<Members>");
+						CString Members = MakeStructMembers(*pInfo, ";", SpaceName, LineSpace);
+						Header.Replace("<Members>", Members);
+
+						LineSpace = GetLineSpace(Header, "<Members,>");
+						Members = MakeStructMembers(*pInfo, ",", SpaceName, LineSpace);
+						Header.Replace("<Members,>", Members);
+
+						LineSpace = GetLineSpace(Header, "<SSTIDEnumDefine>");
+						CString SSTIDEnum = MakeStructSSTIDEnumDefines(*pInfo, SpaceName, LineSpace);
+						Header.Replace("<SSTIDEnumDefine>", SSTIDEnum);
+
+						LineSpace = GetLineSpace(Header, "<ModifyFlagEnumDefine>");
+						CString ModifyFlagEnumDefine = MakeDataObjectModifyFlagEnumDefine(*pInfo, SpaceName, LineSpace);
+						Header.Replace("<ModifyFlagEnumDefine>", ModifyFlagEnumDefine);
+
+						LineSpace = GetLineSpace(Header, "<SetMethodsDeclare>");
+						CString SetMethodsDeclare = MakeDataObjectSetMethodsDeclare(*pInfo, LineSpace);
+						Header.Replace("<SetMethodsDeclare>", SetMethodsDeclare);
+
+						LineSpace = GetLineSpace(Header, "<GetMethodsDeclare>");
+						CString GetMethodsDeclare = MakeDataObjectGetMethodsDeclare(*pInfo, LineSpace);
+						Header.Replace("<GetMethodsDeclare>", GetMethodsDeclare);
+
+
+						LineSpace = GetLineSpace(Header, "<SetMethodsDefine>");
+						CString SetMethodsDefine = MakeDataObjectSetMethodsDefine(*pInfo, SpaceName, LineSpace);
+						Header.Replace("<SetMethodsDefine>", SetMethodsDefine);
+
+						LineSpace = GetLineSpace(Header, "<GetMethodsDefine>");
+						CString GetMethodsDefine = MakeDataObjectGetMethodsDefine(*pInfo, SpaceName, LineSpace);
+						Header.Replace("<GetMethodsDefine>", GetMethodsDefine);
+
+						Header.Replace("<CLASS_FLAG_INDEX>", "DATA_OBJECT_FLAG_" + ClassNameToUpper(pInfo->Name));
+
+						WriteStringToFile(HeaderFileName, Header);
 					}
 					{
-						SourceFileName.Format("%s\\%s.%s", ExportDir, ClassNameToFileName(StructInfo.Name),
+						SourceFileName.Format("%s\\%s.%s", ExportDir, ClassNameToFileName(pInfo->Name),
 							m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
 						CString Source = RestoreFileToTemplate(SourceFileName, m_DataObjectDefineSourceTemple);
-						if (SourceFile.Open(SourceFileName, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyNone))
+
+						Source.Replace("<SpaceName>", SpaceName);
+
+						CString LineSpace;
+
+						
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_XML_PROCESS)
 						{
-							CString LineSpace;
-
-							CString SSTIDEnumName;
-							SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
-
-							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_XML_PROCESS)
-							{
-								LineSpace = GetLineSpace(Source, "<XMLProcess>");
-								CString XMLProcess = MakeXMLProcess(StructInfo, SSTIDEnumName, LineSpace);
-								Source.Replace("<XMLProcess>", XMLProcess);
-							}
-							else
-							{
-								Source.Replace("<XMLProcess>", "");
-							}
-
-							if (StructInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
-							{
-								LineSpace = GetLineSpace(Source, "<JsonProcess>");
-								CString JsonProcess = MakeDataObjectJsonProcess(StructInfo, SSTIDEnumName, LineSpace);
-								Source.Replace("<JsonProcess>", JsonProcess);
-							}
-							else
-							{
-								Source.Replace("<JsonProcess>", "");
-							}
-
-							LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
-							CString Description = ToComment(StructInfo.Description, LineSpace);
-							Source.Replace("<Description>", Description);
-
-							Source.Replace("<SpaceName>", SpaceName);
-
-							if (StructInfo.MemberList.size())
-							{
-								Source.Replace("<IfHaveMember>", "");
-								Source.Replace("</IfHaveMember>", "");
-							}
-							else
-							{
-								RemoveBlock(Source, "<IfHaveMember>", "</IfHaveMember>");
-							}
-
-							if (StructInfo.BaseStruct.IsEmpty())
-							{
-								RemoveBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
-								Source.Replace("<IfNotHaveBaseClass>", "");
-								Source.Replace("</IfNotHaveBaseClass>", "");
-								Source.Replace("<BaseClass>", "");
-
-							}
-							else
-							{
-								Source.Replace("<IfHaveBaseClass>", "");
-								Source.Replace("</IfHaveBaseClass>", "");
-								RemoveBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
-								Source.Replace("<BaseClass>", StructInfo.BaseStruct);
-								Source.Replace("<BaseClass>", StructInfo.BaseStruct);
-							}
-
-							Source.Replace("<ClassName>", StructInfo.Name);
-
-							CString FullModifyFlag;
-							FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(StructInfo.Name));
-							Source.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
-
-
-							LineSpace = GetLineSpace(Source, "<Members>");
-							CString Members = MakeStructMembers(StructInfo, LineSpace);
-							Source.Replace("<Members>", Members);
-
-							LineSpace = GetLineSpace(Source, "<SSTIDEnumDefine>");
-							CString SSTIDEnum = MakeStructSSTIDEnumDefines(StructInfo, LineSpace);
-							Source.Replace("<SSTIDEnumDefine>", SSTIDEnum);
-
-							LineSpace = GetLineSpace(Source, "<ModifyFlagEnumDefine>");
-							CString ModifyFlagEnumDefine = MakeDataObjectModifyFlagEnumDefine(StructInfo, LineSpace);
-							Source.Replace("<ModifyFlagEnumDefine>", ModifyFlagEnumDefine);
-
-							LineSpace = GetLineSpace(Source, "<DataObjectMembersGetModifyFlag>");
-							CString DataObjectMembersGetModifyFlag = MakeDataObjectMembersGetModifyFlag(StructInfo, LineSpace);
-							Source.Replace("<DataObjectMembersGetModifyFlag>", DataObjectMembersGetModifyFlag);
-
-							LineSpace = GetLineSpace(Source, "<DataObjectMembersIsModified>");
-							CString DataObjectMembersIsModified = MakeDataDataObjectMembersIsModified(StructInfo, LineSpace);
-							Source.Replace("<DataObjectMembersIsModified>", DataObjectMembersIsModified);
-
-							LineSpace = GetLineSpace(Source, "<DataObjectMembersClearModifyFlag>");
-							CString DataObjectMembersClearModifyFlag = MakeDataDataObjectMembersClearModifyFlag(StructInfo, LineSpace);
-							Source.Replace("<DataObjectMembersClearModifyFlag>", DataObjectMembersClearModifyFlag);
-
-							LineSpace = GetLineSpace(Source, "<SetMethodsDefine>");
-							CString SetMethodsDefine = MakeDataObjectSetMethodsDefine(StructInfo, LineSpace);
-							Source.Replace("<SetMethodsDefine>", SetMethodsDefine);
-
-							LineSpace = GetLineSpace(Source, "<GetMethodsDefine>");
-							CString GetMethodsDefine = MakeDataObjectGetMethodsDefine(StructInfo, LineSpace);
-							Source.Replace("<GetMethodsDefine>", GetMethodsDefine);
-
-							Source.Replace("<CLASS_FLAG_INDEX>", "DATA_OBJECT_FLAG_" + ClassNameToUpper(StructInfo.Name));
-
-
-							LineSpace = GetLineSpace(Source, "<InitOperations>");
-							CString InitOperations = MakeInitOperations(StructInfo, LineSpace);
-							Source.Replace("<InitOperations>", InitOperations);
-
-
-
-
-
-							LineSpace = GetLineSpace(Source, "<PackOperations>");
-							CString PackOperations = MakePackOperations(StructInfo, SSTIDEnumName, LineSpace);
-							Source.Replace("<PackOperations>", PackOperations);
-
-							LineSpace = GetLineSpace(Source, "<UnpackOperations>");
-							CString UnpackOperations = MakeUnpackOperations(StructInfo, SSTIDEnumName, LineSpace);
-							Source.Replace("<UnpackOperations>", UnpackOperations);
-
-							LineSpace = GetLineSpace(Source, "<PacketSizes>");
-							CString PackSizes = MakePackSizes(StructInfo, LineSpace);
-							Source.Replace("<PacketSizes>", PackSizes);
-
-							//LineSpace = GetLineSpace(Source, "<ToXMLOperations>");
-							//CString ToXMLOperations = MakeToXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
-							//Source.Replace("<ToXMLOperations>", ToXMLOperations);
-
-							//LineSpace = GetLineSpace(Source, "<FromXMLOperations>");
-							//CString FromXMLOperations = MakeFromXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
-							//Source.Replace("<FromXMLOperations>", FromXMLOperations);
-
-							LineSpace = GetLineSpace(Source, "<CloneOperations>");
-							CString CloneOperations = MakeCloneOperations(StructInfo, LineSpace, "", "DataObject.");
-							Source.Replace("<CloneOperations>", CloneOperations);
-
-							WriteStringToFile(SourceFile, Source);
-							SourceFile.Close();
+							LineSpace = GetLineSpace(Source, "<XMLProcess>");
+							CString XMLProcess = MakeXMLProcess(*pInfo, SSTIDEnumName, SpaceName, LineSpace);
+							Source.Replace("<XMLProcess>", XMLProcess);
 						}
 						else
 						{
-							CString Msg;
-							Msg.Format("无法打开文件%s", SourceFileName);
-							MessageBox(Msg);
+							Source.Replace("<XMLProcess>", "");
 						}
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_JSON_PROCESS)
+						{
+							LineSpace = GetLineSpace(Source, "<JsonProcess>");
+							CString JsonProcess = MakeDataObjectJsonProcess(*pInfo, SSTIDEnumName, SpaceName, LineSpace);
+							Source.Replace("<JsonProcess>", JsonProcess);
+						}
+						else
+						{
+							Source.Replace("<JsonProcess>", "");
+						}
+
+						if (pInfo->Flag & STRUCT_FLAG_EXPORT_DB_PROCESS)
+						{
+							LineSpace = GetLineSpace(Source, "<DBProcess>");
+							CString Process = MakeDataObjectDBProcess(*pInfo, SSTIDEnumName, SpaceName, LineSpace);
+							Source.Replace("<DBProcess>", Process);
+						}
+						else
+						{
+							Source.Replace("<DBProcess>", "");
+						}
+
+						
+
+						LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
+						CString Description = ToComment(pInfo->Description, LineSpace);
+						Source.Replace("<Description>", Description);
+
+						Source.Replace("<SpaceName>", SpaceName);
+
+						if (pInfo->MemberList.size())
+						{
+							Source.Replace("<IfHaveMember>", "");
+							Source.Replace("</IfHaveMember>", "");
+						}
+						else
+						{
+							RemoveBlock(Source, "<IfHaveMember>", "</IfHaveMember>");
+						}
+
+						if (pInfo->BaseStruct.IsEmpty())
+						{
+							RemoveBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+							Source.Replace("<IfNotHaveBaseClass>", "");
+							Source.Replace("</IfNotHaveBaseClass>", "");
+							Source.Replace("<BaseClass>", "");
+
+						}
+						else
+						{
+							Source.Replace("<IfHaveBaseClass>", "");
+							Source.Replace("</IfHaveBaseClass>", "");
+							RemoveBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+							Source.Replace("<BaseClass>", pInfo->BaseStruct);
+							Source.Replace("<BaseClass>", pInfo->BaseStruct);
+						}
+
+						Source.Replace("<ClassName>", pInfo->Name);
+
+						CString FullModifyFlag;
+						FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(pInfo->Name));
+						Source.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
+
+
+						LineSpace = GetLineSpace(Source, "<Members>");
+						CString Members = MakeStructMembers(*pInfo, ";", SpaceName, LineSpace);
+						Source.Replace("<Members>", Members);
+
+						LineSpace = GetLineSpace(Source, "<Members,>");
+						Members = MakeStructMembers(*pInfo, ",", SpaceName, LineSpace);
+						Source.Replace("<Members,>", Members);
+
+						LineSpace = GetLineSpace(Source, "<SSTIDEnumDefine>");
+						CString SSTIDEnum = MakeStructSSTIDEnumDefines(*pInfo, SpaceName, LineSpace);
+						Source.Replace("<SSTIDEnumDefine>", SSTIDEnum);
+
+						LineSpace = GetLineSpace(Source, "<ModifyFlagEnumDefine>");
+						CString ModifyFlagEnumDefine = MakeDataObjectModifyFlagEnumDefine(*pInfo, SpaceName, LineSpace);
+						Source.Replace("<ModifyFlagEnumDefine>", ModifyFlagEnumDefine);
+
+						LineSpace = GetLineSpace(Source, "<DataObjectMembersGetModifyFlag>");
+						CString DataObjectMembersGetModifyFlag = MakeDataObjectMembersGetModifyFlag(*pInfo, LineSpace);
+						Source.Replace("<DataObjectMembersGetModifyFlag>", DataObjectMembersGetModifyFlag);
+
+						LineSpace = GetLineSpace(Source, "<DataObjectMembersIsModified>");
+						CString DataObjectMembersIsModified = MakeDataDataObjectMembersIsModified(*pInfo, LineSpace);
+						Source.Replace("<DataObjectMembersIsModified>", DataObjectMembersIsModified);
+
+						LineSpace = GetLineSpace(Source, "<DataObjectMembersClearModifyFlag>");
+						CString DataObjectMembersClearModifyFlag = MakeDataDataObjectMembersClearModifyFlag(*pInfo, LineSpace);
+						Source.Replace("<DataObjectMembersClearModifyFlag>", DataObjectMembersClearModifyFlag);
+
+						LineSpace = GetLineSpace(Source, "<SetMethodsDefine>");
+						CString SetMethodsDefine = MakeDataObjectSetMethodsDefine(*pInfo, SpaceName, LineSpace);
+						Source.Replace("<SetMethodsDefine>", SetMethodsDefine);
+
+						LineSpace = GetLineSpace(Source, "<GetMethodsDefine>");
+						CString GetMethodsDefine = MakeDataObjectGetMethodsDefine(*pInfo, SpaceName, LineSpace);
+						Source.Replace("<GetMethodsDefine>", GetMethodsDefine);
+
+						Source.Replace("<CLASS_FLAG_INDEX>", "DATA_OBJECT_FLAG_" + ClassNameToUpper(pInfo->Name));
+
+
+						LineSpace = GetLineSpace(Source, "<InitOperations>");
+						CString InitOperations = MakeInitOperations(*pInfo, LineSpace);
+						Source.Replace("<InitOperations>", InitOperations);
+
+
+						CString PacketName = m_InterfaceConfig.DefaultPacketName;
+						CString PacketMemberName = m_InterfaceConfig.DefaultPacketMemberName;
+
+
+						LineSpace = GetLineSpace(Source, "<PackOperations>");
+						CString PackOperations = MakePackOperations(*pInfo, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
+						Source.Replace("<PackOperations>", PackOperations);
+
+						LineSpace = GetLineSpace(Source, "<UnpackOperations>");
+						CString UnpackOperations = MakeUnpackOperations(*pInfo, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
+						Source.Replace("<UnpackOperations>", UnpackOperations);
+
+						LineSpace = GetLineSpace(Source, "<PacketSizes>");
+						CString PackSizes = MakePackSizes(*pInfo, SpaceName, LineSpace);
+						Source.Replace("<PacketSizes>", PackSizes);
+
+						//LineSpace = GetLineSpace(Source, "<ToXMLOperations>");
+						//CString ToXMLOperations = MakeToXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
+						//Source.Replace("<ToXMLOperations>", ToXMLOperations);
+
+						//LineSpace = GetLineSpace(Source, "<FromXMLOperations>");
+						//CString FromXMLOperations = MakeFromXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
+						//Source.Replace("<FromXMLOperations>", FromXMLOperations);
+
+						LineSpace = GetLineSpace(Source, "<CloneOperations>");
+						CString CloneOperations = MakeCloneOperations(*pInfo, m_InterfaceConfig.MemberVariablePrefix, "DataObject.", SpaceName, LineSpace);
+						Source.Replace("<CloneOperations>", CloneOperations);
+
+						WriteStringToFile(SourceFileName, Source);
 					}
 				}
 			}
 		}
 	}
-		
-	
-
-	
 	return true;
 }
 
 bool CCallInterfaceMakerDlg::ExportDataObjectModifyFlags(vector<DATA_OBJECT_MODIFY_FLAG> DataObjectModifyFlagList, LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
-	CFile HeaderFile;
 
-	CString HeaderFileName;
-	CString LineSpace;
-
-
-	if(m_InterfaceConfig.DataObjectModifyFlagsExportConfig.IsExport)
+	if (m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport)
 	{
-		HeaderFileName.Format("%s\\DataObjectModifyFlags.%s",ExportDir,
-			m_InterfaceConfig.DataObjectModifyFlagsExportConfig.ExportExt);
+		CString HeaderFileName;
+		CString LineSpace;
 
-		CString Header=m_DataObjectModifyFlagsTemple;
+		HeaderFileName.Format("%s\\DataObjectModifyFlags.%s", ExportDir,
+			m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
 
-		if(HeaderFile.Open(HeaderFileName,CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone))
-		{
-			Header.Replace("<SpaceName>", SpaceName);
+		CString Header = m_DataObjectModifyFlagsHeaderTemple;
 
-			LineSpace=GetLineSpace(Header,"<DataObjectModifyFlags>");
-			CString DataObjectModifyFlags = MakeDataObjectModifyFlags(m_AllDataStructList, DataObjectModifyFlagList, LineSpace);
-			Header.Replace("<DataObjectModifyFlags>",DataObjectModifyFlags);
-			
-			WriteStringToFile(HeaderFile, Header);
-			HeaderFile.Close();
-		}
-		else
-		{
-			CString Msg;
-			Msg.Format("无法打开文件%s",HeaderFileName);
-			MessageBox(Msg);
-		}
 		
+		Header.Replace("<SpaceName>", SpaceName);
+
+		LineSpace = GetLineSpace(Header, "<DataObjectModifyFlags>");
+		CString DataObjectModifyFlags = MakeDataObjectModifyFlagsHeader(m_AllDataStructList, DataObjectModifyFlagList, SpaceName, LineSpace);
+		Header.Replace("<DataObjectModifyFlags>", DataObjectModifyFlags);
+
+		WriteStringToFile(HeaderFileName, Header);
+	}
+
+
+	if(m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport)
+	{
+		CString SourceFileName;
+		CString LineSpace;
+
+		SourceFileName.Format("%s\\DataObjectModifyFlags.%s",ExportDir,
+			m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt);
+
+		CString Source=m_DataObjectModifyFlagsSourceTemple;
+
+		Source.Replace("<SpaceName>", SpaceName);
+
+		LineSpace = GetLineSpace(Source, "<DataObjectModifyFlags>");
+		CString DataObjectModifyFlags = MakeDataObjectModifyFlagsSource(m_AllDataStructList, DataObjectModifyFlagList, SpaceName, LineSpace);
+		Source.Replace("<DataObjectModifyFlags>", DataObjectModifyFlags);
+
+		WriteStringToFile(SourceFileName, Source);
 	}
 	return true;
 }
 
-CString CCallInterfaceMakerDlg::MakeMethods(vector<INTERFACE_METHOD> MethodList, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace, bool IsPure)
+CString CCallInterfaceMakerDlg::MakeMethods(CALLER_INTERFACE& InterfaceInfo, LPCTSTR SpaceName, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace, bool IsPure)
 {
-	CString Methods;	
-	for(size_t j=0;j<MethodList.size();j++)
+	CString Methods;
+	for (INTERFACE_METHOD& MethodInfo : InterfaceInfo.MethodList)
 	{
-		INTERFACE_METHOD& MethodInfo=MethodList[j];
 		CString MethodName = MethodInfo.Name;
 
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
 			{
 				pParamList = &MethodInfo.CallParamList;
-			}				
+			}
 			else
 			{
 				pParamList = &MethodInfo.AckParamList;
@@ -4491,10 +3981,21 @@ CString CCallInterfaceMakerDlg::MakeMethods(vector<INTERFACE_METHOD> MethodList,
 				continue;
 			break;
 		}
+
 		
+
 		if (pParamList)
 		{
 			CString Method = m_MethodHeaderTemple;
+
+			CString InterfaceName;
+			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
+				InterfaceName = InterfaceInfo.Name + "Ack";
+			else
+				InterfaceName = InterfaceInfo.Name;
+
+			Method.Replace("<SpaceName>", SpaceName);
+			Method.Replace("<InterfaceName>", InterfaceName);
 			Method.Replace("<MethodName>", MethodName);
 			Method.Replace("<MethodDescription>", MethodInfo.Description);
 			if (IsPure)
@@ -4511,13 +4012,13 @@ CString CCallInterfaceMakerDlg::MakeMethods(vector<INTERFACE_METHOD> MethodList,
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString MethodIDEnumDefines;
 
@@ -4579,7 +4080,7 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 				EnumInfo.MemberList[j].Value.Format("%d", (*pParamList)[j].ID);
 			}
 
-			MethodIDEnumDefines += MakeEnumDefine(EnumInfo, szLineSpace);
+			MethodIDEnumDefines += MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 		}
 		
 	}
@@ -4587,7 +4088,7 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 	return MethodIDEnumDefines;
 }
 
-CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	ENUM_DEFINE_INFO EnumInfo;
 
@@ -4628,7 +4129,7 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 		EnumInfo.MemberList[j].Value.Format("%d",StructInfo.ObjectID+StructInfo.MemberList[j].ID);
 	}
 
-	return MakeEnumDefine(EnumInfo,szLineSpace);
+	return MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 
 
 	
@@ -4693,51 +4194,49 @@ CString CCallInterfaceMakerDlg::MakeParams(vector<METHOD_PARAM>& ParamList,bool 
 		TYPE_DEFINE * pTypeInfo=FindVarType(ParamInfo.Type);
 		if(pTypeInfo)
 		{		
-			CString Param=m_ParamTemple;
+			CString Param;
 			
 			if(IsDefine)
-			{
-				Param.Replace("<ParamName>",ParamInfo.Name);
-				if(ParamInfo.IsReference)
-				{
-					CString ReferenceDefine=pTypeInfo->GenerateOperations.ReferenceDefine;
-					ReferenceDefine.Replace("<Type>",pTypeInfo->CType);
-					Param.Replace("<ParamType>",ReferenceDefine);
-				}
-				else
-				{
-					Param.Replace("<ParamType>",pTypeInfo->CType);
-				}
+				Param = m_ParamDefineTemple;
+			else
+				Param = m_ParamTransTemple;
 
-				
-				if(ParamInfo.DefaultValue.IsEmpty()||(!IncludeDefaultValue))
+			
+			if (ParamInfo.IsReference)
+			{
+				if (IsDefine)
 				{
-					Param.Replace("<ParamDefaultValue>","");
+					CString ReferenceDefine = pTypeInfo->GenerateOperations.ReferenceDefine;
+					ReferenceDefine.Replace("<Type>", pTypeInfo->CType);
+					Param.Replace("<ParamType>", ReferenceDefine);
+
+					Param.Replace("<ParamName>", ParamInfo.Name);
 				}
 				else
 				{
-					CString DefauleValue;
-					DefauleValue.Format("= %s",ParamInfo.DefaultValue);
-					Param.Replace("<ParamDefaultValue>",DefauleValue);
+					CString ReferenceUse = pTypeInfo->GenerateOperations.ReferenceUse;
+					ReferenceUse.Replace("<Variable>", ParamInfo.Name);
+					Param.Replace("<ParamName>", ReferenceUse);
 				}
 			}
 			else
 			{
-				if(ParamInfo.IsReference)
-				{
-					CString ReferenceUse=pTypeInfo->GenerateOperations.ReferenceUse;
-					ReferenceUse.Replace("<Variable>",ParamInfo.Name);
-					Param.Replace("<ParamName>",ReferenceUse);
-				}
-				else
-				{
-					Param.Replace("<ParamName>",ParamInfo.Name);
-				}
-				
-				Param.Replace("<ParamType>","");
-				Param.Replace("<ParamLenght>","");
-				Param.Replace("<ParamDefaultValue>","");
+				Param.Replace("<ParamName>", ParamInfo.Name);
+				Param.Replace("<ParamType>", pTypeInfo->CType);
 			}
+
+
+			if (ParamInfo.DefaultValue.IsEmpty() || (!IncludeDefaultValue))
+			{
+				Param.Replace("<ParamDefaultValue>", "");
+			}
+			else
+			{
+				CString DefauleValue;
+				DefauleValue.Format("= %s", ParamInfo.DefaultValue);
+				Param.Replace("<ParamDefaultValue>", DefauleValue);
+			}
+			
 			if(k)
 			{
 				Params+=",";							
@@ -4762,6 +4261,7 @@ CString CCallInterfaceMakerDlg::MakeParamDescriptions(vector<METHOD_PARAM>& Para
 			CString ParamDescription=m_ParamDescriptionTemple;
 
 			ParamDescription.Replace("<ParamName>",ParamInfo.Name);
+			ParamDescription.Replace("<ParamType>", pTypeInfo->CType);
 			ParamDescription.Replace("<ParamDescript>",ParamInfo.Description);
 
 			ParamDescriptions+=ParamDescription;
@@ -4777,7 +4277,7 @@ CString CCallInterfaceMakerDlg::MakeParamDescriptions(vector<METHOD_PARAM>& Para
 	return ParamDescriptions;
 }
 
-CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList, LPCTSTR SpaceName, LPCTSTR szSplitChar, LPCTSTR szLineSpace)
 {
 	CString ParamDefines;
 
@@ -4801,6 +4301,7 @@ CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList
 		if(pTypeInfo)
 		{		
 			CString Param=pTypeInfo->GenerateOperations.VariableDefine;
+			Param.Replace("<SpaceName>", SpaceName);
 			Param.Replace("<Variable>",ParamInfo.Name);			
 			Param.Replace("<Type>",pTypeInfo->CType);	
 			CString Space;
@@ -4811,8 +4312,10 @@ CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList
 				CurSpaceCount--;
 			}
 			Param.Replace("<Space>",Space);
+
+			Param = m_InterfaceConfig.LocalVariableDefinePrefix + Param;
 			
-			ParamDefines+=Param;
+			ParamDefines += Param + szSplitChar;
 			ParamDefines+="\r\n";
 		}
 	}
@@ -4822,7 +4325,7 @@ CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList
 	return ParamDefines;
 }
 
-CString CCallInterfaceMakerDlg::MakeMethodsSource(LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInfo, LPCTSTR SpaceName, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
 {
 	CString InterfaceName;
 	if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -4886,6 +4389,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(LPCTSTR SpaceName, CALLER_INTE
 			Method.Replace("<ModuleID>", ModuleID);
 			Method.Replace("<InterfaceName>", InterfaceName);
 			Method.Replace("<MethodName>", MethodName);
+			Method.Replace("<SpaceName>", SpaceName);
 			Method.Replace("<!SpaceName>", SpaceNameUp);
 			Method.Replace("<!InterfaceName>", InterfaceNameUp);
 			Method.Replace("<!MethodName>", MethodNameUp);
@@ -4916,6 +4420,16 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(LPCTSTR SpaceName, CALLER_INTE
 			else
 			{
 				RemoveBlock(Method, "<IfMsgCanCache>", "</IfMsgCanCache>");
+			}
+
+			if (MethodInfo.Flag&INTERFACE_METHOD_FLAG_NO_COMPRESS)
+			{
+				Method.Replace("<IfMsgNoCompress>", "");
+				Method.Replace("</IfMsgNoCompress>", "");
+			}
+			else
+			{
+				RemoveBlock(Method, "<IfMsgNoCompress>", "</IfMsgNoCompress>");
 			}
 
 			Methods += Method + "\r\n";
@@ -4976,6 +4490,7 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethodsSource(LPCTSTR SpaceName, CALL
 			CString MethodNameUp = ClassNameToUpper(MethodName);
 			Method.Replace("<InterfaceName>", InterfaceName);
 			Method.Replace("<MethodName>", MethodName);
+			Method.Replace("<SpaceName>", SpaceName);
 			Method.Replace("<!SpaceName>", SpaceNameUp);
 			Method.Replace("<!InterfaceName>", InterfaceNameUp);
 			Method.Replace("<!MethodName>", MethodNameUp);
@@ -4985,9 +4500,11 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethodsSource(LPCTSTR SpaceName, CALL
 				Params = "," + Params;
 			Method.Replace("<,Params>", Params);
 			CString LineSpace = GetLineSpace(Method, "<PackOperations>");
+			CString PacketName = m_InterfaceConfig.DefaultPacketName;
+			CString PacketMemberName = m_InterfaceConfig.DefaultPacketMemberName;
 			CString SSTIDEnumName;
 			SSTIDEnumName.Format("%s_%s_MEMBER_IDS", ClassNameToUpper(InterfaceName), ClassNameToUpper(MethodName));
-			CString PackOperations = MakePackOperations(MethodInfo, ExportType, SSTIDEnumName, LineSpace);
+			CString PackOperations = MakePackOperations(MethodInfo, ExportType, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
 			Method.Replace("<PackOperations>", PackOperations);
 
 			Methods += Method + "\r\n";
@@ -5032,6 +4549,7 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(INTERFACE_METHOD& MethodInfo,
 				if (!pTypeInfo->GenerateOperations.InitOperation.IsEmpty())
 				{
 					CString Operation = pTypeInfo->GenerateOperations.InitOperation;
+					Operation.Replace("<Type>", pTypeInfo->CType);
 					Operation.Replace("<Variable>", (*pParamList)[i].Name);
 
 					InitOperations += Operation;
@@ -5047,7 +4565,7 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(INTERFACE_METHOD& MethodInfo,
 	return InitOperations;
 }
 
-CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR PacketName, LPCTSTR PacketMemberName, LPCTSTR szLineSpace)
 {
 	CString PackOperations;
 	CString MethodName = MethodInfo.Name;
@@ -5089,18 +4607,21 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 
 
-				Operation.Replace("<Variable>", (*pParamList)[i].Name);
+				Operation.Replace("<Variable>", (*pParamList)[i].Name);		
+
 
 				CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
+				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE;
 				CString PackOP = MakePackOperation((*pParamList)[i].Type,
 					(*pParamList)[i].Name,
 					MethodName, ClassNameToUpper(MethodName),
-					SSTIDEnumName,
-					false, false, false,
-					LineSpace);
+					SSTIDEnumName, (*pParamList)[i].PackFlag,
+					PacketName, PacketMemberName,
+					OperationFlag,
+					SpaceName, LineSpace);
 
 				Operation.Replace("<PackOperation>", PackOP);
 
@@ -5115,7 +4636,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 	return PackOperations;
 }
 
-CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR PacketName, LPCTSTR PacketMemberName, LPCTSTR szLineSpace)
 {
 	CString PackOperations;
 	CString MethodName = MethodInfo.Name;
@@ -5156,7 +4677,9 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+							
 
 				CString SST_ID;
 
@@ -5164,20 +4687,34 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 				SST_ID.MakeUpper();
 
 
+				Operation.Replace("<SpaceName>", SpaceName);
 				Operation.Replace("<SST_NAME>", SSTIDEnumName);
 				Operation.Replace("<SST_ID>", SST_ID);
 
 				Operation.Replace("<Variable>", (*pParamList)[i].Name);
 
+
 				CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
+				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE;
 				CString UnpackOP = MakeUnpackOperation((*pParamList)[i].Type,
 					(*pParamList)[i].Name,
 					MethodName, ClassNameToUpper(MethodName),
-					SSTIDEnumName,
-					false, false, false,
-					LineSpace);
+					SSTIDEnumName, (*pParamList)[i].PackFlag,
+					PacketName, PacketMemberName,
+					OperationFlag,
+					SpaceName, LineSpace);
 
 				Operation.Replace("<UnpackOperation>", UnpackOP);
+
+				if (i < pParamList->size() - 1)
+				{
+					Operation.Replace("<IfNotLastItem>", "");
+					Operation.Replace("</IfNotLastItem>", "");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfNotLastItem>", "</IfNotLastItem>");
+				}
 
 				PackOperations += Operation;
 				PackOperations += "\r\n";
@@ -5223,16 +4760,30 @@ CString CCallInterfaceMakerDlg::MakePackSizes(INTERFACE_METHOD& MethodInfo, INTE
 			{
 				CString Operation = pTypeInfo->GenerateOperations.SizeCaculateOperation;
 
-				RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
-				Operation.Replace("<IfNotDataObject>", "");
-				Operation.Replace("</IfNotDataObject>", "");
+				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
+				{
+					RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+					Operation.Replace("<IfDataObject>", "");
+					Operation.Replace("</IfDataObject>", "");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+					Operation.Replace("<IfNotDataObject>", "");
+					Operation.Replace("</IfNotDataObject>", "");
+				}
+
+				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+				Operation.Replace("<IfNotInArray>", "");
+				Operation.Replace("</IfNotInArray>", "");
 
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
 
 				Operation.Replace("<Variable>", (*pParamList)[i].Name);
-				Operation.Replace("<Type>", pTypeInfo->CType);
+				Operation.Replace("<Type>", pTypeInfo->CType);									
+				Operation.Replace("<PackFlag>", (*pParamList)[i].PackFlag);
 
 				PackSizes += "+";
 				PackSizes += Operation;
@@ -5262,18 +4813,21 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(STRUCT_DEFINE_INFO& StructInf
 				CString Operation=pTypeInfo->GenerateOperations.InitOperation;
 				if(StructInfo.MemberList[i].IsArray)
 				{
-					Operation=m_InterfaceConfig.ArrayDefineConfig.InitOperation;
-				}
-				if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-					Operation.Replace("<Variable>","m_"+StructInfo.MemberList[i].Name);
-				else
-					Operation.Replace("<Variable>",StructInfo.MemberList[i].Name);
+					Operation = m_InterfaceConfig.ArrayDefineConfig.InitOperation;
+					CString Temp;
+					Temp.Format("%u", StructInfo.MemberList[i].ArrayStartLength);
+					Operation.Replace("<ArrayStartLength>", Temp);
+					Temp.Format("%u", StructInfo.MemberList[i].ArrayGrowLength);
+					Operation.Replace("<ArrayGrowLength>", Temp);
 
-				CString Temp;
-				Temp.Format("%u",StructInfo.MemberList[i].ArrayStartLength);
-				Operation.Replace("<ArrayStartLength>",Temp);
-				Temp.Format("%u",StructInfo.MemberList[i].ArrayGrowLength);
-				Operation.Replace("<ArrayGrowLength>",Temp);
+					Operation = ProcessArrayOperation(Operation, pTypeInfo);
+				}
+				CString VarName = StructInfo.MemberList[i].Name;
+				if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+					VarName = "m_" + VarName;
+				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+				Operation.Replace("<Variable>", VarName);
+				Operation.Replace("<Type>", pTypeInfo->CType);
 
 				InitOperations+=Operation;
 				InitOperations+="\r\n";
@@ -5285,87 +4839,110 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(STRUCT_DEFINE_INFO& StructInf
 	InitOperations.Replace("\r\n",Space);
 	return InitOperations;
 }
-CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInfo,CString SSTIDEnumName,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR PacketName, LPCTSTR PacketMemberName, LPCTSTR szLineSpace)
 {
 	CString PackOperations;
 
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
-		if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
-		
-		CString Operation=m_PackOperationUnitTemplate;
-		if(StructInfo.MemberList[i].IsArray)
+
+		CString Operation = m_PackOperationUnitTemplate;
+		CString LocalPacketName = PacketName;
+		CString LocalPacketMemberName = PacketMemberName;
+		if (StructInfo.MemberList[i].IsArray)
 		{
-			Operation=m_InterfaceConfig.ArrayDefineConfig.PackOperation;
+			Operation = m_InterfaceConfig.ArrayDefineConfig.PackOperation;
+			Operation.Replace("<Packet>", PacketName);
+			Operation.Replace("<PacketMember>", PacketMemberName);
+			CheckNameChange(Operation, LocalPacketName, "<ChangePacketName=");
+			CheckNameChange(Operation, LocalPacketMemberName, "<ChangePacketMemberName=");
+			TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+			Operation = ProcessArrayOperation(Operation, pTypeInfo);
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		{
-			RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-			Operation.Replace("<IfInDataObject>","");
-			Operation.Replace("</IfInDataObject>","");
-			if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			RetainBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
-				RemoveBlock(Operation,"<IfNeedCheckModifyFlag>","</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				RetainBlock(Operation, "<IfNotCheckMF>", "</IfNotCheckMF>");
 			}
 			else
 			{
-				Operation.Replace("<IfNeedCheckModifyFlag>","");
-				Operation.Replace("</IfNeedCheckModifyFlag>","");
+				RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				RemoveBlock(Operation, "<IfNotCheckMF>", "</IfNotCheckMF>");
 			}
 		}
 		else
-		{
-			RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-			Operation.Replace("<IfNotInDataObject>","");
-			Operation.Replace("</IfNotInDataObject>","");
-			RemoveBlock(Operation,"<IfNeedCheckModifyFlag>","</IfNeedCheckModifyFlag>");
+		{			
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			RetainBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			RetainBlock(Operation, "<IfNotCheckMF>", "</IfNotCheckMF>");
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-			Operation.Replace("<Variable>","m_"+StructInfo.MemberList[i].Name);
-		else
-			Operation.Replace("<Variable>",StructInfo.MemberList[i].Name);
+		CString VarName = StructInfo.MemberList[i].Name;
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			VarName = "m_" + VarName;
+		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;		
+		Operation.Replace("<Variable>", VarName);
+
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
+		{
+			if (StructInfo.MemberList[i].IsArray)
+				Operation.Replace("<OrginType>", pTypeInfo->Name + "[]");
+			else
+				Operation.Replace("<OrginType>", pTypeInfo->Name);
+		}
+
 
 		CString ModifyFlagEnumName;
-		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));			
-		Operation.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
-		CString ModifyFlag="MF_"+ClassNameToUpper(StructInfo.MemberList[i].Name);
-		Operation.Replace("<ModifyFlag>",ModifyFlag);
+		CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
-		CString LineSpace=GetLineSpace(Operation,"<PackOperation>");
-		CString PackOP=MakePackOperation(StructInfo.MemberList[i].Type,
+		Operation.Replace("<SpaceName>", SpaceName);
+
+		CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
+		UINT OperationFlag = (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0) ? PACK_OPERATION_FLAG_IN_DATA_OBJECT : 0)
+			| (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0)) ? PACK_OPERATION_FLAG_NEED_MF_CHECK : 0)
+			| ((StructInfo.MemberList[i].IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
+		CString PackOP = MakePackOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
-			StructInfo.Name,StructInfo.ShortName,
-			SSTIDEnumName,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
-			StructInfo.MemberList[i].IsArray,
-			LineSpace);
+			StructInfo.Name, StructInfo.ShortName,
+			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
+			LocalPacketName, LocalPacketMemberName,
+			OperationFlag,
+			SpaceName, LineSpace);
 
-		Operation.Replace("<PackOperation>",PackOP);
+		Operation.Replace("<PackOperation>", PackOP);
 
 		CString SST_ID;
 
-		SST_ID.Format("SST_%s_%s",StructInfo.ShortName,ClassNameToUpper(StructInfo.MemberList[i].Name));
+		SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
 		SST_ID.MakeUpper();
 
 
-		Operation.Replace("<SST_NAME>",SSTIDEnumName);
-		Operation.Replace("<SST_ID>",SST_ID);
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
 
 
-		PackOperations+=Operation;
-		PackOperations+="\r\n";
+		PackOperations += Operation;
+		PackOperations += "\r\n";
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	PackOperations.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	PackOperations.Replace("\r\n", Space);
 	return PackOperations;
 }
-CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructInfo,CString SSTIDEnumName,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR PacketName, LPCTSTR PacketMemberName, LPCTSTR szLineSpace)
 {
 	CString PackOperations;
 
@@ -5379,24 +4956,28 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 		if(pTypeInfo)
 		{
 			CString Operation=m_UnpackOperationUnitTemplate;
-			if(StructInfo.MemberList[i].IsArray)
+			CString LocalPacketName = PacketName;
+			CString LocalPacketMemberName = PacketMemberName;
+			if (StructInfo.MemberList[i].IsArray)
 			{
-				Operation=m_InterfaceConfig.ArrayDefineConfig.UnpackOperation;
+				Operation = m_InterfaceConfig.ArrayDefineConfig.UnpackOperation;
 
-				TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-				CString Space;
-				if(pTypeInfo)
-				{
-					CString VariableDefine=pTypeInfo->GenerateOperations.VariableDefine;
-					VariableDefine.Replace("<Type>",pTypeInfo->CType);					
-					VariableDefine.Replace("<Space>","	");					
-					VariableDefine.Replace("<Variable>","ArrayElement");
-					Operation.Replace("<ArrayElementVariableDefine>",VariableDefine);
+				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+				VariableDefine.Replace("<Type>", pTypeInfo->CType);				
+				VariableDefine.Replace("<Space>", "	");
+				VariableDefine.Replace("<Variable>", "ArrayElement");
+				VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+				Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
 
-					CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
-					VariableInit.Replace("<Variable>", "ArrayElement");
-					Operation.Replace("<ArrayElementVariableInit>", VariableInit);
-				}
+				CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+				VariableInit.Replace("<Variable>", "ArrayElement");
+				Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+
+				Operation.Replace("<Packet>", PacketName);
+				Operation.Replace("<PacketMember>", PacketMemberName);
+				CheckNameChange(Operation, LocalPacketName, "<ChangePacketName=");
+				CheckNameChange(Operation, LocalPacketMemberName, "<ChangePacketMemberName=");
+				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
 			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5406,22 +4987,23 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 				Operation.Replace("</IfInDataObject>","");
 				if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
-					RemoveBlock(Operation,"<IfNeedCheckModifyFlag>","</IfNeedCheckModifyFlag>");
+					RemoveBlock(Operation,"<IfCheckMF>","</IfCheckMF>");
 				}
 				else
 				{
-					Operation.Replace("<IfNeedCheckModifyFlag>","");
-					Operation.Replace("</IfNeedCheckModifyFlag>","");
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
+				RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
 			else
 			{
 				RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>","");
 				Operation.Replace("</IfNotInDataObject>","");
-				RemoveBlock(Operation,"<IfNeedCheckModifyFlag>","</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation,"<IfCheckMF>","</IfCheckMF>");
+				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
-
+			
 			CString SST_ID;
 			
 			SST_ID.Format("SST_%s_%s",StructInfo.ShortName,ClassNameToUpper(StructInfo.MemberList[i].Name));
@@ -5431,10 +5013,15 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 			Operation.Replace("<SST_NAME>",SSTIDEnumName);
 			Operation.Replace("<SST_ID>",SST_ID);
 
+			CString VarName = StructInfo.MemberList[i].Name;
+
 			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-				Operation.Replace("<Variable>","m_"+StructInfo.MemberList[i].Name);
-			else
-				Operation.Replace("<Variable>",StructInfo.MemberList[i].Name);
+				VarName = "m_" + VarName;
+			
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+			Operation.Replace("<Variable>", VarName);
+
+			
 
 			CString ModifyFlagEnumName;
 			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));			
@@ -5442,18 +5029,30 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 
 			CString ModifyFlag="MF_"+ClassNameToUpper(StructInfo.MemberList[i].Name);
 			Operation.Replace("<ModifyFlag>",ModifyFlag);
+			Operation.Replace("<SpaceName>", SpaceName);
 
 			CString LineSpace=GetLineSpace(Operation,"<UnpackOperation>");
-			CString UnpackOP=MakeUnpackOperation(StructInfo.MemberList[i].Type,
+			UINT OperationFlag = (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0) ? PACK_OPERATION_FLAG_IN_DATA_OBJECT : 0)
+				| (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0)) ? PACK_OPERATION_FLAG_NEED_MF_CHECK : 0)
+				| ((StructInfo.MemberList[i].IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
+			CString UnpackOP = MakeUnpackOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
-				StructInfo.Name,StructInfo.ShortName,
-				SSTIDEnumName,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
-				StructInfo.MemberList[i].IsArray,
-				LineSpace);
+				StructInfo.Name, StructInfo.ShortName,
+				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
+				LocalPacketName, LocalPacketMemberName,
+				OperationFlag,
+				SpaceName, LineSpace);
 
 			Operation.Replace("<UnpackOperation>",UnpackOP);
+
+			//if (i < StructInfo.MemberList.size() - 1)
+			//{
+			//	RemoveBlock(Operation, "<IfLastItem>", "</IfLastItem>");
+			//}
+			//else
+			//{
+			//	RetainBlock(Operation, "<IfLastItem>", "</IfLastItem>");
+			//}
 
 			PackOperations+=Operation;
 			PackOperations+="\r\n";
@@ -5465,7 +5064,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 	return PackOperations;
 }
 
-CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString PackSizes;
 
@@ -5494,10 +5093,12 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo,LPC
 			{
 				RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>","");
-				Operation.Replace("</IfNotInDataObject>","");
+				Operation.Replace("</IfNotInDataObject>","");				
 
 				Variable=StructInfo.MemberList[i].Name;
 			}
+
+			Variable = m_InterfaceConfig.MemberVariablePrefix + Variable;
 
 			if(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
 			{
@@ -5525,26 +5126,63 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo,LPC
 				Operation.Replace("</IfNot64Bit>", "");
 			}
 
-			
+			Operation.Replace("<PackFlag>", StructInfo.MemberList[i].PackFlag);
 
 			if(StructInfo.MemberList[i].IsArray)
 			{
-				CString Var=m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
-				Var.Replace("<Variable>",Variable);
-				Var.Replace("<Index>","i");
-				Operation.Replace("<Variable>",Var);
-				Operation.Replace("<Type>",pTypeInfo->CType);
-				CString ArrayOP=m_InterfaceConfig.ArrayDefineConfig.SizeCaculateOperation;
-				ArrayOP.Replace("<Variable>",Variable);
-				ArrayOP.Replace("<ArrayElementSize>",Operation);
-				PackSize=ArrayOP;
+				CString Var = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+				Var.Replace("<Variable>", Variable);
+				Var.Replace("<Index>", "i");
+				Operation.Replace("<Variable>", Var);
+				Operation.Replace("<Type>", pTypeInfo->CType);
+
+				CString ArrayOP = m_InterfaceConfig.ArrayDefineConfig.SizeCaculateOperation;
+				
+				ArrayOP.Replace("<Variable>", Variable);
+				ArrayOP.Replace("<ArrayElementSize>", Operation);
+				RemoveBlock(ArrayOP, "<IfNotInArray>", "</IfNotInArray>");
+				ArrayOP.Replace("<IfInArray>", "");
+				ArrayOP.Replace("</IfInArray>", "");
+
+				PackSize = ProcessArrayOperation(ArrayOP, pTypeInfo);
 			}
 			else
 			{
 				Operation.Replace("<Variable>",Variable);
 				Operation.Replace("<Type>",pTypeInfo->CType);
+				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+				Operation.Replace("<IfNotInArray>", "");
+				Operation.Replace("</IfNotInArray>", "");
 				PackSize.Replace("<PackSize>",Operation);
 			}
+
+			
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(PackSize, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				else
+				{
+					RetainBlock(PackSize, "<IfCheckMF>", "</IfCheckMF>");
+
+					CString ModifyFlagEnumName;
+					ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+					PackSize.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+					CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
+					PackSize.Replace("<ModifyFlag>", ModifyFlag);
+
+					PackSize.Replace("<SpaceName>", SpaceName);
+				}
+			}
+			else
+			{
+				RemoveBlock(PackSize, "<IfCheckMF>", "</IfCheckMF>");
+			}
+
 
 			PackSizes+=PackSize;
 			PackSizes+="\r\n";
@@ -5556,16 +5194,16 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo,LPC
 	return PackSizes;
 }
 
-CString CCallInterfaceMakerDlg::MakeXMLProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeXMLProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString XMLProcess = m_StructXMLProcessTemplate;
 
 	CString LineSpace = GetLineSpace(XMLProcess, "<ToXMLOperations>");
-	CString ToXMLOperations = MakeToXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString ToXMLOperations = MakeToXMLOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	XMLProcess.Replace("<ToXMLOperations>", ToXMLOperations);
 
 	LineSpace = GetLineSpace(XMLProcess, "<FromXMLOperations>");
-	CString FromXMLOperations = MakeFromXMLOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString FromXMLOperations = MakeFromXMLOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	XMLProcess.Replace("<FromXMLOperations>", FromXMLOperations);
 
 	CString Space = "\r\n";
@@ -5575,7 +5213,7 @@ CString CCallInterfaceMakerDlg::MakeXMLProcess(STRUCT_DEFINE_INFO& StructInfo, C
 
 }
 
-CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operations;
 
@@ -5586,8 +5224,9 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 
 		CString Operation = m_ToXMLOperationUnitTemplate;
 		if (StructInfo.MemberList[i].IsArray)
-		{
-			Operation = m_InterfaceConfig.ArrayDefineConfig.ToXMLOperation;
+		{			
+			TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);			
+			Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.ToXMLOperation, pTypeInfo);
 		}
 
 		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5597,12 +5236,11 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 			Operation.Replace("</IfInDataObject>", "");
 			if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 			else
 			{
-				Operation.Replace("<IfNeedCheckModifyFlag>", "");
-				Operation.Replace("</IfNeedCheckModifyFlag>", "");
+				RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 		}
 		else
@@ -5610,7 +5248,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 			Operation.Replace("<IfNotInDataObject>", "");
 			Operation.Replace("</IfNotInDataObject>", "");
-			RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 		}
 
 		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5627,15 +5265,17 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 		CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
+		Operation.Replace("<SpaceName>", SpaceName);
+
 		CString LineSpace = GetLineSpace(Operation, "<ToXMLOperation>");
 		CString PackOP = MakeToXMLOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
 			StructInfo.Name, StructInfo.ShortName,
-			SSTIDEnumName,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
+			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 			StructInfo.MemberList[i].IsArray,
-			LineSpace);
+			SpaceName, LineSpace);
 
 		Operation.Replace("<ToXMLOperation>", PackOP);
 
@@ -5657,7 +5297,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 	Operations.Replace("\r\n", Space);
 	return Operations;
 }
-CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operations;
 
@@ -5675,20 +5315,20 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 			{
 				Operation = m_InterfaceConfig.ArrayDefineConfig.FromXMLOperation;
 
-				TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
 				CString Space;
-				if (pTypeInfo)
-				{
-					CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
-					VariableDefine.Replace("<Type>", pTypeInfo->CType);
-					VariableDefine.Replace("<Space>", "	");
-					VariableDefine.Replace("<Variable>", "ArrayElement");
-					Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
 
-					CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
-					VariableInit.Replace("<Variable>", "ArrayElement");
-					Operation.Replace("<ArrayElementVariableInit>", VariableInit);
-				}
+				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+				VariableDefine.Replace("<Type>", pTypeInfo->CType);
+				VariableDefine.Replace("<Space>", "	");
+				VariableDefine.Replace("<Variable>", "ArrayElement");
+				VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+				Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+
+				CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+				VariableInit.Replace("<Variable>", "ArrayElement");
+				Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+
+				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
 			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5698,12 +5338,11 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 				Operation.Replace("</IfInDataObject>", "");
 				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
-					RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
 				else
 				{
-					Operation.Replace("<IfNeedCheckModifyFlag>", "");
-					Operation.Replace("</IfNeedCheckModifyFlag>", "");
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
 			}
 			else
@@ -5711,7 +5350,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 
 			CString SST_ID;
@@ -5737,15 +5376,17 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 			CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
 			Operation.Replace("<ModifyFlag>", ModifyFlag);
 
+			Operation.Replace("<SpaceName>", SpaceName);
+
 			CString LineSpace = GetLineSpace(Operation, "<FromXMLOperation>");
 			CString UnpackOP = MakeFromXMLOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
 				StructInfo.Name, StructInfo.ShortName,
-				SSTIDEnumName,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0, 
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)!=0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
+				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 				StructInfo.MemberList[i].IsArray,
-				LineSpace);
+				SpaceName, LineSpace);
 
 			Operation.Replace("<FromXMLOperation>", UnpackOP);
 
@@ -5760,16 +5401,16 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 }
 
 
-CString CCallInterfaceMakerDlg::MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString JsonProcess = m_StructJsonProcessTemplate;
 
 	CString LineSpace = GetLineSpace(JsonProcess, "<ToJsonOperations>");
-	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	JsonProcess.Replace("<ToJsonOperations>", ToJsonOperations);
 
 	LineSpace = GetLineSpace(JsonProcess, "<FromJsonOperations>");
-	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	JsonProcess.Replace("<FromJsonOperations>", FromJsonOperations);
 
 	CString Space = "\r\n";
@@ -5778,7 +5419,7 @@ CString CCallInterfaceMakerDlg::MakeJsonProcess(STRUCT_DEFINE_INFO& StructInfo, 
 	return JsonProcess;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString JsonProcess = m_DataObjectJsonProcessTemplate;
 
@@ -5796,11 +5437,11 @@ CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& St
 	}
 
 	CString LineSpace = GetLineSpace(JsonProcess, "<ToJsonOperations>");
-	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString ToJsonOperations = MakeToJsonOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	JsonProcess.Replace("<ToJsonOperations>", ToJsonOperations);
 
 	LineSpace = GetLineSpace(JsonProcess, "<FromJsonOperations>");
-	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, LineSpace);
+	CString FromJsonOperations = MakeFromJsonOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
 	JsonProcess.Replace("<FromJsonOperations>", FromJsonOperations);
 
 	CString Space = "\r\n";
@@ -5808,7 +5449,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& St
 	JsonProcess.Replace("\r\n", Space);
 	return JsonProcess;
 }
-CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operations;
 
@@ -5820,7 +5461,8 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 		CString Operation = m_ToJsonOperationUnitTemplate;
 		if (StructInfo.MemberList[i].IsArray)
 		{
-			Operation = m_InterfaceConfig.ArrayDefineConfig.ToJsonOperation;
+			TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+			Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.ToJsonOperation, pTypeInfo);
 		}
 
 		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5830,12 +5472,11 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 			Operation.Replace("</IfInDataObject>", "");
 			if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 			else
 			{
-				Operation.Replace("<IfNeedCheckModifyFlag>", "");
-				Operation.Replace("</IfNeedCheckModifyFlag>", "");
+				RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 		}
 		else
@@ -5843,13 +5484,14 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 			Operation.Replace("<IfNotInDataObject>", "");
 			Operation.Replace("</IfNotInDataObject>", "");
-			RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-			Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
-		else
-			Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
+		CString VarName = StructInfo.MemberList[i].Name;
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			VarName = "m_" + VarName;
+		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+		Operation.Replace("<Variable>", VarName);		
 
 		Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
 
@@ -5860,15 +5502,17 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 		CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
+		Operation.Replace("<SpaceName>", SpaceName);
+
 		CString LineSpace = GetLineSpace(Operation, "<ToJsonOperation>");
 		CString PackOP = MakeToJsonOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
 			StructInfo.Name, StructInfo.ShortName,
-			SSTIDEnumName,
+			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 			StructInfo.MemberList[i].IsArray,
-			LineSpace);
+			SpaceName, LineSpace);
 
 		Operation.Replace("<ToJsonOperation>", PackOP);
 
@@ -5890,7 +5534,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 	Operations.Replace("\r\n", Space);
 	return Operations;
 }
-CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& StructInfo, CString SSTIDEnumName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operations;
 
@@ -5907,21 +5551,19 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			if (StructInfo.MemberList[i].IsArray)
 			{
 				Operation = m_InterfaceConfig.ArrayDefineConfig.FromJsonOperation;
+				
+				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+				VariableDefine.Replace("<Type>", pTypeInfo->CType);
+				VariableDefine.Replace("<Space>", "	");
+				VariableDefine.Replace("<Variable>", "ArrayElement");
+				VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+				Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
 
-				TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
-				CString Space;
-				if (pTypeInfo)
-				{
-					CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
-					VariableDefine.Replace("<Type>", pTypeInfo->CType);
-					VariableDefine.Replace("<Space>", "	");
-					VariableDefine.Replace("<Variable>", "ArrayElement");
-					Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+				CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+				VariableInit.Replace("<Variable>", "ArrayElement");
+				Operation.Replace("<ArrayElementVariableInit>", VariableInit);
 
-					CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
-					VariableInit.Replace("<Variable>", "ArrayElement");
-					Operation.Replace("<ArrayElementVariableInit>", VariableInit);
-				}
+				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
 			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
@@ -5931,20 +5573,21 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 				Operation.Replace("</IfInDataObject>", "");
 				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
-					RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
 				else
 				{
-					Operation.Replace("<IfNeedCheckModifyFlag>", "");
-					Operation.Replace("</IfNeedCheckModifyFlag>", "");
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
+				RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
 			else
 			{
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
-				RemoveBlock(Operation, "<IfNeedCheckModifyFlag>", "</IfNeedCheckModifyFlag>");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
 
 			CString SST_ID;
@@ -5956,10 +5599,11 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			Operation.Replace("<SST_NAME>", SSTIDEnumName);
 			Operation.Replace("<SST_ID>", SST_ID);
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-				Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
-			else
-				Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
+			CString VarName = StructInfo.MemberList[i].Name;
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+				VarName = "m_" + VarName;
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+			Operation.Replace("<Variable>", VarName);			
 
 			Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
 
@@ -5970,15 +5614,17 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
 			Operation.Replace("<ModifyFlag>", ModifyFlag);
 
+			Operation.Replace("<SpaceName>", SpaceName);
+
 			CString LineSpace = GetLineSpace(Operation, "<FromJsonOperation>");
 			CString UnpackOP = MakeFromJsonOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
 				StructInfo.Name, StructInfo.ShortName,
-				SSTIDEnumName,
+				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 				StructInfo.MemberList[i].IsArray,
-				LineSpace);
+				SpaceName, LineSpace);
 
 			Operation.Replace("<FromJsonOperation>", UnpackOP);
 
@@ -5992,52 +5638,65 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 	return Operations;
 }
 
-CString CCallInterfaceMakerDlg::MakePackOperation(CString Type,CString Name,CString ParentName,CString ParentShortName,CString SSTIDEnumName,bool IsInDataObject,bool IsMFCheck,bool IsArray,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, LPCTSTR PacketName, LPCTSTR PacketMemberName, UINT OperationFlag, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo=FindVarType(Type);
-	if(pTypeInfo)
+	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	if (pTypeInfo)
 	{
-		Operation=pTypeInfo->GenerateOperations.PackOperation;
+		Operation = pTypeInfo->GenerateOperations.PackOperation;
 
-		if(IsMFCheck)
+		//if (OperationFlag & PACK_OPERATION_FLAG_NEED_MF_CHECK)
+		//{
+		//	RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
+		//	Operation.Replace("<IfMFCheck>", "");
+		//	Operation.Replace("</IfMFCheck>", "");
+		//}
+		//else
+		//{
+		//	RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
+		//	Operation.Replace("<IfNotMFCheck>", "");
+		//	Operation.Replace("</IfNotMFCheck>", "");
+		//}
+
+		if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
 		{
-			RemoveBlock(Operation,"<IfNotMFCheck>","</IfNotMFCheck>");
-			Operation.Replace("<IfMFCheck>","");
-			Operation.Replace("</IfMFCheck>","");
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
 		}
 		else
 		{
-			RemoveBlock(Operation,"<IfMFCheck>","</IfMFCheck>");
-			Operation.Replace("<IfNotMFCheck>","");
-			Operation.Replace("</IfNotMFCheck>","");
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
 		}
-
-		if(IsInDataObject)
+		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
 		{
-			RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-			Operation.Replace("<IfInDataObject>","");
-			Operation.Replace("</IfInDataObject>","");
-		}
-		else
-		{
-			RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-			Operation.Replace("<IfNotInDataObject>","");
-			Operation.Replace("</IfNotInDataObject>","");
-		}
-
-		if(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
-		{
-			RemoveBlock(Operation,"<IfNotDataObject>","</IfNotDataObject>");
-			Operation.Replace("<IfDataObject>","");
-			Operation.Replace("</IfDataObject>","");
+			RemoveBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+			Operation.Replace("<IfNotInArray>", "");
+			Operation.Replace("</IfNotInArray>", "");
 		}
 		else
 		{
-			RemoveBlock(Operation,"<IfDataObject>","</IfDataObject>");
-			Operation.Replace("<IfNotDataObject>","");
-			Operation.Replace("</IfNotDataObject>","");
+			RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+			Operation.Replace("<IfNotInArray>", "");
+			Operation.Replace("</IfNotInArray>", "");
+		}
+		
+
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+			Operation.Replace("<IfDataObject>", "");
+			Operation.Replace("</IfDataObject>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+			Operation.Replace("<IfNotDataObject>", "");
+			Operation.Replace("</IfNotDataObject>", "");
 		}
 
 		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
@@ -6054,90 +5713,109 @@ CString CCallInterfaceMakerDlg::MakePackOperation(CString Type,CString Name,CStr
 		}
 
 		CString SST_ID;
-		
-		
-		SST_ID.Format("SST_%s_%s",ParentShortName,ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
-		
-		
-		
-		//CString VarName=Name;
-		if(IsArray)
-		{
-			CString ArrayVar=m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
-			ArrayVar.Replace("<Index>","i");
-			Operation.Replace("<Variable>",ArrayVar);
-		}
-		
-		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
-		else
-			Operation.Replace("<Variable>", Name);
-		
-		Operation.Replace("<VariableName>", Name);
-		Operation.Replace("<Type>",pTypeInfo->CType);
-		
 
-		Operation.Replace("<SST_NAME>",SSTIDEnumName);
-		Operation.Replace("<SST_ID>",SST_ID);
+
+		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
+		SST_ID.MakeUpper();
+
+
+
+		//CString VarName=Name;
+		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
+		{
+			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+			ArrayVar.Replace("<Index>", "i");
+			Operation.Replace("<Variable>", ArrayVar);
+			Operation = ProcessArrayOperation(Operation, pTypeInfo);
+		}
+
+		CString VarName = Name;
+		if((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE)==0)
+		{
+			if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
+				VarName = "m_" + VarName;
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+		}
+
+		Operation.Replace("<Variable>", VarName);
+
+		Operation.Replace("<VariableName>", Name);
+		Operation.Replace("<Type>", pTypeInfo->CType);
+		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
+			Operation.Replace("<OrginType>", pTypeInfo->Name + "[]");
+		else
+			Operation.Replace("<OrginType>", pTypeInfo->Name);
+
+		Operation.Replace("<PackFlag>", PackFlag);
+		Operation.Replace("<Packet>", PacketName);
+		Operation.Replace("<PacketMember>", PacketMemberName);
+
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
 
 		CString ModifyFlagEnumName;
-		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(ParentName));			
-		Operation.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
-		CString ModifyFlag="MF_"+ClassNameToUpper(Name);
-		Operation.Replace("<ModifyFlag>",ModifyFlag);
+		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		Operation.Replace("<SpaceName>", SpaceName);
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Operation.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
 	return Operation;
 }
 
-CString CCallInterfaceMakerDlg::MakeUnpackOperation(CString Type,CString Name,CString ParentName,CString ParentShortName,CString SSTIDEnumName,bool IsInDataObject,bool IsMonitorUpdate,bool IsArray,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, LPCTSTR PacketName, LPCTSTR PacketMemberName, UINT OperationFlag, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo=FindVarType(Type);
-	if(pTypeInfo)
+	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	if (pTypeInfo)
 	{
-		Operation=pTypeInfo->GenerateOperations.UnpackOperation;
+		Operation = pTypeInfo->GenerateOperations.UnpackOperation;
 
-		if(IsMonitorUpdate)
+		if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
 		{
-			Operation.Replace("<IfMonitorUpdate>","");
-			Operation.Replace("</IfMonitorUpdate>","");
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
 		}
 		else
 		{
-			RemoveBlock(Operation,"<IfMonitorUpdate>","</IfMonitorUpdate>");
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
 		}
 
-		if(IsInDataObject)
+		if (OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE)
 		{
-			RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-			Operation.Replace("<IfInDataObject>","");
-			Operation.Replace("</IfInDataObject>","");
+			RemoveBlock(Operation, "<IfNotInInterface>", "</IfNotInInterface>");
+			Operation.Replace("<IfInInterface>", "");
+			Operation.Replace("</IfInInterface>", "");
 		}
 		else
 		{
-			RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-			Operation.Replace("<IfNotInDataObject>","");
-			Operation.Replace("</IfNotInDataObject>","");
+			RemoveBlock(Operation, "<IfInInterface>", "</IfInInterface>");
+			Operation.Replace("<IfNotInInterface>", "");
+			Operation.Replace("</IfNotInInterface>", "");
 		}
+		
 
-		if(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
-			RemoveBlock(Operation,"<IfNotDataObject>","</IfNotDataObject>");
-			Operation.Replace("<IfDataObject>","");
-			Operation.Replace("</IfDataObject>","");
+			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+			Operation.Replace("<IfDataObject>", "");
+			Operation.Replace("</IfDataObject>", "");
 		}
 		else
 		{
-			RemoveBlock(Operation,"<IfDataObject>","</IfDataObject>");
-			Operation.Replace("<IfNotDataObject>","");
-			Operation.Replace("</IfNotDataObject>","");
+			RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+			Operation.Replace("<IfNotDataObject>", "");
+			Operation.Replace("</IfNotDataObject>", "");
 		}
 
 		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
@@ -6154,42 +5832,55 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(CString Type,CString Name,CS
 		}
 
 		CString SST_ID;
-		SST_ID.Format("SST_%s_%s",ParentShortName,ClassNameToUpper(Name));
+		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
 		SST_ID.MakeUpper();
-		
-		
-		if(IsArray)
-		{
-			Operation.Replace("<Variable>","ArrayElement");
-		}
-		
-		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
-		else
-			Operation.Replace("<Variable>", Name);
-		
-		Operation.Replace("<VariableName>", Name);
-		Operation.Replace("<Type>",pTypeInfo->CType);
 
-		Operation.Replace("<SST_NAME>",SSTIDEnumName);
-		Operation.Replace("<SST_ID>",SST_ID);
+
+		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
+		{
+			Operation.Replace("<Variable>", "ArrayElement");
+		}
+
+		CString VarName = Name;
+		if((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE)==0)
+		{
+			if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
+				VarName = "m_" + VarName;
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+		}
+
+		Operation.Replace("<Variable>", VarName);
+
+		Operation.Replace("<VariableName>", Name);
+		Operation.Replace("<Type>", pTypeInfo->CType);
+		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
+			Operation.Replace("<OrginType>", pTypeInfo->Name + "[]");
+		else
+			Operation.Replace("<OrginType>", pTypeInfo->Name);
+
+		Operation.Replace("<PackFlag>", PackFlag);
+		Operation.Replace("<Packet>", PacketName);
+		Operation.Replace("<PacketMember>", PacketMemberName);
+
+		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+		Operation.Replace("<SST_ID>", SST_ID);
 
 		CString ModifyFlagEnumName;
-		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(ParentName));			
-		Operation.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
-		CString ModifyFlag="MF_"+ClassNameToUpper(Name);
-		Operation.Replace("<ModifyFlag>",ModifyFlag);
+		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
-		
-	}		
+		Operation.Replace("<SpaceName>", SpaceName);
+	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Operation.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
 	return Operation;
 }
-CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
@@ -6198,18 +5889,18 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 	{
 		Operation = pTypeInfo->GenerateOperations.ToXMLOperation;
 
-		if (IsMFCheck)
-		{
-			RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
-			Operation.Replace("<IfMFCheck>", "");
-			Operation.Replace("</IfMFCheck>", "");
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
-			Operation.Replace("<IfNotMFCheck>", "");
-			Operation.Replace("</IfNotMFCheck>", "");
-		}
+		//if (IsMFCheck)
+		//{
+		//	RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
+		//	Operation.Replace("<IfMFCheck>", "");
+		//	Operation.Replace("</IfMFCheck>", "");
+		//}
+		//else
+		//{
+		//	RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
+		//	Operation.Replace("<IfNotMFCheck>", "");
+		//	Operation.Replace("</IfNotMFCheck>", "");
+		//}
 
 		if (IsInDataObject)
 		{
@@ -6268,6 +5959,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
+			Operation = ProcessArrayOperation(Operation, pTypeInfo);
 		}
 		else
 		{
@@ -6277,7 +5969,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 		}
 		
 		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
+			Operation.Replace("<Variable>", CString("m_") + Name);
 		else
 			Operation.Replace("<Variable>", Name);
 		
@@ -6286,6 +5978,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 
 		Operation.Replace("<Type>", pTypeInfo->CType);
 
+		Operation.Replace("<PackFlag>", PackFlag);
 
 		Operation.Replace("<SST_NAME>", SSTIDEnumName);
 		Operation.Replace("<SST_ID>", SST_ID);
@@ -6296,6 +5989,8 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 
 		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		Operation.Replace("<SpaceName>", SpaceName);
 	}
 
 	CString Space = "\r\n";
@@ -6304,7 +5999,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(CString Type, CString Name, C
 	return Operation;
 }
 
-CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
@@ -6315,12 +6010,11 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 
 		if (IsMonitorUpdate)
 		{
-			Operation.Replace("<IfMonitorUpdate>", "");
-			Operation.Replace("</IfMonitorUpdate>", "");
+			RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 		}
 		else
 		{
-			RemoveBlock(Operation, "<IfMonitorUpdate>", "</IfMonitorUpdate>");
+			RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 		}
 
 		if (IsInDataObject)
@@ -6383,13 +6077,15 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 		}
 		
 		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
+			Operation.Replace("<Variable>", CString("m_") + Name);
 		else
 			Operation.Replace("<Variable>", Name);
 		
 
 		Operation.Replace("<VariableName>", Name);
 		Operation.Replace("<Type>", pTypeInfo->CType);
+
+		Operation.Replace("<PackFlag>", PackFlag);
 
 		Operation.Replace("<SST_NAME>", SSTIDEnumName);
 		Operation.Replace("<SST_ID>", SST_ID);
@@ -6401,7 +6097,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
-
+		Operation.Replace("<SpaceName>", SpaceName);
 	}
 
 	CString Space = "\r\n";
@@ -6410,7 +6106,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(CString Type, CString Name,
 	return Operation;
 }
 
-CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, bool IsInDataObject, bool IsMFCheck, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
@@ -6419,18 +6115,18 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, 
 	{
 		Operation = pTypeInfo->GenerateOperations.ToJsonOperation;
 
-		if (IsMFCheck)
-		{
-			RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
-			Operation.Replace("<IfMFCheck>", "");
-			Operation.Replace("</IfMFCheck>", "");
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
-			Operation.Replace("<IfNotMFCheck>", "");
-			Operation.Replace("</IfNotMFCheck>", "");
-		}
+		//if (IsMFCheck)
+		//{
+		//	RemoveBlock(Operation, "<IfNotMFCheck>", "</IfNotMFCheck>");
+		//	Operation.Replace("<IfMFCheck>", "");
+		//	Operation.Replace("</IfMFCheck>", "");
+		//}
+		//else
+		//{
+		//	RemoveBlock(Operation, "<IfMFCheck>", "</IfMFCheck>");
+		//	Operation.Replace("<IfNotMFCheck>", "");
+		//	Operation.Replace("</IfNotMFCheck>", "");
+		//}
 
 		if (IsInDataObject)
 		{
@@ -6489,6 +6185,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, 
 			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
+			Operation = ProcessArrayOperation(Operation, pTypeInfo);
 		}
 		else
 		{
@@ -6497,16 +6194,18 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, 
 			Operation.Replace("</IfNotArray>", "");
 		}
 
+		CString VarName = Name;
 		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
-		else
-			Operation.Replace("<Variable>", Name);
+			VarName = "m_" + VarName;
+		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
 
+		Operation.Replace("<Variable>", VarName);
 
 		Operation.Replace("<VariableName>", Name);
 
 		Operation.Replace("<Type>", pTypeInfo->CType);
 
+		Operation.Replace("<PackFlag>", PackFlag);
 
 		Operation.Replace("<SST_NAME>", SSTIDEnumName);
 		Operation.Replace("<SST_ID>", SST_ID);
@@ -6517,6 +6216,8 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, 
 
 		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		Operation.Replace("<SpaceName>", SpaceName);
 	}
 
 	CString Space = "\r\n";
@@ -6524,7 +6225,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(CString Type, CString Name, 
 	Operation.Replace("\r\n", Space);
 	return Operation;
 }
-CString CCallInterfaceMakerDlg::MakeFromJsonOperation(CString Type, CString Name, CString ParentName, CString ParentShortName, CString SSTIDEnumName, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, LPCTSTR PackFlag, bool IsInDataObject, bool IsMonitorUpdate, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Operation;
 
@@ -6535,12 +6236,11 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(CString Type, CString Name
 
 		if (IsMonitorUpdate)
 		{
-			Operation.Replace("<IfMonitorUpdate>", "");
-			Operation.Replace("</IfMonitorUpdate>", "");
+			RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 		}
 		else
 		{
-			RemoveBlock(Operation, "<IfMonitorUpdate>", "</IfMonitorUpdate>");
+			RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 		}
 
 		if (IsInDataObject)
@@ -6602,14 +6302,17 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(CString Type, CString Name
 			Operation.Replace("</IfNotArray>", "");
 		}
 
+		CString VarName = Name;
 		if (IsInDataObject)
-			Operation.Replace("<Variable>", "m_" + Name);
-		else
-			Operation.Replace("<Variable>", Name);
+			VarName = "m_" + VarName;
+		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
 
+		Operation.Replace("<Variable>", VarName);
 
 		Operation.Replace("<VariableName>", Name);
 		Operation.Replace("<Type>", pTypeInfo->CType);
+
+		Operation.Replace("<PackFlag>", PackFlag);
 
 		Operation.Replace("<SST_NAME>", SSTIDEnumName);
 		Operation.Replace("<SST_ID>", SST_ID);
@@ -6621,8 +6324,1099 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(CString Type, CString Name
 		CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
 		Operation.Replace("<ModifyFlag>", ModifyFlag);
 
+		Operation.Replace("<SpaceName>", SpaceName);
+	}
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
+	return Operation;
+}
+
+CString CCallInterfaceMakerDlg::MakeDBProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString DBProcess = m_StructDBProcessTemplate;
+
+	DBProcess.Replace("<ClassName>", StructInfo.Name);
+
+	CString LineSpace = GetLineSpace(DBProcess, "<DBFieldDefineOperations>");
+	CString DBFieldDefineOperations = MakeDBFieldDefineOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBFieldDefineOperations>", DBFieldDefineOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBIndexDefineOperations>");
+	CString DBIndexDefineOperations = MakeDBIndexDefineOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBIndexDefineOperations>", DBIndexDefineOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<InsertFieldNames>");
+	CString InsertFieldNames = MakeDBFields(StructInfo, DB_INDEX_TYPE_NONE);
+	DBProcess.Replace("<InsertFieldNames>", InsertFieldNames);
+
+	LineSpace = GetLineSpace(DBProcess, "<InsertFieldFormats>");
+	CString InsertFieldFormats = MakeDBFieldFormats(StructInfo);
+	DBProcess.Replace("<InsertFieldFormats>", InsertFieldFormats);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBPutParamBindOperations>");
+	CString DBPutParamBindOperations = MakeDBPutParamBindOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBPutParamBindOperations>", DBPutParamBindOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBPutOperations>");
+	CString DBPutOperations;
+	STRUCT_DEFINE_INFO * pStructInfo = &StructInfo;
+	while (pStructInfo)
+	{
+		DBPutOperations = MakeDBPutOperations(*pStructInfo, SSTIDEnumName, SpaceName, LineSpace) + DBPutOperations;
+		pStructInfo = GetStructDefineInfo(pStructInfo->BaseStruct);
+	}
+	DBProcess.Replace("<DBPutOperations>", DBPutOperations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	DBProcess.Replace("\r\n", Space);
+	return DBProcess;
+}
+CString CCallInterfaceMakerDlg::MakeDataObjectDBProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString DBProcess = m_DataObjectDBProcessTemplate;
+
+	CString LineSpace = GetLineSpace(DBProcess, "<DBFieldDefineOperations>");
+	CString DBFieldDefineOperations = MakeDBFieldDefineOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBFieldDefineOperations>", DBFieldDefineOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBIndexDefineOperations>");
+	CString DBIndexDefineOperations = MakeDBIndexDefineOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBIndexDefineOperations>", DBIndexDefineOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<InsertFieldNames>");
+	CString InsertFieldNames = MakeDBFields(StructInfo, DB_INDEX_TYPE_NONE);
+	DBProcess.Replace("<InsertFieldNames>", InsertFieldNames);
+
+	LineSpace = GetLineSpace(DBProcess, "<InsertFieldFormats>");
+	CString InsertFieldFormats = MakeDBFieldFormats(StructInfo);
+	DBProcess.Replace("<InsertFieldFormats>", InsertFieldFormats);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBPutParamBindOperations>");
+	CString DBPutParamBindOperations = MakeDBPutParamBindOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBPutParamBindOperations>", DBPutParamBindOperations);
+
+	LineSpace = GetLineSpace(DBProcess, "<DBPutOperations>");
+	CString DBPutOperations = MakeDBPutOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	DBProcess.Replace("<DBPutOperations>", DBPutOperations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	DBProcess.Replace("\r\n", Space);
+	return DBProcess;
+}
+CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		CString Operation = m_DBFieldDefineUnitTemplate;
+		
+		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
+			if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			{
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+			else
+			{
+				RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+		}		
+
+		CString ModifyFlagEnumName;
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+		CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		Operation.Replace("<SpaceName>", SpaceName);
+
+		CString LineSpace = GetLineSpace(Operation, "<DBFieldDefine>");
+		CString DBFieldDefine = MakeDBFieldDefineOperation(MemberInfo.Type,
+			MemberInfo.Name,
+			StructInfo.Name, StructInfo.ShortName,
+			SSTIDEnumName,
+			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			MemberInfo.IsArray,
+			MemberInfo.DBLength,
+			SpaceName, LineSpace);
+
+		Operation.Replace("<DBFieldDefine>", DBFieldDefine);
+
+		
+		Operations += Operation;
+		Operations += "\r\n";
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+CString CCallInterfaceMakerDlg::MakeDBIndexDefineOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+	CString PrimaryKeyFields = MakeDBFields(StructInfo, DB_INDEX_TYPE_PRIMARY_KEY);
+	bool IsPrimaryDefinded = false;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		CString Operation;
+		switch (MemberInfo.DBIndexType)
+		{
+		case DB_INDEX_TYPE_KEY:
+			Operation = m_DBKeyDefineUnitTemplate;
+			break;
+		case DB_INDEX_TYPE_PRIMARY_KEY:
+			if (IsPrimaryDefinded)
+			{
+				continue;
+			}
+			else
+			{
+				Operation = m_DBPrimaryKeyDefineUnitTemplate;
+				IsPrimaryDefinded = true;
+			}
+			break;
+		case DB_INDEX_TYPE_UNIQUE_KEY:
+			Operation = m_DBUniqueKeyDefineUnitTemplate;
+			break;
+		default:
+			continue;
+		}
+
+		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		{
+			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+			Operation.Replace("<IfInDataObject>", "");
+			Operation.Replace("</IfInDataObject>", "");
+			if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			{
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+			else
+			{
+				RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+			Operation.Replace("<IfNotInDataObject>", "");
+			Operation.Replace("</IfNotInDataObject>", "");
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+		}
+
+		CString ModifyFlagEnumName;
+		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+		Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+		CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+		Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+		Operation.Replace("<SpaceName>", SpaceName);
+		Operation.Replace("<FieldNames>", PrimaryKeyFields);
+		Operation.Replace("<FieldName>", MemberInfo.Name);
+		Operation.Replace("<!FieldName>", ClassNameToUpper(MemberInfo.Name));
+
+		Operations += Operation;
+		Operations += "\r\n";
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+
+CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
+		{
+			if (((pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) == 0) && (!MemberInfo.IsArray))
+				continue;
+
+			CString Operation;
+
+			if (MemberInfo.IsArray)
+			{
+				CString Var = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+				Var.Replace("<Variable>", MemberInfo.Name);
+				Var.Replace("<Index>", "i");
+				CString SizeCaculateOperation = pTypeInfo->GenerateOperations.SizeCaculateOperation;
+				SizeCaculateOperation.Replace("<Variable>", Var);
+				SizeCaculateOperation.Replace("<Type>", pTypeInfo->CType);
+				RemoveBlock(SizeCaculateOperation, "<IfInArray>", "</IfInArray>");
+				SizeCaculateOperation.Replace("<IfNotInArray>", "");
+				SizeCaculateOperation.Replace("</IfNotInArray>", "");
+				CString PackOperation = pTypeInfo->GenerateOperations.PackOperation;
+				PackOperation.Replace("<Variable>", Var);
+				PackOperation.Replace("<Type>", pTypeInfo->CType);
+				RemoveBlock(PackOperation, "<IfInArray>", "</IfInArray>");
+				PackOperation.Replace("<IfNotInArray>", "");
+				PackOperation.Replace("</IfNotInArray>", "");
+
+				Operation = m_InterfaceConfig.ArrayDefineConfig.DBPutOperation;
+				Operation.Replace("<ArrayElementSize>", SizeCaculateOperation);
+				CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
+				CString Space = "\r\n";
+				Space += LineSpace;
+				PackOperation.Replace("\r\n", Space);
+				Operation.Replace("<PackOperation>", PackOperation);		
+
+				Operation = ProcessArrayOperation(Operation, pTypeInfo);
+				
+			}
+			else
+			{
+				Operation = pTypeInfo->GenerateOperations.DBPutOperation;
+			}
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				else
+				{
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+
+			if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+				Operation.Replace("<IfDataObject>", "");
+				Operation.Replace("</IfDataObject>", "");
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+				Operation.Replace("<IfNotDataObject>", "");
+				Operation.Replace("</IfNotDataObject>", "");
+			}
+
+			CString SST_ID;
+
+			SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+			SST_ID.MakeUpper();
+
+
+			Operation.Replace("<SST_NAME>", SSTIDEnumName);
+			Operation.Replace("<SST_ID>", SST_ID);
+
+			CString ModifyFlagEnumName;
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+			CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+			Operation.Replace("<SpaceName>", SpaceName);
+			Operation.Replace("<FieldName>", MemberInfo.Name);
+			Operation.Replace("<!FieldName>", ClassNameToUpper(MemberInfo.Name));
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				Operation.Replace("<Variable>", CString("m_") + MemberInfo.Name);
+			else
+				Operation.Replace("<Variable>", MemberInfo.Name);
+
+
+			Operation.Replace("<VariableName>", MemberInfo.Name);
+
+			Operation.Replace("<Type>", pTypeInfo->CType);
+
+			CString FullModifyFlag;
+			FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(MemberInfo.Type));
+			Operation.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
+
+			Operations += Operation;
+			Operations += "\r\n";
+			Operations += "\r\n";
+		}
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+CString CCallInterfaceMakerDlg::MakeDBPutOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+	UINT Count = 0;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
+		{
+			if ((pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) || MemberInfo.IsArray)
+				continue;
+
+			CString Operation = pTypeInfo->GenerateOperations.DBPutOperation;
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				else
+				{
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+
+			CString ModifyFlagEnumName;
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+			CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+			Operation.Replace("<SpaceName>", SpaceName);
+			Operation.Replace("<FieldName>", MemberInfo.Name);
+			Operation.Replace("<!FieldName>", ClassNameToUpper(MemberInfo.Name));
+
+			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				Operation.Replace("<Variable>", CString("m_") + MemberInfo.Name);
+			else
+				Operation.Replace("<Variable>", MemberInfo.Name);
+
+
+			Operation.Replace("<VariableName>", MemberInfo.Name);
+
+			Operation.Replace("<Type>", pTypeInfo->CType);
+
+			CString FullModifyFlag;
+			FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(MemberInfo.Type));
+			Operation.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
+
+			Operations += "," + Operation;
+			Operations += "\r\n";
+			Count++;
+		}
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+
+CString CCallInterfaceMakerDlg::MakeDBFields(STRUCT_DEFINE_INFO& StructInfo, BYTE DBIndexType)
+{
+	CString Fields;
+
+	UINT Count = 0;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		if ((DBIndexType == DB_INDEX_TYPE_NONE) || (MemberInfo.DBIndexType == DBIndexType))
+		{
+			CString Operation = m_DBFieldNameTemplate;
+			if (Count)
+			{
+				Operation.Replace("<IfNotFirst>", "");
+				Operation.Replace("</IfNotFirst>", "");
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+			}
+			Operation.Replace("<FieldName>", MemberInfo.Name);
+			Fields += Operation;
+			Count++;
+		}
+	}
+	return Fields;
+}
+CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, bool IsInDataObject, bool IsArray, LPCTSTR DBLength, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operation;
+
+	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	if (pTypeInfo)
+	{
+		Operation = pTypeInfo->GenerateOperations.DBFieldDefineOperation;
+
+		if (IsArray)
+		{
+			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+			Operation.Replace("<IfArray>", "");
+			Operation.Replace("</IfArray>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+			Operation.Replace("<IfNotArray>", "");
+			Operation.Replace("</IfNotArray>", "");
+		}
+
+		Operation.Replace("<FieldName>", Name);		
+		Operation.Replace("<DBLength>", DBLength);
+
+		CString FullModifyFlag;
+		FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(Name));
+		Operation.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
+
+		Operation.Replace("<VariableName>", Name);
+		Operation.Replace("<Type>", pTypeInfo->CType);
+		Operation.Replace("<SpaceName>", SpaceName);
+	}
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
+	return Operation;
+}
+
+CString CCallInterfaceMakerDlg::MakeDBFieldFormats(STRUCT_DEFINE_INFO& StructInfo)
+{
+	CString Formats;
+
+	UINT Count = 0;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+			continue;
+
+		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
+		{
+			if (Count)
+				Formats += ", " + pTypeInfo->GenerateOperations.DBInsertFormatOperation;
+			else
+				Formats += pTypeInfo->GenerateOperations.DBInsertFormatOperation;
+			Count++;
+		}
+	}
+	return Formats;
+}
+
+CString CCallInterfaceMakerDlg::MakeLogProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString DBProcess = m_StructLogProcessTemplate;
+
+	DBProcess.Replace("<ClassName>", StructInfo.Name);
+
+	UINT MemberCount = GetStructMemberCount(StructInfo);
+	CString Temp;
+	Temp.Format("%u", MemberCount);
+	DBProcess.Replace("<LogDataCount>", Temp);
+
+	CString LineSpace = GetLineSpace(DBProcess, "<LogDataList>");
+	CString Operations = MakeLogDataList(StructInfo, LineSpace);
+	DBProcess.Replace("<LogDataList>", Operations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	DBProcess.Replace("\r\n", Space);
+	return DBProcess;
+}
+
+CString CCallInterfaceMakerDlg::MakeLogDataList(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	if (!StructInfo.BaseStruct.IsEmpty())
+	{
+		STRUCT_DEFINE_INFO* pStructInfo = GetStructDefineInfo(StructInfo.BaseStruct);
+		if (pStructInfo)
+		{
+			Operations += MakeLogDataList(*pStructInfo, szLineSpace);
+		}
+	}
+
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (!Operations.IsEmpty())
+		{
+			Operations += ",\r\n";
+			Operations += szLineSpace;
+		}			
+
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
+		{
+			CString Operation = pTypeInfo->GenerateOperations.LogSendOperation;
+			Operation.Replace("<VariableName>", MemberInfo.Name);
+			CString VarName;
+			VarName = MemberInfo.Name;
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				VarName = "m_" + VarName;
+			}
+			Operation.Replace("<Variable>", VarName);
+			Operations += Operation;
+		}
+		else
+		{
+			Operations += "<ErrorType>";
+		}
+	}
+
+	return Operations;
+}
+
+CString CCallInterfaceMakerDlg::MakeLuaProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Process = m_StructLuaProcessTemplate;
+
+	Process.Replace("<ClassName>", StructInfo.Name);
+
+	if (StructInfo.BaseStruct.IsEmpty())
+	{
+		RemoveBlock(Process, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RetainBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		Process.Replace("<BaseClass>", "");
 
 	}
+	else
+	{
+		RetainBlock(Process, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RemoveBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		Process.Replace("<BaseClass>", StructInfo.BaseStruct);
+	}
+		
+
+	CString LineSpace = GetLineSpace(Process, "<ToLuaTableOperations>");
+	CString Operations = MakeToLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	Process.Replace("<ToLuaTableOperations>", Operations);
+
+	LineSpace = GetLineSpace(Process, "<FromLuaTableOperations>");
+	Operations = MakeFromLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	Process.Replace("<FromLuaTableOperations>", Operations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Process.Replace("\r\n", Space);
+	return Process;
+}
+
+CString CCallInterfaceMakerDlg::MakeDataObjectLuaProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Process = m_DataObjectLuaProcessTemplate;
+
+	Process.Replace("<ClassName>", StructInfo.Name);
+
+	if (StructInfo.BaseStruct.IsEmpty())
+	{
+		RemoveBlock(Process, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RetainBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		Process.Replace("<BaseClass>", "");
+
+	}
+	else
+	{
+		RetainBlock(Process, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RemoveBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		Process.Replace("<BaseClass>", StructInfo.BaseStruct);
+	}	
+
+	CString LineSpace = GetLineSpace(Process, "<ToLuaTableOperations>");
+	CString Operations = MakeToLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	Process.Replace("<ToLuaTableOperations>", Operations);
+
+	LineSpace = GetLineSpace(Process, "<FromLuaTableOperations>");
+	Operations = MakeFromLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
+	Process.Replace("<FromLuaTableOperations>", Operations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Process.Replace("\r\n", Space);
+	return Process;
+}
+
+CString CCallInterfaceMakerDlg::MakeToLuaTableOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	STRUCT_MEMBER_INFO* pKeyMember = NULL;
+
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_IGNORE_IN_LUA_PROCESS)
+			continue;
+		CString Operation = m_ToLuaTableOperationUnitTemplate;
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo && (!pTypeInfo->GenerateOperations.ToLuaOperation.IsEmpty()))
+		{
+			if (MemberInfo.IsArray)
+			{
+				Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.ToLuaOperation, pTypeInfo);
+				STRUCT_MEMBER_INFO* pKeyMember = NULL;
+				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_STRUCT)
+				{
+					pKeyMember = GetStructKeyMember(pTypeInfo->Name);
+				}
+				if (pKeyMember)
+				{
+					RemoveBlock(Operation, "<IfNotHaveKey>", "</IfNotHaveKey>");
+					RetainBlock(Operation, "<IfHaveKey>", "</IfHaveKey>");
+					Operation.Replace("<StructKey>", pKeyMember->Name);
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfHaveKey>", "</IfHaveKey>");
+					RetainBlock(Operation, "<IfNotHaveKey>", "</IfNotHaveKey>");
+				}
+			}
+
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				else
+				{
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+			}
+
+			CString VarName = MemberInfo.Name;
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+				VarName = "m_" + VarName;
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+			Operation.Replace("<Variable>", VarName);
+
+			Operation.Replace("<VariableName>", MemberInfo.Name);
+
+			CString ModifyFlagEnumName;
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+			CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+			Operation.Replace("<SpaceName>", SpaceName);
+
+			CString LineSpace = GetLineSpace(Operation, "<ToLuaOperation>");
+			CString PackOP = MakeToLuaTableOperation(pTypeInfo,
+				MemberInfo.Name,
+				StructInfo.Name, StructInfo.ShortName,
+				SSTIDEnumName,
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				MemberInfo.IsArray,
+				SpaceName, LineSpace);
+
+			Operation.Replace("<ToLuaOperation>", PackOP);
+
+			CString SST_ID;
+
+			SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+			SST_ID.MakeUpper();
+
+
+			Operation.Replace("<SST_NAME>", SSTIDEnumName);
+			Operation.Replace("<SST_ID>", SST_ID);
+
+			//if (MemberInfo.IsArray)
+			//{
+			//	CString ArrayOperation = Operation;
+			//	Operation = m_ToLuaTableOperationUnitTemplate;
+			//	Operation.Replace("<Variable>", VarName);
+			//	Operation.Replace("<VariableName>", MemberInfo.Name);
+			//	Operation.Replace("<ToLuaOperation>", ArrayOperation);
+			//}
+
+			Operations += Operation;
+			Operations += "\r\n";
+		}
+		
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+
+CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, bool IsInDataObject, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operation;
+
+	
+	Operation = pTypeInfo->GenerateOperations.ToLuaOperation;
+
+	if (IsInDataObject)
+	{
+		RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+		Operation.Replace("<IfInDataObject>", "");
+		Operation.Replace("</IfInDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+		Operation.Replace("<IfNotInDataObject>", "");
+		Operation.Replace("</IfNotInDataObject>", "");
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
+	{
+		RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+		Operation.Replace("<IfDataObject>", "");
+		Operation.Replace("</IfDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+		Operation.Replace("<IfNotDataObject>", "");
+		Operation.Replace("</IfNotDataObject>", "");
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
+	{
+		RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+		Operation.Replace("<If64Bit>", "");
+		Operation.Replace("</If64Bit>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+		Operation.Replace("<IfNot64Bit>", "");
+		Operation.Replace("</IfNot64Bit>", "");
+	}
+
+	
+
+	CString SST_ID;
+
+
+	SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
+	SST_ID.MakeUpper();
+
+
+
+	//CString VarName=Name;
+	if (IsArray)
+	{
+		RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+		Operation.Replace("<IfArray>", "");
+		Operation.Replace("</IfArray>", "");
+
+		CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+		ArrayVar.Replace("<Index>", "i");
+		Operation.Replace("<Variable>", ArrayVar);
+		Operation = ProcessArrayOperation(Operation, pTypeInfo);
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+		Operation.Replace("<IfNotArray>", "");
+		Operation.Replace("</IfNotArray>", "");
+	}	
+
+	CString VarName = Name;
+	if (IsInDataObject)
+		VarName = "m_" + VarName;
+	VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+
+	Operation.Replace("<Variable>", VarName);
+
+	Operation.Replace("<VariableName>", Name);
+
+	Operation.Replace("<Type>", pTypeInfo->CType);
+
+	Operation.Replace("<SST_NAME>", SSTIDEnumName);
+	Operation.Replace("<SST_ID>", SST_ID);
+
+	CString ModifyFlagEnumName;
+	ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+	Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+	CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+	Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+	Operation.Replace("<SpaceName>", SpaceName);
+	
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operation.Replace("\r\n", Space);
+	return Operation;
+}
+
+CString CCallInterfaceMakerDlg::MakeFromLuaTableOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operations;
+
+	STRUCT_MEMBER_INFO* pKeyMember = NULL;
+
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_IGNORE_IN_LUA_PROCESS)
+			continue;
+		CString Operation = m_FromLuaTableOperationUnitTemplate;
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo && (!pTypeInfo->GenerateOperations.FromLuaOperation.IsEmpty()))
+		{
+			if (MemberInfo.IsArray)
+			{
+				Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.FromLuaOperation, pTypeInfo);
+
+				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+				VariableDefine.Replace("<Type>", pTypeInfo->CType);
+				VariableDefine.Replace("<Space>", "	");
+				VariableDefine.Replace("<Variable>", "ArrayElement");
+				VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+				Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+
+				CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+				VariableInit.Replace("<Variable>", "ArrayElement");
+				Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+
+				STRUCT_MEMBER_INFO* pKeyMember = NULL;
+				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_STRUCT)
+				{
+					pKeyMember = GetStructKeyMember(pTypeInfo->Name);
+				}
+				if (pKeyMember)
+				{
+					RemoveBlock(Operation, "<IfNotHaveKey>", "</IfNotHaveKey>");
+					RetainBlock(Operation, "<IfHaveKey>", "</IfHaveKey>");
+					Operation.Replace("<StructKey>", pKeyMember->Name);
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfHaveKey>", "</IfHaveKey>");
+					RetainBlock(Operation, "<IfNotHaveKey>", "</IfNotHaveKey>");
+				}
+			}
+
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			{
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
+				{
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				else
+				{
+					RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				}
+				RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+			}
+			else
+			{
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+			}
+
+			CString VarName = MemberInfo.Name;
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+				VarName = "m_" + VarName;
+			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+			Operation.Replace("<Variable>", VarName);
+
+			Operation.Replace("<VariableName>", MemberInfo.Name);
+
+			CString ModifyFlagEnumName;
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+			CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+			Operation.Replace("<SpaceName>", SpaceName);
+
+			CString LineSpace = GetLineSpace(Operation, "<FromLuaOperation>");
+			CString PackOP = MakeFromLuaTableOperation(pTypeInfo,
+				MemberInfo.Name,
+				StructInfo.Name, StructInfo.ShortName,
+				SSTIDEnumName,
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				MemberInfo.IsArray,
+				SpaceName, LineSpace);
+
+			Operation.Replace("<FromLuaOperation>", PackOP);
+
+			CString SST_ID;
+
+			SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+			SST_ID.MakeUpper();
+
+
+			Operation.Replace("<SST_NAME>", SSTIDEnumName);
+			Operation.Replace("<SST_ID>", SST_ID);
+
+			//if (MemberInfo.IsArray)
+			//{
+			//	CString ArrayOperation = Operation;
+			//	Operation = m_FromLuaTableOperationUnitTemplate;
+			//	Operation.Replace("<Variable>", VarName);
+			//	Operation.Replace("<VariableName>", MemberInfo.Name);
+			//	Operation.Replace("<FromLuaOperation>", ArrayOperation);
+			//}
+
+			Operations += Operation;
+			Operations += "\r\n";
+		}
+
+	}
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Operations.Replace("\r\n", Space);
+	return Operations;
+}
+CString CCallInterfaceMakerDlg::MakeFromLuaTableOperation(TYPE_DEFINE* pTypeInfo, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, bool IsInDataObject, bool IsArray, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operation;
+
+
+	Operation = pTypeInfo->GenerateOperations.FromLuaOperation;
+
+	if (IsInDataObject)
+	{
+		RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+		Operation.Replace("<IfInDataObject>", "");
+		Operation.Replace("</IfInDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+		Operation.Replace("<IfNotInDataObject>", "");
+		Operation.Replace("</IfNotInDataObject>", "");
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
+	{
+		RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+		Operation.Replace("<IfDataObject>", "");
+		Operation.Replace("</IfDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+		Operation.Replace("<IfNotDataObject>", "");
+		Operation.Replace("</IfNotDataObject>", "");
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
+	{
+		RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+		Operation.Replace("<If64Bit>", "");
+		Operation.Replace("</If64Bit>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+		Operation.Replace("<IfNot64Bit>", "");
+		Operation.Replace("</IfNot64Bit>", "");
+	}
+
+
+
+	CString SST_ID;
+
+
+	SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
+	SST_ID.MakeUpper();
+
+
+
+	//CString VarName=Name;
+	if (IsArray)
+	{
+		RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
+		Operation.Replace("<IfArray>", "");
+		Operation.Replace("</IfArray>", "");
+
+		Operation.Replace("<Variable>", "ArrayElement");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfArray>", "</IfArray>");
+		Operation.Replace("<IfNotArray>", "");
+		Operation.Replace("</IfNotArray>", "");
+	}
+	CString VarName = Name;
+	if (IsInDataObject)
+		VarName = "m_" + VarName;
+	VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+
+	Operation.Replace("<Variable>", VarName);
+
+	Operation.Replace("<VariableName>", Name);
+
+	Operation.Replace("<Type>", pTypeInfo->CType);
+
+	Operation.Replace("<SST_NAME>", SSTIDEnumName);
+	Operation.Replace("<SST_ID>", SST_ID);
+
+	CString ModifyFlagEnumName;
+	ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ParentName));
+	Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+	CString ModifyFlag = "MF_" + ClassNameToUpper(Name);
+	Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+	Operation.Replace("<SpaceName>", SpaceName);
+
 
 	CString Space = "\r\n";
 	Space += szLineSpace;
@@ -6670,7 +7464,7 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethods(CALLER_INTERFACE& Interfac
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString InterfaceName;
 	if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -6721,24 +7515,27 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& In
 				RemoveBlock(Method, "<IfHaveMember>", "</IfHaveMember>");
 			}
 
-
+			Method.Replace("<SpaceName>", SpaceName);
 			Method.Replace("<InterfaceName>", InterfaceName);
 			Method.Replace("<@InterfaceName>", InterfaceInfo.Name);
 			Method.Replace("<MethodName>", MethodName);
 			CString Params = MakeParams(*pParamList, false, true);
 			Method.Replace("<Params>", Params);
 			CString LineSpace = GetLineSpace(Method, "<ParamDefines>");
-			CString ParamDefines = MakeParamDefines(*pParamList, LineSpace);
+			CString ParamDefines = MakeParamDefines(*pParamList, SpaceName, ";", LineSpace);
 			Method.Replace("<ParamDefines>", ParamDefines);
 
 			LineSpace = GetLineSpace(Method, "<ParamInitOperations>");
 			CString ParamInitOperations = MakeInitOperations(MethodInfo, ExportType, LineSpace);
 			Method.Replace("<ParamInitOperations>", ParamInitOperations);
 
+			CString PacketName = m_InterfaceConfig.DefaultPacketName;
+			CString PacketMemberName = m_InterfaceConfig.DefaultPacketMemberName;
+
 			LineSpace = GetLineSpace(Method, "<UnpackOperations>");
 			CString SSTIDEnumName;
 			SSTIDEnumName.Format("%s_%s_MEMBER_IDS", ClassNameToUpper(InterfaceName), ClassNameToUpper(MethodName));
-			CString UnpackOperations = MakeUnpackOperations(MethodInfo, ExportType, SSTIDEnumName, LineSpace);
+			CString UnpackOperations = MakeUnpackOperations(MethodInfo, ExportType, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
 			Method.Replace("<UnpackOperations>", UnpackOperations);
 
 			Methods += Method + "\r\n";
@@ -6750,7 +7547,7 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& In
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeMsgMapInits(LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo, LPCTSTR SpaceName, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
 {
 	CString InterfaceName;
 	if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -6809,6 +7606,7 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(LPCTSTR SpaceName, CALLER_INTERF
 			MapInit.Replace("<ModuleID>", ModuleID);
 			MapInit.Replace("<InterfaceName>", InterfaceName);
 			MapInit.Replace("<MethodName>", MethodName);
+			MapInit.Replace("<SpaceName>", SpaceName);
 			MapInit.Replace("<!SpaceName>", SpaceNameUp);
 			MapInit.Replace("<!InterfaceName>", InterfaceNameUp);
 			MapInit.Replace("<!MethodName>", MethodNameUp);
@@ -6831,24 +7629,28 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(LPCTSTR SpaceName, CALLER_INTERF
 	return MapInits;
 }
 
-CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO>& StructDefineList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& StructDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString StructDefines;
-	for(size_t i=0;i<StructDefineList.size();i++)
-	{		
-		if ((StructDefineList[i].Flag&STRUCT_FLAG_IS_DATA_OBJECT) == 0)
+	for (size_t i = 0; i < StructDefineList.size(); i++)
+	{
+		STRUCT_DEFINE_INFO& StructDefine = *(StructDefineList[i]);
+		if ((StructDefine.Flag & STRUCT_FLAG_IS_DATA_OBJECT) == 0)
 		{
-			CString Struct=m_StructDefineTemplate;
+			CString Struct = m_StructDefineTemplate;
+
+			Struct.Replace("<SpaceName>", SpaceName);
 
 			CString LineSpace;
+			bool NeedVTable = false;
 
 			CString SSTIDEnumName;
-			SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructDefineList[i].Name));
+			SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructDefine.Name));
 
-			if (StructDefineList[i].Flag&STRUCT_FLAG_EXPORT_XML_PROCESS)
+			if (StructDefine.Flag & STRUCT_FLAG_EXPORT_XML_PROCESS)
 			{
 				LineSpace = GetLineSpace(Struct, "<XMLProcess>");
-				CString XMLProcess = MakeXMLProcess(StructDefineList[i], SSTIDEnumName, LineSpace);
+				CString XMLProcess = MakeXMLProcess(StructDefine, SSTIDEnumName, SpaceName, LineSpace);
 				Struct.Replace("<XMLProcess>", XMLProcess);
 			}
 			else
@@ -6856,10 +7658,10 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO>& St
 				Struct.Replace("<XMLProcess>", "");
 			}
 
-			if (StructDefineList[i].Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS)
+			if (StructDefine.Flag & STRUCT_FLAG_EXPORT_JSON_PROCESS)
 			{
 				LineSpace = GetLineSpace(Struct, "<JsonProcess>");
-				CString JsonProcess = MakeJsonProcess(StructDefineList[i], SSTIDEnumName, LineSpace);
+				CString JsonProcess = MakeJsonProcess(StructDefine, SSTIDEnumName, SpaceName, LineSpace);
 				Struct.Replace("<JsonProcess>", JsonProcess);
 			}
 			else
@@ -6867,17 +7669,92 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO>& St
 				Struct.Replace("<JsonProcess>", "");
 			}
 
-			if(StructDefineList[i].MemberList.size())
+			if (StructDefine.Flag & STRUCT_FLAG_EXPORT_DB_PROCESS)
 			{
-				Struct.Replace("<IfHaveMember>","");
-				Struct.Replace("</IfHaveMember>","");
+				LineSpace = GetLineSpace(Struct, "<DBProcess>");
+				CString Process = MakeDBProcess(StructDefine, SSTIDEnumName, SpaceName, LineSpace);
+				Struct.Replace("<DBProcess>", Process);
+				NeedVTable = true;
 			}
 			else
 			{
-				RemoveBlock(Struct,"<IfHaveMember>","</IfHaveMember>");
+				Struct.Replace("<DBProcess>", "");
 			}
 
-			if (StructDefineList[i].BaseStruct.IsEmpty())
+			if (Struct.Find("<EditorProcess>") >= 0)
+			{
+				if (StructDefine.Flag & STRUCT_FLAG_EXPORT_EDITOR_PROCESS)
+				{
+					LineSpace = GetLineSpace(Struct, "<EditorProcess>");
+					CString Process = MakeStructEditorProcess(StructDefine, LineSpace);
+					Struct.Replace("<EditorProcess>", Process);
+				}
+				else
+				{
+					Struct.Replace("<EditorProcess>", "");
+				}
+			}
+
+			if (Struct.Find("<LogProcess>") >= 0)
+			{
+				if (StructDefine.Flag & STRUCT_FLAG_EXPORT_LOG_PROCESS)
+				{
+					LineSpace = GetLineSpace(Struct, "<LogProcess>");
+					CString Process = MakeLogProcess(StructDefine, SpaceName, LineSpace);
+					Struct.Replace("<LogProcess>", Process);
+					NeedVTable = true;
+				}
+				else
+				{
+					Struct.Replace("<LogProcess>", "");
+				}
+			}
+
+			if(Struct.Find("<LuaProcess>") >= 0)
+			{
+				if (StructDefine.Flag & STRUCT_FLAG_EXPORT_LUA_PROCESS)
+				{
+					LineSpace = GetLineSpace(Struct, "<LuaProcess>");
+					CString Process = MakeLuaProcess(StructDefine, SSTIDEnumName, SpaceName, LineSpace);
+					Struct.Replace("<LuaProcess>", Process);
+					NeedVTable = true;
+				}
+				else
+				{
+					Struct.Replace("<LuaProcess>", "");
+				}
+			}
+
+			if (Struct.Find("<XLSProcess>") >= 0)
+			{
+				if (StructDefine.Flag & STRUCT_FLAG_EXPORT_XLS_PROCESS)
+				{
+					LineSpace = GetLineSpace(Struct, "<XLSProcess>");
+					CString Process = MakeStructXLSProcess(StructDefine, LineSpace);
+					Struct.Replace("<XLSProcess>", Process);
+				}
+				else
+				{
+					Struct.Replace("<XLSProcess>", "");
+				}
+			}
+
+			if (NeedVTable)
+				RetainBlock(Struct, "<NeedVTable>", "</NeedVTable>");
+			else
+				RemoveBlock(Struct, "<NeedVTable>", "</NeedVTable>");
+
+			if (StructDefine.MemberList.size())
+			{
+				Struct.Replace("<IfHaveMember>", "");
+				Struct.Replace("</IfHaveMember>", "");
+			}
+			else
+			{
+				RemoveBlock(Struct, "<IfHaveMember>", "</IfHaveMember>");
+			}
+
+			if (StructDefine.BaseStruct.IsEmpty())
 			{
 				RemoveBlock(Struct, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
 				Struct.Replace("<IfNotHaveBaseClass>", "");
@@ -6890,73 +7767,79 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO>& St
 				Struct.Replace("<IfHaveBaseClass>", "");
 				Struct.Replace("</IfHaveBaseClass>", "");
 				RemoveBlock(Struct, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
-				Struct.Replace("<BaseClass>", StructDefineList[i].BaseStruct);
+				Struct.Replace("<BaseClass>", StructDefine.BaseStruct);
 			}
 
-			LineSpace=GetLineSpace(Struct,"<StructDescription>");
-			CString StructDescription=ToComment(StructDefineList[i].Description,LineSpace);
-			Struct.Replace("<StructDescription>",StructDescription);
-			Struct.Replace("<StructName>",StructDefineList[i].Name);
+			LineSpace = GetLineSpace(Struct, "<StructDescription>");
+			CString StructDescription = ToComment(StructDefine.Description, LineSpace);
+			Struct.Replace("<StructDescription>", StructDescription);
+			Struct.Replace("<StructName>", StructDefine.Name);
 			CString BaseStruct;
-			if(!StructDefineList[i].BaseStruct.IsEmpty())
+			if (!StructDefine.BaseStruct.IsEmpty())
 			{
-				BaseStruct=":"+StructDefineList[i].BaseStruct;
+				BaseStruct = StructDefine.BaseStruct;
 			}
-			Struct.Replace("<BaseStruct>",BaseStruct);
-			LineSpace=GetLineSpace(Struct,"<Members>");
-			CString Members=MakeStructMembers(StructDefineList[i],LineSpace);
-			Struct.Replace("<Members>",Members);
+			Struct.Replace("<BaseStruct>", BaseStruct);
 
-			LineSpace=GetLineSpace(Struct,"<SSTIDEnumDefine>");
-			CString SSTIDEnum=MakeStructSSTIDEnumDefines(StructDefineList[i],LineSpace);
-			Struct.Replace("<SSTIDEnumDefine>",SSTIDEnum);
+			LineSpace = GetLineSpace(Struct, "<Members>");
+			CString Members = MakeStructMembers(StructDefine, ";", SpaceName, LineSpace);
+			Struct.Replace("<Members>", Members);
 
-			LineSpace=GetLineSpace(Struct,"<InitOperations>");
-			CString InitOperations=MakeInitOperations(StructDefineList[i],LineSpace);
-			Struct.Replace("<InitOperations>",InitOperations);
+			LineSpace = GetLineSpace(Struct, "<Members,>");
+			Members = MakeStructMembers(StructDefine, ",", SpaceName, LineSpace);
+			Struct.Replace("<Members,>", Members);
 
-			
+			LineSpace = GetLineSpace(Struct, "<SSTIDEnumDefine>");
+			CString SSTIDEnum = MakeStructSSTIDEnumDefines(StructDefine, SpaceName, LineSpace);
+			Struct.Replace("<SSTIDEnumDefine>", SSTIDEnum);
 
-			LineSpace=GetLineSpace(Struct,"<PackOperations>");
-			CString PackOperations=MakePackOperations(StructDefineList[i],SSTIDEnumName,LineSpace);
-			Struct.Replace("<PackOperations>",PackOperations);
+			LineSpace = GetLineSpace(Struct, "<InitOperations>");
+			CString InitOperations = MakeInitOperations(StructDefine, LineSpace);
+			Struct.Replace("<InitOperations>", InitOperations);
 
-			LineSpace=GetLineSpace(Struct,"<UnpackOperations>");
-			CString UnpackOperations=MakeUnpackOperations(StructDefineList[i],SSTIDEnumName,LineSpace);
-			Struct.Replace("<UnpackOperations>",UnpackOperations);
+			CString PacketName = m_InterfaceConfig.DefaultPacketName;
+			CString PacketMemberName = m_InterfaceConfig.DefaultPacketMemberName;
 
-			LineSpace=GetLineSpace(Struct,"<PacketSizes>");
-			CString PackSizes=MakePackSizes(StructDefineList[i],LineSpace);
-			Struct.Replace("<PacketSizes>",PackSizes);
+			LineSpace = GetLineSpace(Struct, "<PackOperations>");
+			CString PackOperations = MakePackOperations(StructDefine, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
+			Struct.Replace("<PackOperations>", PackOperations);
+
+			LineSpace = GetLineSpace(Struct, "<UnpackOperations>");
+			CString UnpackOperations = MakeUnpackOperations(StructDefine, SSTIDEnumName, SpaceName, PacketName, PacketMemberName, LineSpace);
+			Struct.Replace("<UnpackOperations>", UnpackOperations);
+
+			LineSpace = GetLineSpace(Struct, "<PacketSizes>");
+			CString PackSizes = MakePackSizes(StructDefine, SpaceName, LineSpace);
+			Struct.Replace("<PacketSizes>", PackSizes);
 
 			//LineSpace = GetLineSpace(Struct, "<ToXMLOperations>");
-			//CString ToXMLOperations = MakeToXMLOperations(StructDefineList[i], SSTIDEnumName, LineSpace);
+			//CString ToXMLOperations = MakeToXMLOperations(StructDefine, SSTIDEnumName, LineSpace);
 			//Struct.Replace("<ToXMLOperations>", ToXMLOperations);
 
 			//LineSpace = GetLineSpace(Struct, "<FromXMLOperations>");
-			//CString FromXMLOperations = MakeFromXMLOperations(StructDefineList[i], SSTIDEnumName, LineSpace);
+			//CString FromXMLOperations = MakeFromXMLOperations(StructDefine, SSTIDEnumName, LineSpace);
 			//Struct.Replace("<FromXMLOperations>", FromXMLOperations);
 
-			
 
-			LineSpace=GetLineSpace(Struct,"<CloneFromOperations>");
-			CString CloneOperations=MakeCloneOperations(StructDefineList[i],LineSpace,"","Value.");
-			Struct.Replace("<CloneFromOperations>",CloneOperations);
 
-			LineSpace=GetLineSpace(Struct,"<CloneToOperations>");
-			CloneOperations=MakeCloneOperations(StructDefineList[i],LineSpace,"CloneObject.","");
-			Struct.Replace("<CloneToOperations>",CloneOperations);
+			LineSpace = GetLineSpace(Struct, "<CloneFromOperations>");
+			CString CloneOperations = MakeCloneOperations(StructDefine, m_InterfaceConfig.MemberVariablePrefix, "Value.", SpaceName, LineSpace);
+			Struct.Replace("<CloneFromOperations>", CloneOperations);
 
-			StructDefines+=Struct+"\r\n\r\n";
+			//LineSpace = GetLineSpace(Struct, "<CloneToOperations>");
+			//CloneOperations = MakeCloneOperations(StructDefine, LineSpace, "CloneObject.", m_InterfaceConfig.MemberVariablePrefix, SpaceName);
+			//Struct.Replace("<CloneToOperations>", CloneOperations);
+
+			StructDefines += Struct + "\r\n\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	StructDefines.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	StructDefines.Replace("\r\n", Space);
 	return StructDefines;
 }
 
-CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Members;
 	int MaxLen=0;
@@ -6992,7 +7875,7 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 
 			if(StructInfo.MemberList[i].IsArray)
 			{
-				VariableDefine=m_InterfaceConfig.ArrayDefineConfig.VariableDefine;
+				VariableDefine = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.VariableDefine, pTypeInfo);
 			}
 
 			VariableDefine.Replace("<Type>",pTypeInfo->CType);
@@ -7003,6 +7886,7 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 				CurSpaceCount--;
 			}
 			VariableDefine.Replace("<Space>",Space);
+			VariableDefine.Replace("<SpaceName>", SpaceName);
 			CString VarName;
 			
 				
@@ -7012,18 +7896,19 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 				VarName="m_"+VarName;
 			}
 			VariableDefine.Replace("<Variable>",VarName);
+			VariableDefine = VariableDefine + SplitChar;
 			Member.Replace("<VariableDefine>",VariableDefine);
 		}
 		CString Description=StructInfo.MemberList[i].Description;
 		if(!Description.IsEmpty())
 		{
-			Description="//"+Description;
+			Description = m_InterfaceConfig.CommentPrefix + Description;
 			Description.Replace("\r","");
 			Description.Replace("\n","");
-		}
+		}		
 		Member.Replace("<Description>",Description);
 
-		Members+=Member+"\r\n";
+		Members += Member + "\r\n";
 	}
 	CString Space="\r\n";
 	Space+=szLineSpace;
@@ -7031,107 +7916,156 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 	return Members;
 }
 
-CString CCallInterfaceMakerDlg::MakeCloneOperations(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace,LPCTSTR szLeftValue,LPCTSTR szRightValue)
+CString CCallInterfaceMakerDlg::MakeCloneOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLeftValue, LPCTSTR szRightValue, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
 		{
-			CString Operation=pTypeInfo->GenerateOperations.CloneOperation;
-			if(StructInfo.MemberList[j].IsArray)
-				Operation=m_InterfaceConfig.ArrayDefineConfig.CloneOperation;
-
-			if(StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)
-			{
-				RemoveBlock(Operation,"<IfMonitorUpdate>","</IfMonitorUpdate>");
-			}
-			else
-			{
-				Operation.Replace("<IfMonitorUpdate>","");
-				Operation.Replace("</IfMonitorUpdate>","");
-			}
-
-			if(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
-			{
-				RemoveBlock(Operation,"<IfNotDataObject>","</IfNotDataObject>");
-				Operation.Replace("<IfDataObject>","");
-				Operation.Replace("</IfDataObject>","");
-			}
-			else
-			{
-				RemoveBlock(Operation,"<IfDataObject>","</IfDataObject>");
-				Operation.Replace("<IfNotDataObject>","");
-				Operation.Replace("</IfNotDataObject>","");
-			}
-
-			if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
-			{
-				RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
-				Operation.Replace("<If64Bit>", "");
-				Operation.Replace("</If64Bit>", "");
-			}
-			else
-			{
-				RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
-				Operation.Replace("<IfNot64Bit>", "");
-				Operation.Replace("</IfNot64Bit>", "");
-			}
-
-			if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
-			{
-				RemoveBlock(Operation, "<IfNotRefType>", "</IfNotRefType>");
-				Operation.Replace("<IfRefType>", "");
-				Operation.Replace("</IfRefType>", "");
-			}
-			else
-			{
-				RemoveBlock(Operation, "<IfRefType>", "</IfRefType>");
-				Operation.Replace("<IfNotRefType>", "");
-				Operation.Replace("</IfNotRefType>", "");
-			}
-
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-			{
-				RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-				Operation.Replace("<IfInDataObject>","");
-				Operation.Replace("</IfInDataObject>","");
-			}
-			else
-			{
-				RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-				Operation.Replace("<IfNotInDataObject>","");
-				Operation.Replace("</IfNotInDataObject>","");
-			}
-
-			Operation.Replace("<LeftValue>",szLeftValue);
-			Operation.Replace("<RightValue>",szRightValue);
-
-			Operation.Replace("<Type>",pTypeInfo->CType);
-			Operation.Replace("<VariableName>",StructInfo.MemberList[j].Name);
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-				Operation.Replace("<Variable>","m_"+StructInfo.MemberList[j].Name);
-			else
-				Operation.Replace("<Variable>",StructInfo.MemberList[j].Name);
-			Operation.Replace("<ClassName>",StructInfo.Name);
-
-			CString ModifyFlagEnumName;
-			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));			
-			Operation.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
-
-			CString ModifyFlag="MF_"+ClassNameToUpper(StructInfo.MemberList[j].Name);
-			Operation.Replace("<ModifyFlag>",ModifyFlag);
-
-			Source+=Operation+"\r\n";
-		}		
+			
+			CString Operation = MakeCloneOperation(MemberInfo.Name, pTypeInfo, MemberInfo.IsArray,
+				StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT, StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT, 
+				(MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0, MemberInfo.PackFlag,
+				szLeftValue, szRightValue, StructInfo.Name, SpaceName, NULL);
+			Source += Operation + "\r\n";
+		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
+}
+
+CString CCallInterfaceMakerDlg::MakeCloneOperation(LPCTSTR VariableName, TYPE_DEFINE* pTypeInfo, bool IsArray, bool InDataObject, bool BeCheckMF, bool BeUpdateMF,
+	LPCTSTR PackFlag, LPCTSTR szLeftValue, LPCTSTR szRightValue, LPCTSTR ClassName, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Operation;
+	if (IsArray)
+	{
+		Operation = m_InterfaceConfig.ArrayDefineConfig.CloneOperation;
+		CString SubOperation = pTypeInfo->GenerateOperations.CloneOperation;
+		CString LineSpace = GetLineSpace(Operation, "<CloneOperation>");
+		RemoveBlock(SubOperation, "<IfNotInArray>", "</IfNotInArray>");
+		RetainBlock(SubOperation, "<IfInArray>", "</IfInArray>");
+		CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+		ArrayVar.Replace("<Index>", "i");
+		SubOperation.Replace("<Variable>", ArrayVar);
+		RemoveBlock(SubOperation, "<IfInDataObject>", "</IfInDataObject>");
+		RemoveBlock(SubOperation, "<IfCheckMF>", "</IfCheckMF>");
+		RemoveBlock(SubOperation, "<IfUpdateMF>", "</IfUpdateMF>");
+		SubOperation.Replace("\r\n", "\r\n" + LineSpace);
+		Operation.Replace("<CloneOperation>", SubOperation);
+
+		CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+		VariableDefine.Replace("<Type>", pTypeInfo->CType);
+		VariableDefine.Replace("<Space>", "	");
+		VariableDefine.Replace("<Variable>", "ArrayElement");
+		VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+		Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+
+		CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+		VariableInit.Replace("<Variable>", "ArrayElement");
+		Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+	}
+	else
+	{
+		Operation = pTypeInfo->GenerateOperations.CloneOperation;
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
+	{
+		RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+		Operation.Replace("<IfDataObject>", "");
+		Operation.Replace("</IfDataObject>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+		Operation.Replace("<IfNotDataObject>", "");
+		Operation.Replace("</IfNotDataObject>", "");
+	}
+
+	if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
+	{
+		RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+		Operation.Replace("<If64Bit>", "");
+		Operation.Replace("</If64Bit>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+		Operation.Replace("<IfNot64Bit>", "");
+		Operation.Replace("</IfNot64Bit>", "");
+	}
+
+	if (pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+	{
+		RemoveBlock(Operation, "<IfNotRefType>", "</IfNotRefType>");
+		Operation.Replace("<IfRefType>", "");
+		Operation.Replace("</IfRefType>", "");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfRefType>", "</IfRefType>");
+		Operation.Replace("<IfNotRefType>", "");
+		Operation.Replace("</IfNotRefType>", "");
+	}
+	CString VarName = VariableName;
+	if (InDataObject)
+	{
+		VarName = "m_" + VarName;
+		RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+		RetainBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+
+		if (BeCheckMF)
+			RetainBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+		else
+			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+
+		if (BeUpdateMF)
+			RetainBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+		else
+			RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+	}
+	else
+	{
+		RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+		RetainBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+		RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
+		RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
+	}
+
+	Operation.Replace("<LeftValue>", szLeftValue);
+	Operation.Replace("<RightValue>", szRightValue);
+
+	Operation.Replace("<Type>", pTypeInfo->CType);
+	Operation.Replace("<VariableName>", VariableName);
+
+	Operation.Replace("<PackFlag>", PackFlag);
+
+	Operation.Replace("<Variable>", VarName);
+	Operation.Replace("<ClassName>", ClassName);
+
+	CString ModifyFlagEnumName;
+	ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ClassName));
+	Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
+
+	CString ModifyFlag = "MF_" + ClassNameToUpper(VariableName);
+	Operation.Replace("<ModifyFlag>", ModifyFlag);
+
+	Operation.Replace("<SpaceName>", SpaceName);
+
+	if (szLineSpace && (szLineSpace[0]))
+	{
+		CString Space = "\r\n";
+		Space += szLineSpace;
+		Operation.Replace("\r\n", Space);
+	}
+	return Operation;
 }
 
 bool CCallInterfaceMakerDlg::MakeDataObjectFlagIndicesEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& AllDataStructList, ENUM_DEFINE_INFO& EnumInfo)
@@ -7181,37 +8115,36 @@ bool CCallInterfaceMakerDlg::MakeDataObjectSSTIDsEnum(vector<BASE_DATA_STRUCT_DE
 	return true;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagEnumDefine(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagEnumDefine(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 
 	ENUM_DEFINE_INFO EnumInfo;
 
-	EnumInfo.Name.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));
-	EnumInfo.ShortName=EnumInfo.Name;
-	EnumInfo.Flag|=ENUM_DEFINE_FLAG_IS_64BIT;
+	EnumInfo.Name.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+	EnumInfo.ShortName = EnumInfo.Name;
+	EnumInfo.Flag |= ENUM_DEFINE_FLAG_IS_64BIT;
 
-	EnumInfo.MemberList.resize(StructInfo.MemberList.size()+1);
+	EnumInfo.MemberList.resize(StructInfo.MemberList.size());
 
-	CString EnumType="UINT64";
-	TYPE_DEFINE * pType=FindVarType(EnumType);
-	if(pType)
-		EnumType=pType->CType;
+	CString EnumType = "UINT64";
+	TYPE_DEFINE* pType = FindVarType(EnumType);
+	if (pType)
+		EnumType = pType->CType;
 
-	UINT64 MF_ALL=0;
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	//UINT64 MF_ALL=0;
+	for (size_t j = 0; j < StructInfo.MemberList.size(); j++)
 	{
 		CString MemberName;
-		MemberName=ClassNameToUpper(StructInfo.MemberList[j].Name);
-		EnumInfo.MemberList[j].Name.Format("MF_%s",MemberName);
-		EnumInfo.MemberList[j].Value.Format("(((%s)1)<<%d)",EnumType,j);
-		MF_ALL=(MF_ALL<<1)|1;
+		MemberName = ClassNameToUpper(StructInfo.MemberList[j].Name);
+		EnumInfo.MemberList[j].Name.Format("MF_%s", MemberName);
+		EnumInfo.MemberList[j].Value.Format("%d", j);
+		EnumInfo.MemberList[j].Flag = ENUM_MEMBER_FLAG_IS_BIT_MASK;
+		//MF_ALL=(MF_ALL<<1)|1;
 	}
-	EnumInfo.MemberList[StructInfo.MemberList.size()].Name="MF_ALL";
-	EnumInfo.MemberList[StructInfo.MemberList.size()].Value.Format("0x%llX",MF_ALL);
+	//EnumInfo.MemberList[StructInfo.MemberList.size()].Name="MF_ALL";
+	//EnumInfo.MemberList[StructInfo.MemberList.size()].Value.Format("0x%llX",MF_ALL);
 
-	return MakeEnumDefine(EnumInfo,szLineSpace);
-
-	
+	return MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 }
 
 CString CCallInterfaceMakerDlg::MakeDataObjectMembersGetModifyFlag(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
@@ -7225,9 +8158,10 @@ CString CCallInterfaceMakerDlg::MakeDataObjectMembersGetModifyFlag(STRUCT_DEFINE
 			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
 			(!StructInfo.MemberList[j].IsArray))
 		{
-			CString Temp;
+			CString Temp = m_DataObjectGetModifyFlagDefineTemplate;
 
-			Temp.Format("m_%s.GetModifyFlag(ModifyFlags,GetType,MemberFlags);\r\n",StructInfo.MemberList[j].Name);
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;			
+			Temp.Replace("<Variable>", VarName);
 
 			Source+=Temp;
 		}		
@@ -7251,16 +8185,17 @@ CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersIsModified(STRUCT_DEFIN
 			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
 			(!StructInfo.MemberList[j].IsArray))
 		{
-			CString Temp;
+			CString Temp = m_DataObjectIsModifiedDefineTemplate;
 
-			Temp.Format("||m_%s.IsModified(MemberFlags)\r\n",StructInfo.MemberList[j].Name);
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
+			Temp.Replace("<Variable>", VarName);
 
 			Source+=Temp;
 		}		
 	}
 
-	if(Source.IsEmpty())
-		Source="||false";
+	//if(Source.IsEmpty())
+	//	Source="||false";
 
 	CString Space="\r\n";
 	Space+=szLineSpace;
@@ -7279,9 +8214,10 @@ CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersClearModifyFlag(STRUCT_
 			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
 			(!StructInfo.MemberList[j].IsArray))
 		{
-			CString Temp;
+			CString Temp = m_DataObjectClearModifyFlagDefineTemplate;
 
-			Temp.Format("m_%s.ClearModifyFlag(MemberFlags);\r\n",StructInfo.MemberList[j].Name);
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
+			Temp.Replace("<Variable>", VarName);
 
 			Source+=Temp;
 		}		
@@ -7305,8 +8241,10 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDeclare(STRUCT_DEFINE_IN
 		if(pTypeInfo)
 		{
 			CString Method=pTypeInfo->GenerateOperations.SetMethodDeclare;
-			if(StructInfo.MemberList[j].IsArray)
-				Method=m_InterfaceConfig.ArrayDefineConfig.SetMethodDeclare;
+			if (StructInfo.MemberList[j].IsArray)
+			{
+				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.SetMethodDeclare, pTypeInfo);
+			}
 
 			Method.Replace("<Type>",pTypeInfo->CType);
 			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
@@ -7321,30 +8259,38 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDeclare(STRUCT_DEFINE_IN
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Methods;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
+		if (pTypeInfo)
 		{
-			CString Method=pTypeInfo->GenerateOperations.SetMethodDefine;
-			if(StructInfo.MemberList[j].IsArray)
-				Method=m_InterfaceConfig.ArrayDefineConfig.SetMethodDefine;
-
-			if(StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)
+			CString Method = pTypeInfo->GenerateOperations.SetMethodDefine;
+			if (MemberInfo.IsArray)
 			{
-				RemoveBlock(Method,"<IfMonitorUpdate>","</IfMonitorUpdate>");
+				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.SetMethodDefine, pTypeInfo);
+				CString PackFlag;
+				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
+					PackFlag.Format("DOMF_%s_FULL", ClassNameToUpper(pTypeInfo->Name));
+				CString LineSpace = GetLineSpace(Method, "<CloneOperation>");
+				CString CloneOperation = MakeCloneOperation(MemberInfo.Name, pTypeInfo, true, true, false,
+					(MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0, PackFlag, "", "Value", StructInfo.Name, SpaceName, LineSpace);
+				Method.Replace("<CloneOperation>", CloneOperation);
+			}
+
+			if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)
+			{
+				RemoveBlock(Method, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
 			else
 			{
-				Method.Replace("<IfMonitorUpdate>","");
-				Method.Replace("</IfMonitorUpdate>","");
+				RetainBlock(Method, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
 
-			if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+			if (pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
 			{
 				RemoveBlock(Method, "<IfNotRefType>", "</IfNotRefType>");
 				Method.Replace("<IfRefType>", "");
@@ -7357,7 +8303,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INF
 				Method.Replace("</IfNotRefType>", "");
 			}
 
-			if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+			if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 			{
 				RemoveBlock(Method, "<IfNot64Bit>", "</IfNot64Bit>");
 				Method.Replace("<If64Bit>", "");
@@ -7370,20 +8316,26 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INF
 				Method.Replace("</IfNot64Bit>", "");
 			}
 
-			Method.Replace("<Type>",pTypeInfo->CType);
-			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
-			Method.Replace("<Variable>","m_"+StructInfo.MemberList[j].Name);
-			Method.Replace("<ClassName>",StructInfo.Name);
+			Method.Replace("<Type>", pTypeInfo->CType);
+			Method.Replace("<VariableName>", MemberInfo.Name);
+
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + MemberInfo.Name;
+			Method.Replace("<Variable>", VarName);
+			Method.Replace("<ClassName>", StructInfo.Name);
 
 			CString ModifyFlagEnumName;
-			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));			
-			Method.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Method.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
-			CString ModifyFlag="MF_"+ClassNameToUpper(StructInfo.MemberList[j].Name);
-			Method.Replace("<ModifyFlag>",ModifyFlag);
+			CString ModifyFlag = "MF_" + ClassNameToUpper(MemberInfo.Name);
+			Method.Replace("<ModifyFlag>", ModifyFlag);
 
-			Methods+=Method+"\r\n";
-		}		
+			Method.Replace("<SpaceName>", SpaceName);
+
+
+
+			Methods += Method + "\r\n";
+		}
 	}
 
 	CString Space="\r\n";
@@ -7402,8 +8354,10 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_IN
 		if(pTypeInfo)
 		{
 			CString Method=pTypeInfo->GenerateOperations.GetMethodDeclare;
-			if(StructInfo.MemberList[j].IsArray)
-				Method=m_InterfaceConfig.ArrayDefineConfig.GetMethodDeclare;
+			if (StructInfo.MemberList[j].IsArray)
+			{
+				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.GetMethodDeclare, pTypeInfo);
+			}
 
 			Method.Replace("<Type>",pTypeInfo->CType);
 			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
@@ -7428,7 +8382,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_IN
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Methods;
 
@@ -7438,13 +8392,18 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INF
 		if(pTypeInfo)
 		{
 			CString Method=pTypeInfo->GenerateOperations.GetMethodDefine;
-			if(StructInfo.MemberList[j].IsArray)
-				Method=m_InterfaceConfig.ArrayDefineConfig.GetMethodDefine;
+			if (StructInfo.MemberList[j].IsArray)
+			{
+				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.GetMethodDefine, pTypeInfo);
+			}
 
 			Method.Replace("<Type>",pTypeInfo->CType);
 			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
-			Method.Replace("<Variable>","m_"+StructInfo.MemberList[j].Name);
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
+			Method.Replace("<Variable>", VarName);
 			Method.Replace("<ClassName>",StructInfo.Name);
+			Method.Replace("<SpaceName>", SpaceName);
+
 			CString ConstMethod = Method;			
 			Method.Replace("<const>", "");
 			Methods+=Method+"\r\n";
@@ -7466,7 +8425,55 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INF
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlags(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsHeader(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Source;
+
+	vector<STRUCT_DEFINE_INFO*> DataObjectList;
+
+	GetDataObjectListSorted(AllDataStructList, DataObjectList);
+
+
+	UINT ModifyFlagDefineSize = 0;
+
+	for (size_t i = 0; i < AllDataStructList.size(); i++)
+	{
+		if (AllDataStructList[i]->ListType == DATA_STRUCT_STRUCT)
+		{
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)AllDataStructList[i];
+			for (size_t j = 0; j < pStructList->StructList.size(); j++)
+			{
+				if (pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+				{
+					CString Define = m_DataObjectModifyFlagHeaderDefineTemple;
+
+					CString Name;
+					Name.Format("DOMF_%s_FULL", ClassNameToUpper(pStructList->StructList[j].Name));
+					Define.Replace("<FlagName>", Name);
+
+					Source += Define + "\r\n";
+				}
+			}
+		}
+	}
+
+	for (size_t i = 0; i < DataObjectModifyFlags.size(); i++)
+	{
+
+		CString Define = m_DataObjectModifyFlagHeaderDefineTemple;
+
+		Define.Replace("<FlagName>", DataObjectModifyFlags[i].Name);
+		Source += Define + "\r\n";
+
+	}
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
+	return Source;
+}
+
+CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsSource(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
 
@@ -7494,10 +8501,10 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlags(vector<BASE_DATA_STRUC
 
 					ModifyFlag.Name.Format("DOMF_%s_FULL",ClassNameToUpper(pStructList->StructList[j].Name));
 					Define.Replace("<FlagName>",ModifyFlag.Name);
-
+					Define.Replace("<SpaceName>", SpaceName);
 
 					CString Space=GetLineSpace(Define,"<FlagData>");
-					CString FlagData=MakeDataObjectModifyFlagData(ModifyFlag,Space);
+					CString FlagData = MakeDataObjectModifyFlagData(ModifyFlag, SpaceName, Space);
 					Define.Replace("<FlagData>",FlagData);
 
 					Source+=Define+"\r\n";
@@ -7519,10 +8526,10 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlags(vector<BASE_DATA_STRUC
 		}
 		
 		Define.Replace("<FlagName>", DataObjectModifyFlags[i].Name);
-
+		Define.Replace("<SpaceName>", SpaceName);
 
 		CString Space=GetLineSpace(Define,"<FlagData>");
-		CString FlagData = MakeDataObjectModifyFlagData(DataObjectModifyFlags[i], Space);
+		CString FlagData = MakeDataObjectModifyFlagData(DataObjectModifyFlags[i], SpaceName, Space);
 		Define.Replace("<FlagData>",FlagData);
 
 		Source+=Define+"\r\n";
@@ -7535,69 +8542,96 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlags(vector<BASE_DATA_STRUC
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_FLAG& ModifyFlag,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_FLAG& ModifyFlag, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
-
-	for(size_t i=0;i<ModifyFlag.ModifyFlag.size();i++)
+	CString Template = m_DataObjectModifyFlagUnitTemple;
+	CString ObjSeparatorStr = GetBlock(Template, "<ObjSeparator>", "</ObjSeparator>");
+	RemoveBlock(Template, "<ObjSeparator>", "</ObjSeparator>");
+	CString FlagSeparatorStr = GetBlock(Template, "<FlagSeparator>", "</FlagSeparator>");
+	RemoveBlock(Template, "<FlagSeparator>", "</FlagSeparator>");
+	CString ZeroValue = GetBlock(Template, "<ZeroValue>", "</ZeroValue>");
+	RemoveBlock(Template, "<ZeroValue>", "</ZeroValue>");
+	CString ObjTemplate = GetBlock(Template, "<FlagUnit>", "</FlagUnit>");
+	ReplaceBlock(Template, "<FlagUnit>", "</FlagUnit>", "<ObjFlag>");
+	for (size_t i = 0; i < ModifyFlag.ModifyFlag.size(); i++)
 	{
 		CString Member;
-		for(size_t j=0;j<ModifyFlag.ModifyFlag[i].Members.size();j++)
+		for (size_t j = 0; j < ModifyFlag.ModifyFlag[i].Members.size(); j++)
 		{
-			
-			CString FlagUnit=m_DataObjectModifyFlagUnitTemple;
 
-			FlagUnit.Replace("<ClassName>",ModifyFlag.ModifyFlag[i].ClassName);
+			CString FlagUnit = ObjTemplate;
+
+			FlagUnit.Replace("<SpaceName>", SpaceName);
+			FlagUnit.Replace("<ClassName>", ModifyFlag.ModifyFlag[i].ClassName);
 
 			CString ModifyFlagEnumName;
-			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(ModifyFlag.ModifyFlag[i].ClassName));			
-			FlagUnit.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(ModifyFlag.ModifyFlag[i].ClassName));
+			FlagUnit.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
 			CString Flag;
-			Flag.Format("MF_%s",ClassNameToUpper(ModifyFlag.ModifyFlag[i].Members[j]));
-			FlagUnit.Replace("<ModifyFlag>",Flag);
-			if(j)
-				Member+="|";
-			Member+=FlagUnit;
+			Flag.Format("MF_%s", ClassNameToUpper(ModifyFlag.ModifyFlag[i].Members[j]));
+			FlagUnit.Replace("<ModifyFlag>", Flag);
+			if (j)
+				Member += FlagSeparatorStr;
+			Member += FlagUnit;
+		}		
+		if (i)
+		{
+			Source += ObjSeparatorStr + "\r\n";
 		}
-		if(Member.IsEmpty())
-			Member="0";
-		if(i)
-			Source+=",\r\n";
-		Source+=Member;
+		if (Member.IsEmpty())
+		{
+			Source += ZeroValue;
+		}
+		else			
+		{
+			CString Line = Template;
+			Line.Replace("<ObjFlag>", Member);
+			Source += Line;
+		}		
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName,LPCTSTR szLineSpace)
 {
-	CString Source=m_EnumDefineTemplate;
+	CString Source;
 
-	Source.Replace("<EnumName>",EnumInfo.Name);
-	
-	if(EnumInfo.Description.IsEmpty())
-		Source.Replace("<Description>","");
+	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+		Source = m_EnumDefine64Template;
 	else
-		Source.Replace("<Description>","//"+EnumInfo.Description);
-
-	CString TypeCaster = "";
-
-	if(EnumInfo.Flag&ENUM_DEFINE_FLAG_IS_64BIT)
+		Source = m_EnumDefineTemplate;
+	Source.Replace("<EnumName>",EnumInfo.Name);
+	Source.Replace("<SpaceName>", SpaceName);
+	
+	if (EnumInfo.Description.IsEmpty())
+		Source.Replace("<Description>", "");
+	else
+		Source.Replace("<Description>", m_InterfaceConfig.CommentPrefix + EnumInfo.Description);
+	
+	if (EnumInfo.MemberList.size())
 	{
-		TYPE_DEFINE * pType=FindVarType("UINT64");
-		if (pType)
-		{
-			Source.Replace("<EnumType>", ":" + pType->CType);
-			TypeCaster = "(" + pType->CType + ")";
-		}
+		Source.Replace("<LastEnumValue>", EnumInfo.MemberList[EnumInfo.MemberList.size() - 1].Name);
+	}
+
+	CString MemberCount;
+
+	MemberCount.Format("%d", GetEnumMemberCount(EnumInfo));
+
+	Source.Replace("<EnumMemberCount>", MemberCount);
+
+	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+	{
+		SelectBlock(Source, "IsFlagEnum", true);
 	}
 	else
 	{
-		Source.Replace("<EnumType>","");
+		SelectBlock(Source, "IsFlagEnum", false);
 	}
 	
 
@@ -7605,27 +8639,71 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo,LPCTST
 
 	CString EnumMembers;
 
-	UINT MF_ALL=0;
+	int Value = 0;
 	for(size_t i=0;i<EnumInfo.MemberList.size();i++)
 	{
 		
-		CString Member=m_EnumMemberDefineTemplate;
+		CString Member;
+		if (EnumInfo.MemberList[i].Flag & ENUM_MEMBER_FLAG_IS_BIT_MASK)
+		{
+			if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+				Member = m_EnumBitMaskMemberDefine64Template;
+			else
+				Member = m_EnumBitMaskMemberDefineTemplate;
+		}
+		else
+		{
+			if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+				Member = m_EnumMemberDefine64Template;
+			else
+				Member = m_EnumMemberDefineTemplate;
+		}
 
 		Member.Replace("<Name>",EnumInfo.MemberList[i].Name);
+		Member.Replace("<SpaceName>", SpaceName);
+		Member.Replace("<EnumName>", EnumInfo.Name);
+
 
 		CString EnumValue = EnumInfo.MemberList[i].Value;
+
+		if (!EnumValue.IsEmpty())
+			Value = atoi(EnumValue);
 		
-		EnumValue.Replace("<EnumType>", TypeCaster);
+		
 
 		if (EnumValue.IsEmpty())
-			Member.Replace("<Value>","");
+		{
+			RemoveBlock(EnumValue, "<IfHaveValue>", "</IfHaveValue>");
+		}			
 		else
-			Member.Replace("<Value>", "=" + EnumValue);
+		{
+			EnumValue.Replace("<IfHaveValue>", "");
+			EnumValue.Replace("</IfHaveValue>", "");
+		}			
 
-		if(EnumInfo.MemberList[i].Description.IsEmpty())
-			Member.Replace("<Description>","");
+		//Member.Replace("<Value>", EnumValue);
+
+		if (EnumValue.IsEmpty())
+		{
+			EnumValue.Format("%d", Value);
+			Member.Replace("<Value>", EnumValue);
+		}			
 		else
-			Member.Replace("<Description>","//"+EnumInfo.MemberList[i].Description);
+		{
+			Member.Replace("<Value>", EnumValue);
+		}			
+		Value++;
+
+		CString Desc = EnumInfo.MemberList[i].Description;
+		if (!EnumInfo.MemberList[i].BindDataType.IsEmpty())
+			Desc += "，参考" + EnumInfo.MemberList[i].BindDataType;
+
+
+		if (Desc.IsEmpty())
+			Member.Replace("<Description>", "");
+		else
+			Member.Replace("<Description>", m_InterfaceConfig.CommentPrefix + Desc);
+			
 
 		if(i)
 			EnumMembers+=Space;
@@ -7634,21 +8712,355 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo,LPCTST
 
 	Source.Replace("<EnumMembers>",EnumMembers);
 
+	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST)
+	{
+		RetainBlock(Source, "<IfExportEnumList>", "</IfExportEnumList>");
+		CString Operatios;
+
+		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		{
+			if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			{
+				CString Operation = m_EnumListUnitTemplate;
+				if (!Operatios.IsEmpty())
+				{
+					RetainBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+				{
+					RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+					Operation.Replace("<If64Bit>", "");
+					Operation.Replace("</If64Bit>", "");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+					Operation.Replace("<IfNot64Bit>", "");
+					Operation.Replace("</IfNot64Bit>", "");
+				}
+				Operation.Replace("<EnumName>", EnumInfo.Name);
+				Operation.Replace("<EnumValue>", Info.Name);
+				Operatios.Append(Operation);
+			}
+		}
+
+		Source.Replace("<EnumValues>", Operatios);
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfExportEnumList>", "</IfExportEnumList>");
+	}
+
+	if ((EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_VALUE) && IsNaturalEnum(EnumInfo))
+	{
+		RetainBlock(Source, "<IfExportEnumStrList>", "</IfExportEnumStrList>");
+		CString Operatios;
+
+		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		{
+			if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			{
+				CString Operation = m_EnumStrValueUnitTemplate;
+				if (!Operatios.IsEmpty())
+				{
+					RetainBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				if (Info.StrValue.IsEmpty())
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+				else
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.StrValue));
+				Operatios.Append(Operation);
+			}
+		}
+
+		Source.Replace("<EnumStrValues>", Operatios);
+
+		Operatios.Empty();
+		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		{
+			if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			{
+				CString Operation = m_EnumStrValueUnitTemplate;
+				if (!Operatios.IsEmpty())
+				{
+					RetainBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+				if (Info.StrValue.IsEmpty())
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+				else
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Description));
+				Operatios.Append(Operation);
+			}
+		}
+
+		Source.Replace("<EnumStrDescs>", Operatios);
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfExportEnumStrList>", "</IfExportEnumStrList>");
+	}
+	
+	if(EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN)
+	{
+		RetainBlock(Source, "<IfExportEnumTransFn>", "</IfExportEnumTransFn>");
+
+		CString Operations;
+		CString LineSpace;
+
+		if ((EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_VALUE) && IsNaturalEnum(EnumInfo))
+		{
+			RemoveBlock(Source, "<NotHaveEnumStrArray>", "</NotHaveEnumStrArray>");
+			RetainBlock(Source, "<HaveEnumStrArray>", "</HaveEnumStrArray>");
+		}
+		else
+		{
+			RemoveBlock(Source, "<HaveEnumStrArray>", "</HaveEnumStrArray>");
+			RetainBlock(Source, "<NotHaveEnumStrArray>", "</NotHaveEnumStrArray>");
+
+			Operations.Empty();
+			LineSpace = GetLineSpace(Source, "<EnumToStrs>");
+			for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+			{
+				if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+				{
+					CString Operation = m_EnumToStrUnitTemplate;
+					if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+					{
+						SelectBlock(Operation, "IsFlagEnum", true);
+					}
+					else
+					{
+						SelectBlock(Operation, "IsFlagEnum", false);
+					}
+					if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+					{
+						RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+						Operation.Replace("<If64Bit>", "");
+						Operation.Replace("</If64Bit>", "");
+					}
+					else
+					{
+						RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+						Operation.Replace("<IfNot64Bit>", "");
+						Operation.Replace("</IfNot64Bit>", "");
+					}
+					Operation.Replace("<EnumName>", EnumInfo.Name);
+					Operation.Replace("<EnumValue>", Info.Name);
+					if (Info.StrValue.IsEmpty())
+						Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+					else
+						Operation.Replace("<EnumStrValue>", MakeStringConst(Info.StrValue));
+					if (!Operations.IsEmpty())
+						Operations.Append("\r\n");
+					Operations.Append(Operation);
+				}
+			}
+			Operations.Replace("\r\n", "\r\n" + LineSpace);
+			Source.Replace("<EnumToStrs>", Operations);
+
+			Operations.Empty();
+			LineSpace = GetLineSpace(Source, "<EnumToDescs>");
+			for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+			{
+				if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+				{
+					CString Operation = m_EnumToStrUnitTemplate;
+					if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+					{
+						SelectBlock(Operation, "IsFlagEnum", true);
+					}
+					else
+					{
+						SelectBlock(Operation, "IsFlagEnum", false);
+					}
+					if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+					{
+						RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+						Operation.Replace("<If64Bit>", "");
+						Operation.Replace("</If64Bit>", "");
+					}
+					else
+					{
+						RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+						Operation.Replace("<IfNot64Bit>", "");
+						Operation.Replace("</IfNot64Bit>", "");
+					}
+					Operation.Replace("<EnumName>", EnumInfo.Name);
+					Operation.Replace("<EnumValue>", Info.Name);
+					if (Info.StrValue.IsEmpty())
+						Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+					else
+						Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Description));
+					if (!Operations.IsEmpty())
+						Operations.Append("\r\n");
+					Operations.Append(Operation);
+				}
+			}
+			Operations.Replace("\r\n", "\r\n" + LineSpace);
+			Source.Replace("<EnumToDescs>", Operations);
+		}
+
+		Operations.Empty();
+		LineSpace = GetLineSpace(Source, "<StrToEnums>");
+		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		{
+			if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			{
+				CString Operation = m_StrToEnumUnitTemplate;
+				if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+				{
+					SelectBlock(Operation, "IsFlagEnum", true);
+				}
+				else
+				{
+					SelectBlock(Operation, "IsFlagEnum", false);
+				}
+				if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
+				{
+					RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+					Operation.Replace("<If64Bit>", "");
+					Operation.Replace("</If64Bit>", "");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+					Operation.Replace("<IfNot64Bit>", "");
+					Operation.Replace("</IfNot64Bit>", "");
+				}
+				Operation.Replace("<EnumName>", EnumInfo.Name);
+				Operation.Replace("<EnumValue>", Info.Name);
+				if (Info.StrValue.IsEmpty())
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+				else
+					Operation.Replace("<EnumStrValue>", MakeStringConst(Info.StrValue));
+				if (!Operations.IsEmpty())
+				{
+					RetainBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+					Operations.Append("\r\n");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+				}
+
+				Operations.Append(Operation);
+			}
+		}
+		Operations.Replace("\r\n", "\r\n" + LineSpace);
+		Source.Replace("<StrToEnums>", Operations);
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfExportEnumTransFn>", "</IfExportEnumTransFn>");
+	}
+
+	if ((EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_BIND_DATA_PROCESS))
+	{
+		RetainBlock(Source, "<IfExportBindDataProcess>", "</IfExportBindDataProcess>");
+		
+		CString LineSpace;
+		CString Operations;
+		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		{
+			if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			{
+				if (!Info.BindDataType.IsEmpty())
+				{
+					CString Operation = m_EnumBindDataFillUnit;
+					Operation.Replace("<EnumName>", EnumInfo.Name);
+					Operation.Replace("<EnumValue>", Info.Name);
+					STRUCT_DEFINE_INFO* pStruct = GetStructDefineInfo(Info.BindDataType);
+					if (pStruct)
+					{
+						SelectBlock(Operation, "HaveBindStruct", true);
+						CString Temp;
+						Temp.Format("%u", pStruct->MemberList.size());
+						Operation.Replace("<BindDataLen>", Temp);
+						LineSpace = GetLineSpace(Operation, "<PropertyGridFillOperations>");
+						Temp = MakePropertyGridFillOperations(*pStruct, true, LineSpace);
+						Operation.Replace("<PropertyGridFillOperations>", Temp);						
+					}
+					else
+					{
+						SelectBlock(Operation, "HaveBindStruct", false);
+					}
+					if (!Operations.IsEmpty())
+						Operations.Append("\r\n");
+					Operations.Append(Operation);
+				}				
+			}
+		}
+		LineSpace = GetLineSpace(Source, "<BindDataFillOperations>");
+		Operations.Replace("\r\n", "\r\n" + LineSpace);
+		Source.Replace("<BindDataFillOperations>", Operations);
+
+		//Operations.Empty();
+		//for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+		//{
+		//	if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+		//	{
+		//		if (!Info.BindDataType.IsEmpty())
+		//		{
+		//			CString Operation = m_EnumBindDataFetchUnit;
+		//			Operation.Replace("<EnumName>", EnumInfo.Name);
+		//			Operation.Replace("<EnumValue>", Info.Name);
+		//			STRUCT_DEFINE_INFO* pStruct = GetStructDefineInfo(Info.BindDataType);
+		//			if (pStruct)
+		//			{
+		//				SelectBlock(Operation, "HaveBindStruct", true);
+		//				CString Temp;
+		//				Temp.Format("%u", pStruct->MemberList.size());
+		//				Operation.Replace("<BindDataLen>", Temp);
+		//				LineSpace = GetLineSpace(Operation, "<PropertyGridFetchOperations>");
+		//				Temp = MakePropertyGridFetchOperations(*pStruct, true, LineSpace);
+		//				Operation.Replace("<PropertyGridFetchOperations>", Temp);
+		//			}
+		//			else
+		//			{
+		//				SelectBlock(Operation, "HaveBindStruct", false);
+		//			}
+		//			if (!Operations.IsEmpty())
+		//				Operations.Append("\r\n");
+		//			Operations.Append(Operation);
+		//		}
+		//	}
+		//}
+		//LineSpace = GetLineSpace(Source, "<BindDataFetchOperations>");
+		//Operations.Replace("\r\n", "\r\n" + LineSpace);
+		//Source.Replace("<BindDataFetchOperations>", Operations);
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfExportBindDataProcess>", "</IfExportBindDataProcess>");
+	}
+
 	Space="\r\n";
 	Space+=szLineSpace;
 	Source.Replace("\r\n",Space);
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDefineList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDefineList, LPCTSTR SpaceName,LPCTSTR szLineSpace)
 {
 	CString EnumDefines;
-	for(size_t i=0;i<EnumDefineList.size();i++)
-	{		
-		CString Enum=MakeEnumDefine(EnumDefineList[i],"");		
+	for (size_t i = 0; i < EnumDefineList.size(); i++)
+	{
+		CString Enum = MakeEnumDefine(EnumDefineList[i], SpaceName, "");
 
-		EnumDefines+=Enum+"\r\n\r\n";
-		
+		EnumDefines += Enum + "\r\n\r\n";
+
 	}
 	CString Space="\r\n";
 	Space+=szLineSpace;
@@ -7656,38 +9068,41 @@ CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDe
 	return EnumDefines;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumStrValue(ENUM_DEFINE_INFO& EnumInfo,LPCTSTR szLineSpace)
-{
-	CString Source=m_EnumStrValueDefineTemplate;
+//CString CCallInterfaceMakerDlg::MakeEnumStrValue(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName,LPCTSTR szLineSpace)
+//{
+//	CString Source=m_EnumStrValueDefineTemplate;
+//
+//	Source.Replace("<EnumName>",EnumInfo.Name);
+//	Source.Replace("<SpaceName>", SpaceName);
+//
+//	CString MemberCount;
+//
+//	MemberCount.Format("%d",EnumInfo.MemberList.size());
+//
+//	Source.Replace("<EnumMemberCount>",MemberCount);
+//
+//
+//	CString StrValues;
+//
+//	for(size_t i=0;i<EnumInfo.MemberList.size();i++)
+//	{
+//		if(i)
+//			StrValues+=",";
+//		if (EnumInfo.MemberList[i].StrValue.IsEmpty())
+//			StrValues += MakeStringConst(EnumInfo.MemberList[i].Name);
+//		else
+//			StrValues += MakeStringConst(EnumInfo.MemberList[i].StrValue);
+//	}	
+//
+//	Source.Replace("<EnumStrValues>",StrValues);
+//
+//	CString Space="\r\n";
+//	Space+=szLineSpace;
+//	Source.Replace("\r\n",Space);
+//	return Source;
+//}
 
-	Source.Replace("<EnumName>",EnumInfo.Name);
-
-	CString MemberCount;
-
-	MemberCount.Format("%d",EnumInfo.MemberList.size());
-
-	Source.Replace("<EnumMemberCount>",MemberCount);
-
-
-	CString StrValues;
-
-	for(size_t i=0;i<EnumInfo.MemberList.size();i++)
-	{
-		if(i)
-			StrValues+=",";
-
-		StrValues+=MakeStringConst("\""+EnumInfo.MemberList[i].StrValue+"\"");
-	}	
-
-	Source.Replace("<EnumStrValues>",StrValues);
-
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
-	return Source;
-}
-
-CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& ConstDefineList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& ConstDefineList, LPCTSTR SpaceName,LPCTSTR szLineSpace)
 {
 	CString Source;
 	
@@ -7701,6 +9116,7 @@ CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& Cons
 			Const=m_ConstDefineTemplate;
 
 			Const.Replace("<Type>",pType->CType);
+			Const.Replace("<SpaceName>", SpaceName);
 		}
 		else
 		{
@@ -7714,8 +9130,11 @@ CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& Cons
 		Const.Replace("<Name>",ConstDefineList[i].Name);
 		CString Value=ConstDefineList[i].Value;
 		Value.Trim();
-		if(Value.GetLength()&&Value[0]=='"'&&Value[Value.GetLength()-1]=='"')
-			Value=MakeStringConst(Value);		
+		if (Value.GetLength() && Value[0] == '"' && Value[Value.GetLength() - 1] == '"')
+		{
+			Value.Trim('"');
+			Value = MakeStringConst(Value);
+		}			
 		Const.Replace("<Value>",Value);
 
 		Source+=Const+"\r\n\r\n";
@@ -7739,23 +9158,137 @@ CString CCallInterfaceMakerDlg::MakeStringConst(LPCTSTR StrValue)
 	return Value;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumStrValues(vector<ENUM_DEFINE_INFO>& EnumDefineList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeToStringExp(STRUCT_MEMBER_INFO& MemberInfo, TYPE_DEFINE* pType, bool IsInDataObject)
 {
-	CString EnumDefines;
-	for(size_t i=0;i<EnumDefineList.size();i++)
-	{		
-		if(EnumDefineList[i].Flag&ENUM_DEFINE_FLAG_EXPORT_STR_VALUE)
-		{
-			CString StrValues=MakeEnumStrValue(EnumDefineList[i],"");
-
-			EnumDefines+=StrValues+"\r\n\r\n";
-		}
-	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	EnumDefines.Replace("\r\n",Space);
-	return EnumDefines;
+	CString ToStringOP = pType->GenerateOperations.ToStringOperation;	
+	SelectBlock(ToStringOP, "HaveStrTrans", pType->Flag & TYPE_DEFINE_FLAG_ENUM_HAVE_STR_TRANS);
+	SelectBlock(ToStringOP, "HaveExtendType", !MemberInfo.ExtendType.IsEmpty());
+	CString VarName = MemberInfo.Name;
+	if (IsInDataObject)
+		VarName = "m_" + VarName;
+	VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+	ToStringOP.Replace("<Variable>", VarName);
+	ToStringOP.Replace("<Type>", pType->CType);
+	ToStringOP.Replace("<ExtendType>", MemberInfo.ExtendType);
+	return ToStringOP;
 }
+
+//CString CCallInterfaceMakerDlg::MakeEnumStrValues(vector<ENUM_DEFINE_INFO>& EnumDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+//{
+//	CString EnumDefines;
+//	for(size_t i=0;i<EnumDefineList.size();i++)
+//	{		
+//		if ((EnumDefineList[i].Flag & ENUM_DEFINE_FLAG_EXPORT_STR_VALUE) && IsNaturalEnum(EnumDefineList[i]))
+//		{
+//			CString StrValues = MakeEnumStrValue(EnumDefineList[i], SpaceName, "");
+//
+//			EnumDefines += StrValues + "\r\n\r\n";
+//		}
+//	}
+//	CString Space="\r\n";
+//	Space+=szLineSpace;
+//	EnumDefines.Replace("\r\n",Space);
+//	return EnumDefines;
+//}
+
+//CString CCallInterfaceMakerDlg::MakeEnumStrTransFn(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+//{
+//	CString Source = m_EnumStrTransFnTemplate;
+//
+//	Source.Replace("<EnumName>", EnumInfo.Name);
+//	Source.Replace("<SpaceName>", SpaceName);
+//
+//	if (EnumInfo.MemberList.size())
+//	{
+//		Source.Replace("<LastEnumValue>", EnumInfo.MemberList[EnumInfo.MemberList.size() - 1].Name);
+//	}
+//
+//	CString MemberCount;
+//
+//	MemberCount.Format("%d", EnumInfo.MemberList.size());
+//
+//	Source.Replace("<EnumMemberCount>", MemberCount);
+//
+//	CString Operatios;
+//	CString LineSpace;
+//
+//	if ((EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_VALUE) && IsNaturalEnum(EnumInfo))
+//	{
+//		RemoveBlock(Source, "<NotHaveEnumStrArray>", "</NotHaveEnumStrArray>");
+//		RetainBlock(Source, "<HaveEnumStrArray>", "</HaveEnumStrArray>");
+//	}
+//	else
+//	{
+//		RemoveBlock(Source, "<HaveEnumStrArray>", "</HaveEnumStrArray>");
+//		RetainBlock(Source, "<NotHaveEnumStrArray>", "</NotHaveEnumStrArray>");
+//
+//		Operatios.Empty();
+//		LineSpace = GetLineSpace(Source, "<EnumToStrs>");
+//		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+//		{
+//			CString Operation = m_EnumToStrUnitTemplate;
+//			Operation.Replace("<EnumName>", EnumInfo.Name);
+//			Operation.Replace("<EnumValue>", Info.Name);
+//			if (Info.StrValue.IsEmpty())
+//				Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+//			else
+//				Operation.Replace("<EnumStrValue>", MakeStringConst(Info.StrValue));
+//			if (!Operatios.IsEmpty())
+//				Operatios.Append("\r\n");
+//			Operatios.Append(Operation);
+//		}
+//		Operatios.Replace("\r\n", "\r\n" + LineSpace);
+//		Source.Replace("<EnumToStrs>", Operatios);
+//	}
+//
+//	Operatios.Empty();
+//	LineSpace = GetLineSpace(Source, "<StrToEnums>");
+//	for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+//	{
+//		CString Operation = m_StrToEnumUnitTemplate;
+//		Operation.Replace("<EnumName>", EnumInfo.Name);
+//		Operation.Replace("<EnumValue>", Info.Name);
+//		if (Info.StrValue.IsEmpty())
+//			Operation.Replace("<EnumStrValue>", MakeStringConst(Info.Name));
+//		else
+//			Operation.Replace("<EnumStrValue>", MakeStringConst(Info.StrValue));
+//		if (!Operatios.IsEmpty())
+//		{
+//			RetainBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+//			Operatios.Append("\r\n");
+//		}			
+//		else
+//		{
+//			RemoveBlock(Operation, "<IfNotFirst>", "</IfNotFirst>");
+//		}
+//			
+//		Operatios.Append(Operation);
+//	}
+//	Operatios.Replace("\r\n", "\r\n" + LineSpace);
+//	Source.Replace("<StrToEnums>", Operatios);
+//
+//	CString Space = "\r\n";
+//	Space += szLineSpace;
+//	Source.Replace("\r\n", Space);
+//	return Source;
+//}
+//CString CCallInterfaceMakerDlg::MakeEnumStrTransFns(vector<ENUM_DEFINE_INFO>& EnumDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+//{
+//	CString EnumDefines;
+//	for (size_t i = 0; i < EnumDefineList.size(); i++)
+//	{
+//		if (EnumDefineList[i].Flag & ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN)
+//		{
+//			CString StrValues = MakeEnumStrTransFn(EnumDefineList[i], SpaceName, "");
+//
+//			EnumDefines += StrValues;
+//		}
+//	}
+//	CString Space = "\r\n";
+//	Space += szLineSpace;
+//	EnumDefines.Replace("\r\n", Space);
+//	return EnumDefines;
+//}
 
 DATA_OBJECT_MODIFY_FLAG CCallInterfaceMakerDlg::MakeDataObjectFullModifyFlag(STRUCT_DEFINE_INFO& StructInfo,vector<STRUCT_DEFINE_INFO *>& DataObjectList)
 {
@@ -7781,7 +9314,772 @@ DATA_OBJECT_MODIFY_FLAG CCallInterfaceMakerDlg::MakeDataObjectFullModifyFlag(STR
 	return ModifyFlag;
 }
 
-bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, CString Type, int Depth)
+CString CCallInterfaceMakerDlg::MakeStructEditorProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
+{
+	CString Source = m_StructEditorProcessTemplate;
+
+	Source.Replace("<ClassName>", StructInfo.Name);
+
+	if (StructInfo.BaseStruct.IsEmpty())
+	{
+		RemoveBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RetainBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		RetainBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		Source.Replace("<BaseClass>", StructInfo.BaseStruct);
+	}
+
+	CString SSTIDEnumName;
+	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+
+	CString Operations;
+	CString LineSpace = GetLineSpace(Source, "<CreateListHeaderOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if ((!MemberInfo.ShowName.IsEmpty()) && (!MemberInfo.IsArray) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_EDITOR_LIST) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) == 0))
+			{
+				CString Operation = m_CreateListHeaderUnitTemplate;
+				Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<CreateListHeaderOperations>", Operations);
+
+	Operations.Empty();
+	LineSpace = GetLineSpace(Source, "<FillListItemOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{		
+		if ((!MemberInfo.ShowName.IsEmpty()) && (!MemberInfo.IsArray) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_EDITOR_LIST) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) == 0))
+			{
+				CString Operation = m_FillListItemUnitTemplate;
+				
+				Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType, false));
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<FillListItemOperations>", Operations);
+
+	CString Temp;
+	Temp.Format("%u", StructInfo.MemberList.size());
+	Source.Replace("<BindDataLen>", Temp);
+
+	LineSpace = GetLineSpace(Source, "<PropertyGridFillOperations>");
+	Operations = MakePropertyGridFillOperations(StructInfo, false, LineSpace);
+	Source.Replace("<PropertyGridFillOperations>", Operations);
+
+	LineSpace = GetLineSpace(Source, "<PropertyGridBindDataFillOperations>");
+	Operations = MakePropertyGridFillOperations(StructInfo, true, LineSpace);
+	Source.Replace("<PropertyGridBindDataFillOperations>", Operations);
+
+	//LineSpace = GetLineSpace(Source, "<PropertyGridFetchOperations>");
+	//Operations = MakePropertyGridFetchOperations(StructInfo, false, LineSpace);
+	//Source.Replace("<PropertyGridFetchOperations>", Operations);
+
+	//LineSpace = GetLineSpace(Source, "<PropertyGridAddItemOperations>");
+	//Operations = MakePropertyGridAddItemOperations(StructInfo, false, LineSpace);
+	//Source.Replace("<PropertyGridAddItemOperations>", Operations);
+
+	//LineSpace = GetLineSpace(Source, "<PropertyGridDelItemOperations>");
+	//Operations = MakePropertyGridDelItemOperations(StructInfo, false, LineSpace);
+	//Source.Replace("<PropertyGridDelItemOperations>", Operations);
+
+	//LineSpace = GetLineSpace(Source, "<PropertyGridMoveItemOperations>");
+	//Operations = MakePropertyGridMoveItemOperations(StructInfo, false, LineSpace);
+	//Source.Replace("<PropertyGridMoveItemOperations>", Operations);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
+	return Source;
+}
+
+CString CCallInterfaceMakerDlg::MakePropertyGridFillOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace)
+{
+	CString Operations;
+	CString SSTIDEnumName;
+	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+	
+	UINT Index = 0;
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if (((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID) == 0) &&
+			((!MemberInfo.IsArray) || (IsBeBind(StructInfo, MemberInfo.Name) == NULL)))
+		{
+			CString Operation = MakePropertyGridFillOperation(StructInfo, MemberInfo, Index, SSTIDEnumName, ReplaceByBindData, "");
+			Operations.Append(Operation);
+			Operations.Append("\r\n");
+		}
+		Index++;
+	}
+	CString LineSpace;
+	LineSpace.Format("\r\n%s", szLineSpace);
+	Operations.Replace("\r\n", LineSpace);
+	return Operations;
+}
+
+CString CCallInterfaceMakerDlg::MakePropertyGridFillOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, LPCTSTR SSTIDEnumName, bool ReplaceByBindData, LPCTSTR szLineSpace)
+{	
+	CString Operation;
+	TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+	if (pType)
+	{		
+		if (MemberInfo.IsArray)
+		{
+			Operation = m_InterfaceConfig.ArrayDefineConfig.PropertyGridFillOperation;			
+			CString SubOperation = pType->GenerateOperations.PropertyGridFillOperation;
+			CString LineSpace = GetLineSpace(Operation, "<PropertyGridFillOperation>");
+			SubOperation.Replace("\r\n", "\r\n" + LineSpace);
+			RemoveBlock(SubOperation, "<IfNotInArray>", "</IfNotInArray>");
+			RetainBlock(SubOperation, "<IfInArray>", "</IfInArray>");
+			CString Var = m_InterfaceConfig.ArrayDefineConfig.IndexOperation;			
+			Var.Replace("<Variable>", MemberInfo.Name);
+			Var.Replace("<Index>", "i");
+			SubOperation.Replace("<Variable>", Var);
+			SubOperation.Replace("<Index>", "i");
+			Operation.Replace("<PropertyGridFillOperation>", SubOperation);
+		}
+		else
+		{
+			Operation = pType->GenerateOperations.PropertyGridFillOperation;
+			RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+			RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+		}
+		if (!Operation.IsEmpty())
+		{
+			if (pType->Flag & TYPE_DEFINE_FLAG_ENUM)
+			{
+				ENUM_DEFINE_INFO* pEnum = GetEnumDefine(pType->CType);
+				if (pEnum)
+				{
+					CString MemberCount;
+					MemberCount.Format("%d", GetEnumMemberCount(*pEnum));
+					Operation.Replace("<EnumMemberCount>", MemberCount);
+					if (pEnum->Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+					{
+						SelectBlock(Operation, "IsFlagEnum", true);
+					}
+					else
+					{
+						SelectBlock(Operation, "IsFlagEnum", false);
+					}					
+				}
+
+				if (IsBeBind(StructInfo, MemberInfo.Name))
+				{
+					SelectBlock(Operation, "BeBind", true);
+				}
+				else
+				{
+					SelectBlock(Operation, "BeBind", false);
+				}
+			}
+
+			if (!MemberInfo.BindData.IsEmpty())
+			{
+				SelectBlock(Operation, "HaveBindData", true);
+				STRUCT_MEMBER_INFO* pBindData = NULL;
+				for (STRUCT_MEMBER_INFO& Info : StructInfo.MemberList)
+				{
+					if (Info.Name == MemberInfo.BindData)
+					{
+						pBindData = &Info;
+						break;
+					}
+				}
+				if (pBindData)
+				{
+					TYPE_DEFINE* pBindDataType = FindVarType(pBindData->Type);
+					if (pBindDataType)
+						Operation.Replace("<BindParentType>", pBindDataType->CType);
+				}						
+			}
+			else
+			{
+				SelectBlock(Operation, "HaveBindData", false);
+			}
+			
+			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType, false));
+			Operation.Replace("<Type>", pType->CType);
+
+			SelectBlock(Operation, "HaveExtendType", !MemberInfo.ExtendType.IsEmpty());
+			Operation.Replace("<ExtendType>", MemberInfo.ExtendType);
+
+			if (ReplaceByBindData)
+			{
+				SelectBlock(Operation, "InBindData", true);								
+			}
+			else
+			{
+				SelectBlock(Operation, "InBindData", false);
+				CString VarName = MemberInfo.Name;
+				if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+					VarName = "m_" + VarName;
+				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+				Operation.Replace("<Variable>", VarName);
+				Operation.Replace("<VariableName>", MemberInfo.Name);
+				CString SST_ID;
+				SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+				SST_ID.MakeUpper();
+				Operation.Replace("<StructName>", StructInfo.Name);
+				Operation.Replace("<SST_NAME>", SSTIDEnumName);
+				Operation.Replace("<SST_ID>", SST_ID);
+				Operation.Replace("<Index>", "-1");
+			}
+		}
+	}
+	CString LineSpace;
+	LineSpace.Format("\r\n%s", szLineSpace);
+	Operation.Replace("\r\n", LineSpace);
+	return Operation;
+}
+
+//CString CCallInterfaceMakerDlg::MakePropertyGridFetchOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace)
+//{
+//	CString Operations;
+//	CString SSTIDEnumName;
+//	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+//
+//	UINT Index = 0;
+//	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+//	{			
+//		CString Operation = m_PropertyGridFetchUnitTemplate;
+//
+//		if (MemberInfo.IsArray)
+//		{
+//			RemoveBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//			RetainBlock(Operation, "<IfInArray>", "</IfInArray>");
+//		}
+//		else
+//		{
+//			RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+//			RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//		}
+//
+//		if (ReplaceByBindData)
+//		{
+//			SelectBlock(Operation, "InBindData", true);			
+//		}
+//		else
+//		{
+//			SelectBlock(Operation, "InBindData", false);
+//			Operation.Replace("<Variable>", MemberInfo.Name);
+//		}
+//		
+//		STRUCT_MEMBER_INFO* pBindParent = NULL;
+//		if (MemberInfo.IsArray)
+//		{
+//			pBindParent = IsBeBind(StructInfo, MemberInfo.Name);
+//			if (pBindParent)
+//			{
+//				SelectBlock(Operation, "IsBindData", true);
+//				Operation.Replace("<BindEnumName>", pBindParent->Type);
+//				Operation.Replace("<BindEnumVariable>", pBindParent->Name);
+//			}
+//			else
+//			{
+//				SelectBlock(Operation, "IsBindData", false);
+//			}
+//		}
+//		else
+//		{
+//			SelectBlock(Operation, "IsBindData", false);
+//		}
+//
+//		if (pBindParent == NULL)
+//		{
+//			CString LineSpace = GetLineSpace(Operation, "<PropertyGridFetchOperation>");
+//			CString FetchOperation = MakePropertyGridFetchOperation(StructInfo, MemberInfo, Index, ReplaceByBindData, LineSpace);
+//			Operation.Replace("<PropertyGridFetchOperation>", FetchOperation);
+//		}
+//
+//		CString SST_ID;
+//		SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+//		SST_ID.MakeUpper();
+//		Operation.Replace("<StructName>", StructInfo.Name);
+//		Operation.Replace("<SST_NAME>", SSTIDEnumName);
+//		Operation.Replace("<SST_ID>", SST_ID);
+//
+//
+//		Operations.Append(Operation);
+//		Operations.Append("\r\n");
+//			
+//
+//		Index++;
+//	}
+//	CString LineSpace;
+//	LineSpace.Format("\r\n%s", szLineSpace);
+//	Operations.Replace("\r\n", LineSpace);
+//	return Operations;
+//}
+//
+//CString CCallInterfaceMakerDlg::MakePropertyGridFetchOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, bool ReplaceByBindData, LPCTSTR szLineSpace)
+//{
+//	CString Operation;
+//	TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+//	if (pType)
+//	{		
+//		if (MemberInfo.IsArray)
+//		{
+//			Operation = m_InterfaceConfig.ArrayDefineConfig.PropertyGridFetchOperation;
+//			if (ReplaceByBindData)
+//				SelectBlock(Operation, "InBindData", true);
+//			else
+//				SelectBlock(Operation, "InBindData", false);
+//			CString SubOperation = pType->GenerateOperations.PropertyGridFetchOperation;
+//			CString LineSpace = GetLineSpace(Operation, "<PropertyGridFetchOperation>");
+//			SubOperation.Replace("\r\n", "\r\n" + LineSpace);
+//			RemoveBlock(SubOperation, "<IfNotInArray>", "</IfNotInArray>");
+//			RetainBlock(SubOperation, "<IfInArray>", "</IfInArray>");
+//			CString Var = m_InterfaceConfig.ArrayDefineConfig.IndexOperation;
+//			Var.Replace("<Variable>", MemberInfo.Name);
+//			Var.Replace("<Index>", "i");
+//			SubOperation.Replace("<Variable>", Var);
+//			SubOperation.Replace("<Index>", "i");
+//			Operation.Replace("<PropertyGridFetchOperation>", SubOperation);
+//		}
+//		else
+//		{
+//			Operation = pType->GenerateOperations.PropertyGridFetchOperation;
+//			RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+//			RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//		}
+//		if (!Operation.IsEmpty())
+//		{
+//			if (pType->Flag & TYPE_DEFINE_FLAG_ENUM)
+//			{
+//				ENUM_DEFINE_INFO* pEnum = GetEnumDefine(pType->CType);
+//				if (pEnum)
+//				{
+//					CString MemberCount;
+//					MemberCount.Format("%d", GetEnumMemberCount(*pEnum));
+//					Operation.Replace("<EnumMemberCount>", MemberCount);
+//					if (pEnum->Flag & ENUM_DEFINE_FLAG_IS_FLAG)
+//					{
+//						SelectBlock(Operation, "IsFlagEnum", true);
+//					}
+//					else
+//					{
+//						SelectBlock(Operation, "IsFlagEnum", false);
+//					}
+//					if (!MemberInfo.BindData.IsEmpty())
+//					{
+//						SelectBlock(Operation, "HaveBindData", true);						
+//						STRUCT_MEMBER_INFO* pBindData = NULL;
+//						for (STRUCT_MEMBER_INFO& Info : StructInfo.MemberList)
+//						{
+//							if (Info.Name == MemberInfo.BindData)
+//							{
+//								pBindData = &Info;
+//								break;
+//							}
+//						}
+//						if (pBindData)
+//						{
+//							Operation.Replace("<BindData>", pBindData->Name);
+//							TYPE_DEFINE* pBindDataType = FindVarType(pBindData->Type);
+//							if (pBindDataType)
+//								Operation.Replace("<BindDataType>", pBindDataType->CType);
+//						}
+//						else
+//						{
+//							Operation.Replace("<BindData>", "BindData");
+//							Operation.Replace("<BindDataType>", "T");
+//						}
+//					}
+//					else
+//					{
+//						SelectBlock(Operation, "HaveBindData", false);
+//					}
+//				}
+//			}		
+//			if (ReplaceByBindData)
+//			{
+//				SelectBlock(Operation, "InBindData", true);				
+//			}
+//			else
+//			{
+//				SelectBlock(Operation, "InBindData", false);				
+//				Operation.Replace("<Variable>", MemberInfo.Name);
+//			}
+//			Operation.Replace("<Type>", pType->CType);			
+//			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+//			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+//			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType));
+//			Operation.Replace("<Index>", "-1");
+//
+//			
+//		}
+//	}
+//	CString LineSpace;
+//	LineSpace.Format("\r\n%s", szLineSpace);
+//	Operation.Replace("\r\n", LineSpace);
+//	return Operation;
+//}
+//
+//CString CCallInterfaceMakerDlg::MakePropertyGridAddItemOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace)
+//{
+//	CString Operations;
+//	CString SSTIDEnumName;
+//	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+//
+//	UINT Index = 0;
+//	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+//	{
+//		TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+//		if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) || MemberInfo.IsArray))
+//		{
+//			CString Operation = m_PropertyGridAddItemUnitTemplate;
+//			if (MemberInfo.IsArray)
+//			{
+//				RemoveBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//				RetainBlock(Operation, "<IfInArray>", "</IfInArray>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+//				RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//			}
+//			if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
+//			{
+//				RetainBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			Operation.Replace("<Type>", pType->CType);
+//			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+//			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+//			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType));
+//			Operation.Replace("<Index>", "-1");
+//
+//			if (ReplaceByBindData)
+//			{
+//				SelectBlock(Operation, "InBindData", true);				
+//			}
+//			else
+//			{
+//				SelectBlock(Operation, "InBindData", false);
+//				Operation.Replace("<Variable>", MemberInfo.Name);
+//				CString SST_ID;
+//				SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+//				SST_ID.MakeUpper();
+//				Operation.Replace("<StructName>", StructInfo.Name);
+//				Operation.Replace("<SST_NAME>", SSTIDEnumName);
+//				Operation.Replace("<SST_ID>", SST_ID);
+//			}
+//
+//			CString LineSpace = GetLineSpace(Operation, "<PropertyGridRefreshOperation>");
+//			CString RefreshOperation = MakePropertyGridFillOperation(StructInfo, MemberInfo, 0, SSTIDEnumName, ReplaceByBindData, LineSpace);
+//			Operation.Replace("<PropertyGridRefreshOperation>", RefreshOperation);
+//
+//			Operations.Append(Operation);
+//			Operations.Append("\r\n");
+//		}
+//		Index++;
+//	}
+//	CString LineSpace;
+//	LineSpace.Format("\r\n%s", szLineSpace);
+//	Operations.Replace("\r\n", LineSpace);
+//	return Operations;
+//}
+//
+//CString CCallInterfaceMakerDlg::MakePropertyGridDelItemOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace)
+//{
+//	CString Operations;
+//	CString SSTIDEnumName;
+//	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+//
+//	UINT Index = 0;
+//	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+//	{
+//		TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+//		if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) || MemberInfo.IsArray))
+//		{
+//			CString Operation = m_PropertyGridDelItemUnitTemplate;
+//			if (MemberInfo.IsArray)
+//			{
+//				RemoveBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//				RetainBlock(Operation, "<IfInArray>", "</IfInArray>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+//				RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//			}
+//			if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
+//			{
+//				RetainBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			Operation.Replace("<Type>", pType->CType);
+//			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+//			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+//			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType));
+//			Operation.Replace("<Index>", "-1");
+//
+//			if (ReplaceByBindData)
+//			{
+//				SelectBlock(Operation, "InBindData", true);				
+//			}
+//			else
+//			{
+//				SelectBlock(Operation, "InBindData", false);
+//				Operation.Replace("<Variable>", MemberInfo.Name);
+//				CString SST_ID;
+//				SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+//				SST_ID.MakeUpper();
+//				Operation.Replace("<StructName>", StructInfo.Name);
+//				Operation.Replace("<SST_NAME>", SSTIDEnumName);
+//				Operation.Replace("<SST_ID>", SST_ID);
+//			}
+//
+//			CString LineSpace = GetLineSpace(Operation, "<PropertyGridRefreshOperation>");
+//			CString RefreshOperation = MakePropertyGridFillOperation(StructInfo, MemberInfo, 0, SSTIDEnumName, ReplaceByBindData, LineSpace);
+//			Operation.Replace("<PropertyGridRefreshOperation>", RefreshOperation);
+//
+//			Operations.Append(Operation);
+//			Operations.Append("\r\n");
+//		}
+//		Index++;
+//	}
+//	CString LineSpace;
+//	LineSpace.Format("\r\n%s", szLineSpace);
+//	Operations.Replace("\r\n", LineSpace);
+//	return Operations;
+//}
+//
+//CString CCallInterfaceMakerDlg::MakePropertyGridMoveItemOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace)
+//{
+//	CString Operations;
+//	CString SSTIDEnumName;
+//	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+//
+//	UINT Index = 0;
+//	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+//	{
+//		TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+//		if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) || MemberInfo.IsArray))
+//		{
+//			CString Operation = m_PropertyGridMoveItemUnitTemplate;
+//			if (MemberInfo.IsArray)
+//			{
+//				RemoveBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//				RetainBlock(Operation, "<IfInArray>", "</IfInArray>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+//				RetainBlock(Operation, "<IfNotInArray>", "</IfNotInArray>");
+//			}
+//			if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
+//			{
+//				RetainBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			else
+//			{
+//				RemoveBlock(Operation, "<IfIsStruct>", "</IfIsStruct>");
+//			}
+//			Operation.Replace("<Type>", pType->CType);
+//			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
+//			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+//			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType));
+//			Operation.Replace("<Index>", "-1");
+//
+//			if (ReplaceByBindData)
+//			{
+//				SelectBlock(Operation, "InBindData", true);				
+//			}
+//			else
+//			{
+//				SelectBlock(Operation, "InBindData", false);
+//				Operation.Replace("<Variable>", MemberInfo.Name);
+//				CString SST_ID;
+//				SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
+//				SST_ID.MakeUpper();
+//				Operation.Replace("<StructName>", StructInfo.Name);
+//				Operation.Replace("<SST_NAME>", SSTIDEnumName);
+//				Operation.Replace("<SST_ID>", SST_ID);
+//			}
+//
+//			CString LineSpace = GetLineSpace(Operation, "<PropertyGridRefreshOperation>");
+//			CString RefreshOperation = MakePropertyGridFillOperation(StructInfo, MemberInfo, 0, SSTIDEnumName, ReplaceByBindData, LineSpace);
+//			Operation.Replace("<PropertyGridRefreshOperation>", RefreshOperation);
+//
+//			Operations.Append(Operation);
+//			Operations.Append("\r\n");
+//		}
+//		Index++;
+//	}
+//	CString LineSpace;
+//	LineSpace.Format("\r\n%s", szLineSpace);
+//	Operations.Replace("\r\n", LineSpace);
+//	return Operations;
+//}
+
+CString CCallInterfaceMakerDlg::MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
+{
+	CString Source = m_StructXLSProcessTemplate;
+
+	Source.Replace("<ClassName>", StructInfo.Name);
+
+	if (StructInfo.BaseStruct.IsEmpty())
+	{
+		RemoveBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		RetainBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+	}
+	else
+	{
+		RemoveBlock(Source, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
+		RetainBlock(Source, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
+		Source.Replace("<BaseClass>", StructInfo.BaseStruct);
+	}
+
+	CString SSTIDEnumName;
+	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+
+	CString Operations;
+	CString LineSpace = GetLineSpace(Source, "<CreateXLSColumnOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if ((!MemberInfo.ShowName.IsEmpty()) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_XLS) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType)
+			{
+				CString Operation;
+				if (MemberInfo.IsArray)
+					Operation = m_InterfaceConfig.ArrayDefineConfig.CreateXLSColumnOperation;
+				else
+					Operation = pType->GenerateOperations.CreateXLSColumnOperation;
+				Operation.Replace("<VariableName>", MemberInfo.Name);
+				Operation.Replace("<Type>", pType->CType);
+				Operation.Replace("<OrginType>", pType->Name);
+				Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<CreateXLSColumnOperations>", Operations);
+
+	Operations.Empty();
+	LineSpace = GetLineSpace(Source, "<CheckXLSColumnOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if ((!MemberInfo.ShowName.IsEmpty()) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_XLS) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType)
+			{
+				CString Operation;
+				if (MemberInfo.IsArray)
+					Operation = m_InterfaceConfig.ArrayDefineConfig.CheckXLSColumnOperation;
+				else
+					Operation = pType->GenerateOperations.CheckXLSColumnOperation;
+				Operation.Replace("<VariableName>", MemberInfo.Name);
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<CheckXLSColumnOperations>", Operations);
+
+	Operations.Empty();
+	LineSpace = GetLineSpace(Source, "<ToXLSOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if ((!MemberInfo.ShowName.IsEmpty()) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_XLS) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType)
+			{
+				CString Operation;
+				if(MemberInfo.IsArray)
+					Operation = m_InterfaceConfig.ArrayDefineConfig.ToXLSOperation;
+				else
+					Operation = pType->GenerateOperations.ToXLSOperation;
+				Operation.Replace("<Type>", pType->CType);
+				Operation.Replace("<OrginType>", pType->Name);
+				CString VarName = MemberInfo.Name;
+				if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+					VarName = "m_" + VarName;
+				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+				Operation.Replace("<Variable>", VarName);				
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<ToXLSOperations>", Operations);
+
+	Operations.Empty();
+	LineSpace = GetLineSpace(Source, "<FromXLSOperations>");
+	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
+	{
+		if ((!MemberInfo.ShowName.IsEmpty()) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_XLS) == 0))
+		{
+			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
+			if (pType)
+			{
+				CString Operation;
+				if (MemberInfo.IsArray)
+					Operation = m_InterfaceConfig.ArrayDefineConfig.FromXLSOperation;
+				else
+					Operation = pType->GenerateOperations.FromXLSOperation;
+				Operation.Replace("<Type>", pType->CType);
+				Operation.Replace("<OrginType>", pType->Name);
+				CString VarName = MemberInfo.Name;
+				if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+					VarName = "m_" + VarName;
+				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
+				Operation.Replace("<Variable>", VarName);
+				Operation.Replace("<VariableName>", MemberInfo.Name);
+				if (!Operations.IsEmpty())
+					Operations.Append("\r\n");
+				Operations.Append(Operation);
+			}
+		}
+	}
+	Operations.Replace("\r\n", "\r\n" + LineSpace);
+	Source.Replace("<FromXLSOperations>", Operations);
+		
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
+	return Source;
+}
+
+bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR Type, int Depth)
 {
 	if(StructInfo.BaseStruct==Type)
 		return true;
@@ -7816,7 +10114,7 @@ bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, CS
 	return false;
 }
 
-STRUCT_DEFINE_INFO * CCallInterfaceMakerDlg::GetStructDefineInfo(CString Type)
+STRUCT_DEFINE_INFO * CCallInterfaceMakerDlg::GetStructDefineInfo(LPCTSTR Type)
 {
 	for (size_t i = 0; i<m_AllDataStructList.size(); i++)
 	{
@@ -7832,7 +10130,22 @@ STRUCT_DEFINE_INFO * CCallInterfaceMakerDlg::GetStructDefineInfo(CString Type)
 	}	
 	return NULL;
 }
-
+ENUM_DEFINE_INFO* CCallInterfaceMakerDlg::GetEnumDefine(LPCTSTR EnumName)
+{
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
+	{
+		if (m_AllDataStructList[i]->ListType == DATA_STRUCT_ENUM)
+		{
+			ENUM_DEFINE_LIST* pEnumList = (ENUM_DEFINE_LIST*)m_AllDataStructList[i];
+			for (ENUM_DEFINE_INFO& Info : pEnumList->EnumList)
+			{
+				if (Info.Name == EnumName)
+					return &Info;
+			}
+		}
+	}
+	return NULL;
+}
 void CCallInterfaceMakerDlg::GetDataObjectDefineList(vector<STRUCT_DEFINE_INFO *>& DataObjectList)
 {
 	GetDataObjectListSorted(m_AllDataStructList, DataObjectList);	
@@ -8096,11 +10409,20 @@ bool CCallInterfaceMakerDlg::DeleteModule(UINT ModuleID)
 	{
 		if (m_ImportModuleList[i].ModuleID == ModuleID)
 		{
+			for (size_t j = 0; j < m_MainModule.ImportList.size(); j++)
+			{
+				if (m_MainModule.ImportList[j] == m_ImportModuleList[i].Name)
+				{
+					m_MainModule.ImportList.erase(m_MainModule.ImportList.begin() + i);
+				}
+			}
+
 			m_ImportModuleList[i].Clear();
 			m_ImportModuleList.erase(m_ImportModuleList.begin() + i);
 			return true;
 		}
 	}
+	
 	return false;
 }
 
@@ -8163,7 +10485,7 @@ int CCallInterfaceMakerDlg::GetHeadLen(CString& TempleStr,LPCTSTR szWord)
 }
 CString CCallInterfaceMakerDlg::ToComment(CString& Content,LPCTSTR szLineSpace)
 {
-	CString ToComment="//"+Content;
+	CString ToComment = m_InterfaceConfig.CommentPrefix + Content;
 	CString Space="\r\n//";
 	Space+=szLineSpace;
 	ToComment.Replace("\r\n",Space);
@@ -8215,57 +10537,242 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSelectAllInterface()
 
 
 
-void CCallInterfaceMakerDlg::RemoveBlock(CString& Template,LPCTSTR szBlockStart,LPCTSTR szBlockEnd)
+bool CCallInterfaceMakerDlg::RemoveBlock(CString& Template, LPCTSTR szBlockStart, LPCTSTR szBlockEnd)
 {
-	int StartPos=Template.Find(szBlockStart);
-	while(StartPos>=0)
+	int StartBlockLen = strlen(szBlockStart);
+	int EndBlockLen = strlen(szBlockEnd);
+	int StartPos = Template.Find(szBlockStart);
+	bool Removed = false;
+	while (StartPos >= 0)
 	{
-		int EndPos=Template.Find(szBlockEnd);
-		if(EndPos<0)
+		//如果有嵌套，先处理最内层
+		int Next = Template.Find(szBlockStart, StartPos + StartBlockLen);
+		while (Next >= 0)
+		{
+			StartPos = Next;
+			Next = Template.Find(szBlockStart, StartPos + StartBlockLen);
+		}
+		int EndPos = Template.Find(szBlockEnd, StartPos);
+		if (EndPos < 0)
+			return Removed;
+		EndPos += EndBlockLen;
+		//判断是否要去除整行
+		int Prefix = IsEmptyPrefix(Template, StartPos);
+		int Suffix = IsEmptySuffix(Template, EndPos);
+		int CutStart, CutEnd;
+		if ((Prefix >= 0) && (Suffix >= 0))
+		{
+			CutStart = Prefix;
+			CutEnd = Suffix;
+		}
+		else
+		{
+			CutStart = StartPos;
+			CutEnd = EndPos;
+		}
+		//if ((EndPos < Template.GetLength() - 1) && (Template[EndPos] == '\r') && (Template[EndPos + 1] == '\n')
+		//	&& ((StartPos == 0) || IsEmptyPrefix(Template, StartPos)))
+		//{
+		//	EndPos += 2;
+		//}
+		//int CheckPos = StartPos;
+		//bool NeedCutHeader = (CheckPos > 0);
+		//CheckPos--;
+		//while (CheckPos >= 0)
+		//{
+		//	if (Template[CheckPos] == '\r' || Template[CheckPos] == '\n')
+		//		break;
+		//	else if (Template[CheckPos] != ' ' && Template[CheckPos] != '\t')
+		//	{
+		//		NeedCutHeader = false;
+		//		break;
+		//	}
+		//	CheckPos--;
+		//}
+		//if (NeedCutHeader)
+		//{
+		//	while (StartPos > 0)
+		//	{
+		//		if (Template[StartPos - 1] != ' ' && Template[StartPos - 1] != '\t')//&&Template[StartPos-1]!='\r'&&Template[StartPos-1]!='\n')
+		//			break;
+		//		StartPos--;
+		//	}
+		//}
+		Template.Delete(CutStart, CutEnd - CutStart);
+		Removed = true;
+		StartPos = Template.Find(szBlockStart);
+	}
+	return Removed;
+}
+void CCallInterfaceMakerDlg::RetainBlock(CString& Template, LPCTSTR szBlockStart, LPCTSTR szBlockEnd)
+{
+	RemoveMark(Template, szBlockStart);
+	RemoveMark(Template, szBlockEnd);
+}
+void CCallInterfaceMakerDlg::SelectBlock(CString& Template, LPCTSTR szBlockName, bool SelectWitch)
+{
+	CString StartMark, EndMark;
+	if (SelectWitch)
+	{
+		StartMark.Format("<%s>", szBlockName);
+		RemoveMark(Template, StartMark);
+		StartMark.Format("<!%s>", szBlockName);
+		EndMark.Format("</%s>", szBlockName);
+		RemoveBlock(Template, StartMark, EndMark);
+	}
+	else
+	{
+		StartMark.Format("<%s>", szBlockName);
+		EndMark.Format("<!%s>", szBlockName);
+		RemoveBlock(Template, StartMark, EndMark);
+		EndMark.Format("</%s>", szBlockName);
+		RemoveMark(Template, EndMark);
+	}
+}
+void CCallInterfaceMakerDlg::RemoveMark(CString& Template, LPCTSTR szMark)
+{
+	int BlockSize = strlen(szMark);
+	int StartPos = Template.Find(szMark);
+	while (StartPos >= 0)
+	{
+		int EndPos = StartPos + BlockSize;
+		bool NeedCutHeader = (StartPos > 0);
+		if (EndPos < Template.GetLength() - 1 && Template[EndPos] == '\r' && Template[EndPos + 1] == '\n')
+		{
+			//EndPos += 2;
+		}
+		else
+		{
+			NeedCutHeader = false;
+		}
+		if(NeedCutHeader)
+		{
+			int CheckPos = StartPos;
+			CheckPos--;
+			while (CheckPos >= 0)
+			{
+				if (Template[CheckPos] == '\r' || Template[CheckPos] == '\n')
+					break;
+				else if (Template[CheckPos] != ' ' && Template[CheckPos] != '\t')
+				{
+					NeedCutHeader = false;
+					break;
+				}
+				CheckPos--;
+			}
+			if (NeedCutHeader)
+			{
+				if (Template[EndPos] == '\r' && Template[EndPos + 1] == '\n')
+					EndPos += 2;
+				while (StartPos > 0)
+				{
+					if (Template[StartPos - 1] != ' ' && Template[StartPos - 1] != '\t')//&&Template[StartPos-1]!='\r'&&Template[StartPos-1]!='\n')
+						break;
+					StartPos--;
+				}
+			}
+		}
+		Template.Delete(StartPos, EndPos - StartPos);
+		StartPos = Template.Find(szMark);
+	}
+}
+void CCallInterfaceMakerDlg::ReplaceBlock(CString& Template, LPCTSTR szBlockStart, LPCTSTR szBlockEnd, LPCTSTR ReplaceStr)
+{
+	int StartPos = Template.Find(szBlockStart);
+	while (StartPos >= 0)
+	{
+		int EndPos = Template.Find(szBlockEnd);
+		if (EndPos < 0)
 			return;
-		EndPos+=strlen(szBlockEnd);
-		if(EndPos<Template.GetLength()-1&&Template[EndPos]=='\r'&&Template[EndPos+1]=='\n')
-			EndPos+=2;
-		int CheckPos=StartPos;
-		bool NeedCutHeader = (CheckPos>0);
+		EndPos += strlen(szBlockEnd);
+		if (EndPos < Template.GetLength() - 1 && Template[EndPos] == '\r' && Template[EndPos + 1] == '\n')
+			EndPos += 2;
+		int CheckPos = StartPos;
+		bool NeedCutHeader = (CheckPos > 0);
 		CheckPos--;
-		while(CheckPos>=0)
+		while (CheckPos >= 0)
 		{
 			if (Template[CheckPos] == '\r' || Template[CheckPos] == '\n')
 				break;
-			else if (Template[CheckPos] != ' '&&Template[CheckPos] != '\t')
+			else if (Template[CheckPos] != ' ' && Template[CheckPos] != '\t')
 			{
 				NeedCutHeader = false;
 				break;
 			}
 			CheckPos--;
 		}
-		if(NeedCutHeader)
+		if (NeedCutHeader)
 		{
-			while(StartPos>0)
+			while (StartPos > 0)
 			{
-				if(Template[StartPos-1]!=' '&&Template[StartPos-1]!='\t')//&&Template[StartPos-1]!='\r'&&Template[StartPos-1]!='\n')
+				if (Template[StartPos - 1] != ' ' && Template[StartPos - 1] != '\t')//&&Template[StartPos-1]!='\r'&&Template[StartPos-1]!='\n')
 					break;
 				StartPos--;
 			}
 		}
-		Template.Delete(StartPos,EndPos-StartPos);
-		StartPos=Template.Find(szBlockStart);
+		Template.Delete(StartPos, EndPos - StartPos);
+		Template.Insert(StartPos, ReplaceStr);
+		StartPos = Template.Find(szBlockStart);
 	}
+}
+CString CCallInterfaceMakerDlg::GetBlock(const CString& Template, LPCTSTR szBlockStart, LPCTSTR szBlockEnd)
+{
+	CString BlockStr;
+	int StartPos = Template.Find(szBlockStart);
+	if (StartPos >= 0)
+	{
+		StartPos+= strlen(szBlockStart);
+		int EndPos = Template.Find(szBlockEnd, StartPos);
+		if (EndPos > StartPos)
+		{
+			BlockStr = Template.Mid(StartPos, EndPos - StartPos);
+		}
+	}
+	return BlockStr;
+}
+int CCallInterfaceMakerDlg::IsEmptyPrefix(CString& Template, int Pos)
+{
+	Pos--;
+	while (Pos >= 0)
+	{
+		if ((Template[Pos] == '\r') || (Template[Pos] == '\n'))
+			break;
+		if ((Template[Pos] != ' ') && (Template[Pos] != '\t'))
+			return -1;
+		Pos--;
+	}
+	return Pos + 1;
+}
+int CCallInterfaceMakerDlg::IsEmptySuffix(CString& Template, int Pos)
+{
+	int Len = Template.GetLength();
+	while (Pos < Len)
+	{
+		if ((Template[Pos] == '\r') || (Template[Pos] == '\n'))
+			break;
+		if ((Template[Pos] != ' ') && (Template[Pos] != '\t'))
+			return -1;
+		Pos++;
+	}
+	while (Pos < Len)
+	{
+		if ((Template[Pos] != '\r') && (Template[Pos] != '\n'))
+			break;
+		Pos++;
+	}
+	return Pos;
 }
 
 CString CCallInterfaceMakerDlg::RestoreFileToTemplate(LPCTSTR szFileName,const CString& szTemplate)
 {
-	CFileStatus FileStatus;
-	if(CFile::GetStatus(szFileName,FileStatus))
+	if (CFileTools::IsFileExist(szFileName))
 	{
 		CStringFile InputFile;
 		if (InputFile.LoadFile(szFileName, false))
 		{
 			return RestoreToTemplate(InputFile.GetData(), szTemplate);
 		}
-	}
-	
+	}	
 	return szTemplate;
 }
 
@@ -8307,7 +10814,7 @@ void CCallInterfaceMakerDlg::GetDataStructPacketList(int Type,vector<CString>& N
 	}
 }
 
-bool CCallInterfaceMakerDlg::MoveDataStruct(int Type,CString SourcePacket,CString TargetPacket,CString Name)
+bool CCallInterfaceMakerDlg::MoveDataStruct(int Type, LPCTSTR SourcePacket, LPCTSTR TargetPacket, LPCTSTR Name)
 {
 	BASE_DATA_STRUCT_DEFINE_LIST * pSourcePacket=NULL;
 	BASE_DATA_STRUCT_DEFINE_LIST * pTargetPacket=NULL;
@@ -8580,4 +11087,152 @@ bool CCallInterfaceMakerDlg::CheckBaseStructObjectID(vector<UINT>& ObjectIDList,
 		return true;
 	}
 	return false;
+}
+
+CString CCallInterfaceMakerDlg::ProcessArrayOperation(CString Operation, TYPE_DEFINE* pElementType)
+{
+	if(pElementType)
+	{
+		if (pElementType->Flag & TYPE_DEFINE_FLAG_BASE_TYPE)
+		{
+			RemoveBlock(Operation, "<IfIsNotBaseType>", "</IfIsNotBaseType>");
+			Operation.Replace("<IfIsBaseType>", "");
+			Operation.Replace("</IfIsBaseType>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfIsBaseType>", "</IfIsBaseType>");
+			Operation.Replace("<IfIsNotBaseType>", "");
+			Operation.Replace("</IfIsNotBaseType>", "");
+		}		
+		
+		if ((pElementType->Flag & TYPE_DEFINE_FLAG_VARIABLE_LEN)|| (pElementType->Flag & TYPE_DEFINE_FLAG_STRUCT))
+		{
+			RemoveBlock(Operation, "<IfIsFixLenType>", "</IfIsFixLenType>");
+			Operation.Replace("<IfIsVariableLenType>", "");
+			Operation.Replace("</IfIsVariableLenType>", "");
+		}
+		else
+		{
+			RemoveBlock(Operation, "<IfIsVariableLenType>", "</IfIsVariableLenType>");
+			Operation.Replace("<IfIsFixLenType>", "");
+			Operation.Replace("</IfIsFixLenType>", "");
+		}
+
+		Operation.Replace("<ElementType>", pElementType->CType);
+		Operation.Replace("<Index>", "i");
+	}
+	return Operation;
+}
+
+bool CCallInterfaceMakerDlg::CheckNameChange(CString& Operation, CString& Name, LPCTSTR szChangeToken)
+{
+	int Start = Operation.Find(szChangeToken);
+	if (Start >= 0)
+	{
+		UINT TokenLen = _tcslen(szChangeToken);
+		int End = Operation.Find('>', Start + TokenLen);
+		if (End >= 0)
+		{
+			Name = Operation.Mid(Start + TokenLen, End - Start - TokenLen);
+			Operation.Delete(Start, End - Start + 1);
+		}
+	}
+	return false;
+}
+
+void CCallInterfaceMakerDlg::IncSpace(const CEasyString& InputStr, CString& OutputStr, const CString& Space)
+{
+	CEasyArray<int> ReplacePosList(512, 1024);
+	int Pos = InputStr.Find("\r\n", 0);
+	while (Pos >= 0)
+	{
+		ReplacePosList.Add(Pos);
+		Pos = InputStr.Find("\r\n", Pos + 2);
+	}
+	if (ReplacePosList.GetCount())
+	{
+		const char* pSrc = (LPCTSTR)InputStr;
+		char* pBuffer = OutputStr.GetBuffer(InputStr.GetLength() + Space.GetLength() * ReplacePosList.GetCount() + 1);
+		int OutPos = 0;
+		int StartPos = 0;
+		for (int Pos : ReplacePosList)
+		{
+			strncpy(pBuffer + OutPos, pSrc + StartPos, 2 + Pos - StartPos);
+			OutPos += 2 + Pos - StartPos;
+			StartPos += 2 + Pos - StartPos;
+			strncpy(pBuffer + OutPos, Space, Space.GetLength());
+			OutPos += Space.GetLength();
+		}
+		if (StartPos < InputStr.GetLength() - 1)
+		{
+			strncpy(pBuffer + OutPos, pSrc + StartPos, InputStr.GetLength() - StartPos - 1);
+			OutPos += InputStr.GetLength() - StartPos - 1;
+			pBuffer[OutPos] = 0;
+		}
+		OutputStr.ReleaseBuffer(OutPos);
+	}
+	else
+	{
+		OutputStr = InputStr;
+	}
+}
+
+bool CCallInterfaceMakerDlg::IsNaturalEnum(ENUM_DEFINE_INFO& EnumInfo)
+{
+	for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+	{
+		if (!Info.Value.IsEmpty())
+			return false;
+	}
+	return true;
+}
+
+UINT CCallInterfaceMakerDlg::GetEnumMemberCount(ENUM_DEFINE_INFO& EnumInfo)
+{
+	UINT Count = 0;
+	for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
+	{
+		if ((Info.Flag & ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER) == 0)
+			Count++;
+	}
+	return Count;
+}
+
+UINT CCallInterfaceMakerDlg::GetStructMemberCount(STRUCT_DEFINE_INFO& StructInfo)
+{
+	UINT Count = 0;
+	if (!StructInfo.BaseStruct.IsEmpty())
+	{
+		STRUCT_DEFINE_INFO* pStructInfo = GetStructDefineInfo(StructInfo.BaseStruct);
+		if (pStructInfo)
+		{
+			Count += GetStructMemberCount(*pStructInfo);
+		}
+	}
+	Count += StructInfo.MemberList.size();
+	return Count;
+}
+STRUCT_MEMBER_INFO* CCallInterfaceMakerDlg::IsBeBind(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR MemberName)
+{
+	for (STRUCT_MEMBER_INFO& Member : StructInfo.MemberList)
+	{
+		if (Member.BindData == MemberName)
+			return &Member;
+	}
+	return NULL;
+}
+
+STRUCT_MEMBER_INFO* CCallInterfaceMakerDlg::GetStructKeyMember(LPCTSTR StructName)
+{
+	STRUCT_DEFINE_INFO* pStructInfo = GetStructDefineInfo(StructName);
+	if (pStructInfo)
+	{
+		for (STRUCT_MEMBER_INFO& Member : pStructInfo->MemberList)
+		{
+			if (Member.Flag & STRUCT_MEMBER_FLAG_IS_KEY)
+				return &Member;
+		}
+	}
+	return NULL;
 }

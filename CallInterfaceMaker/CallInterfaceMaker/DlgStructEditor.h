@@ -41,4 +41,5 @@ public:
 	afx_msg void OnBnClickedButtonMemberMoveUp();
 	afx_msg void OnBnClickedButtonMemberMoveDown();
 	afx_msg void OnBnClickedButtonMemberGenerateOperations();
+	afx_msg void OnBnClickedButtonSort();
 };

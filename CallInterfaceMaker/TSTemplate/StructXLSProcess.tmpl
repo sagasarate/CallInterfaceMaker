@@ -1,0 +1,36 @@
+public static CreateXLSColumn(Cols: string[][]): void 
+{
+	<IfHaveBaseClass>
+	super.CreateColumn(Cols);
+	</IfHaveBaseClass>
+	<CreateXLSColumnOperations>
+}
+public ToXLS(): any[]
+{
+	<IfNotHaveBaseClass>
+	let Cols = [];
+	</IfNotHaveBaseClass>
+	<IfHaveBaseClass>
+	let Cols = super.ToXLS();
+	</IfHaveBaseClass>
+	<ToXLSOperations>
+	return Cols;
+}
+public static CheckXLSColumn(Sheet: any, MsgPrefix: string): boolean
+{	
+	<IfHaveBaseClass>
+	if(!super.CheckXLSColumn(Sheet, MsgPrefix))
+		return false;
+	</IfHaveBaseClass>
+	<CheckXLSColumnOperations>
+	return true;
+}
+public FromXLS(Sheet: any, Row: number, MsgPrefix: string): string
+{
+	<IfHaveBaseClass>
+	if(!base.FromXLS(Sheet, Row, MsgPrefix)))
+		return false;
+	</IfHaveBaseClass>
+	<FromXLSOperations>
+	return null;
+}

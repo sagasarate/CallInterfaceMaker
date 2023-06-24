@@ -1,0 +1,173 @@
+if <SpaceName>==nil then
+	<SpaceName>={};
+end
+
+--<GenerateArea1Start>
+<Description>
+--<GenerateArea1End>
+
+
+--<GenerateArea2Start>
+<IfHaveBaseClass>
+<SpaceName>.<ClassName>=ExtendClass(<SpaceName>.<BaseClass>);
+MergeObject(<SpaceName>.<ClassName>,{
+	<Members,>
+});
+</IfHaveBaseClass>
+<IfNotHaveBaseClass>
+<SpaceName>.<ClassName>={
+	<Members,>
+};
+</IfNotHaveBaseClass>
+--<GenerateArea2End>
+
+--<GenerateArea3Start>
+--<GenerateArea3End>
+
+--<GenerateArea4Start>
+<SSTIDEnumDefine>
+<ModifyFlagEnumDefine>
+--<GenerateArea4End>
+
+
+	
+function <SpaceName>.<ClassName>:Clear(OnlyClearNil)
+	<IfHaveBaseClass>
+	<SpaceName>.<BaseClass>.Clear(self, OnlyClearNil);
+	</IfHaveBaseClass>
+
+	self.m_ModifyFlag = 0;
+--<GenerateArea5Start>
+	<InitOperations>
+end
+
+<SetMethodsDefine>
+			   
+<GetMethodsDefine>
+
+--<GenerateArea5End>
+
+
+function <SpaceName>.<ClassName>:SetModifyFlag(RemoveFlags,AddFlags)
+	self.m_ModifyFlag = self.m_ModifyFlag & (~RemoveFlags);
+	self.m_ModifyFlag = self.m_ModifyFlag | AddFlags;
+end
+
+
+
+function <SpaceName>.<ClassName>:GetModifyFlag(ModifyFlags, GetType, MemberFlags)
+	<IfHaveBaseClass><SpaceName>.<BaseClass>.GetModifyFlag(self, ModifyFlags, GetType, MemberFlags);</IfHaveBaseClass>
+
+	if GetType == <SpaceName>.GET_MODIFY_FLAG_TYPE.GMFT_COPY then
+		ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] = self.m_ModifyFlag & MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
+	elseif GetType == <SpaceName>.GET_MODIFY_FLAG_TYPE.GMFT_AND then
+		ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] = ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] & (self.m_ModifyFlag & MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1]);
+	elseif GetType == <SpaceName>.GET_MODIFY_FLAG_TYPE.GMFT_OR then
+		ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] = ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] | (self.m_ModifyFlag & MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1]);
+	end
+--<GenerateArea6Start>
+	<DataObjectMembersGetModifyFlag>
+end
+--<GenerateArea6End>
+
+	
+function <SpaceName>.<ClassName>:IsModified(MemberFlags)
+		local IsModified = false;
+--<GenerateArea7Start>
+		<IfHaveBaseClass>IsModified = IsModified or <SpaceName>.<BaseClass>.IsModified(self,MemberFlags);</IfHaveBaseClass>
+		
+		IsModified = IsModified or ((self.m_ModifyFlag & MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>+1]) ~= 0);
+		IsModified = IsModified
+			<DataObjectMembersIsModified>;
+--<GenerateArea7End>
+		return IsModified;
+end
+	
+function <SpaceName>.<ClassName>:ClearModifyFlag(MemberFlags)
+--<GenerateArea8Start>
+		<IfHaveBaseClass><SpaceName>.<BaseClass>.ClearModifyFlag(self,MemberFlags);</IfHaveBaseClass>
+		m_ModifyFlag = m_ModifyFlag&(~MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1]);
+		<DataObjectMembersClearModifyFlag>
+--<GenerateArea8End>
+end
+
+function <SpaceName>.<ClassName>:MakeUpdatePacket(Packet, MemberFlags)
+--<GenerateArea9Start>
+		local ModifyFlags = {};
+		for i = 1, <SpaceName>.DATA_OBJECT_FLAGS.DATA_OBJECT_FLAG_MAX , 1 do
+			ModifyFlags[i] = 0;
+		end		
+		self:GetModifyFlag(ModifyFlags, <SpaceName>.GET_MODIFY_FLAG_TYPE.GMFT_OR, MemberFlags);	
+--<GenerateArea9End>
+		return self:MakePacket(Packet, ModifyFlags);
+end
+	
+function <SpaceName>.<ClassName>:MakePacket(Packet, MemberFlags)
+--<GenerateArea10Start>
+		local FailCount = 0;
+		<IfHaveBaseClass>
+		if not <SpaceName>.<BaseClass>.MakePacket(self,Packet, MemberFlags) then
+			FailCount = FailCount + 1;
+		end
+		</IfHaveBaseClass>
+		
+		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>+1];
+
+		<PackOperations>
+--<GenerateArea10End>
+		return FailCount == 0;
+end
+		
+function <SpaceName>.<ClassName>:ParsePacket(Packet, MemberFlags)
+--<GenerateArea11Start>
+		<IfHaveBaseClass>
+		<SpaceName>.<BaseClass>.ParsePacket(self,Packet, MemberFlags);
+		</IfHaveBaseClass>
+		
+		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
+		local UpdateFlag = 0;
+		
+		<IfHaveMember>
+		local Pos = Packet:GetFirstMemberPosition();
+		while Pos ~= nil do
+			local Value;
+			local MemberID;
+			Value, MemberID, Pos = Packet:GetNextMemberObject(Pos);
+			if false then
+			<UnpackOperations>
+			end
+		end
+		</IfHaveMember>
+--<GenerateArea11End>
+		m_ModifyFlag = m_ModifyFlag | UpdateFlag;	
+end
+	
+function <SpaceName>.<ClassName>:CloneFrom(DataObject, MemberFlags)
+	--<GenerateArea12Start>
+		<IfHaveBaseClass>
+		<SpaceName>.<BaseClass>.CloneFrom(self,DataObject,MemberFlags);
+		</IfHaveBaseClass>
+		
+		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
+		local UpdateFlag = 0;
+		
+		<CloneOperations>
+		
+	--<GenerateArea12End>
+
+		m_ModifyFlag = m_ModifyFlag | UpdateFlag;
+end
+
+function <SpaceName>.<ClassName>:GetSmartStructSize(MemberFlags)
+--<GenerateArea13Start>
+		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
+		local Size = 0;
+
+		<PacketSizes>
+			
+		<IfHaveBaseClass>
+		Size = Size + <SpaceName>.<BaseClass>.GetSmartStructSize(self,MemberFlags);
+		</IfHaveBaseClass>
+--<GenerateArea13End>	
+		return Size;
+end

@@ -34,6 +34,7 @@ CDlgConfig::~CDlgConfig()
 void CDlgConfig::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Check(pDX, IDC_CHECK_EXP_ONE_FILE, m_Config.OneFileExportConfig.IsExport);
 	DDX_Check(pDX, IDC_CHECK_EXP_PROTOCOL, m_Config.InterfaceHeaderExportConfig.IsExport);
 	DDX_Check(pDX, IDC_CHECK_EXP_STRUCT_DEFINE, m_Config.StructExportConfig.IsExport);
 	DDX_Check(pDX, IDC_CHECK_EXP_ENUM, m_Config.EnumExportConfig.IsExport);
@@ -46,8 +47,10 @@ void CDlgConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_EXP_HANDLER_SOURCE, m_Config.HandlerSourceExportConfig.IsExport);
 	DDX_Check(pDX, IDC_EXP_DATA_OBJECT_HEADER, m_Config.DataObjectHeaderExportConfig.IsExport);
 	DDX_Check(pDX, IDC_EXP_DATA_OBJECT_SOURCE, m_Config.DataObjectSourceExportConfig.IsExport);
-	DDX_Check(pDX, IDC_EXP_DATA_OBJECT_MODIFY_FLAGS, m_Config.DataObjectModifyFlagsExportConfig.IsExport);
+	DDX_Check(pDX, IDC_EXP_DATA_OBJECT_MODIFY_FLAGS_HEADER, m_Config.DataObjectModifyFlagsHeaderExportConfig.IsExport);
+	DDX_Check(pDX, IDC_EXP_DATA_OBJECT_MODIFY_FLAGS_SOURCE, m_Config.DataObjectModifyFlagsSourceExportConfig.IsExport);
 
+	DDX_Text(pDX, IDC_EDIT_ONE_FILE_FILE_EXT, m_Config.OneFileExportConfig.ExportExt);
 	DDX_Text(pDX, IDC_EDIT_PROTOCOL_FILE_EXT, m_Config.InterfaceHeaderExportConfig.ExportExt);
 	DDX_Text(pDX, IDC_EDIT_STRUCT_DEFINE_EXT, m_Config.StructExportConfig.ExportExt);
 	DDX_Text(pDX, IDC_EDIT_ENUM_EXT, m_Config.EnumExportConfig.ExportExt);
@@ -60,8 +63,15 @@ void CDlgConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_MSG_HANDLER_SOURCE_EXT, m_Config.HandlerSourceExportConfig.ExportExt);
 	DDX_Text(pDX, IDC_EDIT_DATA_OBJECT_HEADER_EXT, m_Config.DataObjectHeaderExportConfig.ExportExt);
 	DDX_Text(pDX, IDC_EDIT_DATA_OBJECT_SOURCE_EXT, m_Config.DataObjectSourceExportConfig.ExportExt);
-	DDX_Text(pDX, IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_EXT, m_Config.DataObjectModifyFlagsExportConfig.ExportExt);
-	
+	DDX_Text(pDX, IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_HEADER_EXT, m_Config.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
+	DDX_Text(pDX, IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_SOURCE_EXT, m_Config.DataObjectModifyFlagsSourceExportConfig.ExportExt);
+
+	DDX_Text(pDX, IDC_EDIT_COMMENT_PREFIX, m_Config.CommentPrefix);
+	DDX_Text(pDX, IDC_EDIT_LOCAL_VARIABLE_DEFINE_PREFIX, m_Config.LocalVariableDefinePrefix);
+	DDX_Text(pDX, IDC_EDIT_MEMBER_VARIABLE_PREFIX, m_Config.MemberVariablePrefix);
+	DDX_Text(pDX, IDC_EDIT_DEFAULT_PACKET_NAME, m_Config.DefaultPacketName);
+	DDX_Text(pDX, IDC_EDIT_DEFAULT_PACKET_MEMBER_NAME, m_Config.DefaultPacketMemberName);
+	DDX_Check(pDX, IDC_SUPPORT_BIG_INT, m_Config.SupportBigInt);
 }
 
 
@@ -76,11 +86,12 @@ BEGIN_MESSAGE_MAP(CDlgConfig, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_MSG_HANDLER_SOURCE_EXT, &CDlgConfig::OnEnChangeEdit)
 	ON_EN_CHANGE(IDC_EDIT_DATA_OBJECT_HEADER_EXT, &CDlgConfig::OnEnChangeEdit)
 	ON_EN_CHANGE(IDC_EDIT_DATA_OBJECT_SOURCE_EXT, &CDlgConfig::OnEnChangeEdit)
-	ON_EN_CHANGE(IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_EXT, &CDlgConfig::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_HEADER_EXT, &CDlgConfig::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT_DATA_OBJECT_MODIFY_FLAGS_SOURCE_EXT, &CDlgConfig::OnEnChangeEdit)
 	
-	ON_BN_CLICKED(IDC_BUTTON1_DEFAULT_STRUCT_GENERATE_OPERATIONS, &CDlgConfig::OnBnClickedButton1DefaultStructGenerateOperations)
-	ON_BN_CLICKED(IDC_BUTTON_ARRAY_DEFINE_CONFIG, &CDlgConfig::OnBnClickedButtonArrayDefineConfig)
-	ON_BN_CLICKED(IDC_BUTTON_DEFAULT_ENUM_GENERATE_OPERATIONS, &CDlgConfig::OnBnClickedButtonDefaultEnumGenerateOperations)
+	//ON_BN_CLICKED(IDC_BUTTON1_DEFAULT_STRUCT_GENERATE_OPERATIONS, &CDlgConfig::OnBnClickedButton1DefaultStructGenerateOperations)
+	//ON_BN_CLICKED(IDC_BUTTON_ARRAY_DEFINE_CONFIG, &CDlgConfig::OnBnClickedButtonArrayDefineConfig)
+	//ON_BN_CLICKED(IDC_BUTTON_DEFAULT_ENUM_GENERATE_OPERATIONS, &CDlgConfig::OnBnClickedButtonDefaultEnumGenerateOperations)
 END_MESSAGE_MAP()
 
 
@@ -128,37 +139,37 @@ void CDlgConfig::OnEnChangeEdit()
 {
 	m_IsModified=true;
 }
-void CDlgConfig::OnBnClickedButton1DefaultStructGenerateOperations()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CDlgGenerateOperationsEditor Dlg;
-	Dlg.m_GenerateOperations=m_Config.DefaultStructGenerateOperations;
-	if(Dlg.DoModal()==IDOK)
-	{
-		m_Config.DefaultStructGenerateOperations=Dlg.m_GenerateOperations;
-	}
-}
-
-void CDlgConfig::OnBnClickedButtonArrayDefineConfig()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CDlgGenerateOperationsEditor Dlg;
-	Dlg.m_GenerateOperations=m_Config.ArrayDefineConfig;
-	Dlg.m_ShowIndexOperation=true;
-	if(Dlg.DoModal()==IDOK)
-	{
-		m_Config.ArrayDefineConfig=Dlg.m_GenerateOperations;
-	}
-}
-
-
-void CDlgConfig::OnBnClickedButtonDefaultEnumGenerateOperations()
-{
-	// TODO:  在此添加控件通知处理程序代码
-	CDlgGenerateOperationsEditor Dlg;
-	Dlg.m_GenerateOperations = m_Config.DefaultEnumGenerateOperations;
-	if (Dlg.DoModal() == IDOK)
-	{
-		m_Config.DefaultEnumGenerateOperations = Dlg.m_GenerateOperations;
-	}
-}
+//void CDlgConfig::OnBnClickedButton1DefaultStructGenerateOperations()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	CDlgGenerateOperationsEditor Dlg;
+//	Dlg.m_GenerateOperations=m_Config.DefaultStructGenerateOperations;
+//	if(Dlg.DoModal()==IDOK)
+//	{
+//		m_Config.DefaultStructGenerateOperations=Dlg.m_GenerateOperations;
+//	}
+//}
+//
+//void CDlgConfig::OnBnClickedButtonArrayDefineConfig()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	CDlgGenerateOperationsEditor Dlg;
+//	Dlg.m_GenerateOperations=m_Config.ArrayDefineConfig;
+//	Dlg.m_ShowIndexOperation=true;
+//	if(Dlg.DoModal()==IDOK)
+//	{
+//		m_Config.ArrayDefineConfig=Dlg.m_GenerateOperations;
+//	}
+//}
+//
+//
+//void CDlgConfig::OnBnClickedButtonDefaultEnumGenerateOperations()
+//{
+//	// TODO:  在此添加控件通知处理程序代码
+//	CDlgGenerateOperationsEditor Dlg;
+//	Dlg.m_GenerateOperations = m_Config.DefaultEnumGenerateOperations;
+//	if (Dlg.DoModal() == IDOK)
+//	{
+//		m_Config.DefaultEnumGenerateOperations = Dlg.m_GenerateOperations;
+//	}
+//}

@@ -1,0 +1,190 @@
+//<GenerateArea1Start>
+<Description>
+//<GenerateArea1End>
+
+//<GenerateArea2Start>
+<SSTIDEnumDefine>
+<ModifyFlagEnumDefine>
+//<GenerateArea2End>
+
+export class <ClassName><IfHaveBaseClass> extends <BaseClass></IfHaveBaseClass>
+{
+
+	protected m_ModifyFlag: Long = Long.UZERO;
+	
+//<GenerateArea3Start>	   
+	<Members>
+//<GenerateArea3End>
+
+
+	constructor()
+	{
+		<IfHaveBaseClass>super();</IfHaveBaseClass>
+		this.m_ModifyFlag = Long.UZERO;
+		<InitOperations>
+	}
+	
+	public Clear(): void
+	{
+//<GenerateArea4Start>
+		<IfHaveBaseClass>super.Clear();</IfHaveBaseClass>
+
+		this.m_ModifyFlag = Long.UZERO;
+	   
+		<InitOperations>
+//<GenerateArea4End>
+
+	}
+	 
+//<GenerateArea5Start>
+
+	public SetModifyFlag(RemoveFlags: Long,AddFlags: Long): void
+	{
+		this.m_ModifyFlag = this.m_ModifyFlag.and(RemoveFlags.negate());
+		this.m_ModifyFlag = this.m_ModifyFlag.or(AddFlags);
+	}
+
+
+	<SetMethodsDefine>
+			   
+	<GetMethodsDefine>
+
+//<GenerateArea5End>
+
+	public GetModifyFlag(ModifyFlags: Long[],GetType: number,MemberFlags: Long[]): void
+	{
+//<GenerateArea6Start>
+		<IfHaveBaseClass>super.GetModifyFlag(ModifyFlags,GetType,MemberFlags);</IfHaveBaseClass>
+		switch(GetType)
+		{
+		case GET_MODIFY_FLAG_TYPE.GMFT_COPY:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = this.m_ModifyFlag.and(MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]);
+			break;
+		case GET_MODIFY_FLAG_TYPE.GMFT_AND:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>].and(this.m_ModifyFlag.and(MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]));
+			break;
+		case GET_MODIFY_FLAG_TYPE.GMFT_OR:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>].or(this.m_ModifyFlag.and(MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]));
+			break;
+		}
+		<DataObjectMembersGetModifyFlag>
+//<GenerateArea6End>
+	}
+	
+	public IsModified(MemberFlags: Long[]): boolean
+	{
+		let IsModified = false;
+//<GenerateArea7Start>
+		<IfHaveBaseClass>IsModified=IsModified||super.IsModified(MemberFlags);</IfHaveBaseClass>
+		
+		IsModified=IsModified||(!this.m_ModifyFlag.and(MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]).equals(0));
+		IsModified=IsModified
+			<DataObjectMembersIsModified>;
+//<GenerateArea7End>
+		return IsModified;
+
+	}
+	
+	public ClearModifyFlag(MemberFlags: Long[]): void
+	{
+//<GenerateArea8Start>
+		<IfHaveBaseClass>super.ClearModifyFlag(MemberFlags);</IfHaveBaseClass>
+		this.m_ModifyFlag=this.m_ModifyFlag.and(MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>].negate());
+		<DataObjectMembersClearModifyFlag>
+//<GenerateArea8End>
+	}
+
+	public MakeUpdatePacket(Packet: CSmartStruct,MemberFlags: Long[]): boolean
+	{
+//<GenerateArea9Start>
+		let ModifyFlags: Long[] = [];
+		for(let i=0;i<DATA_OBJECT_FLAGS.DATA_OBJECT_FLAG_MAX;i++)
+			ModifyFlags.push(Long.UZERO);
+		this.GetModifyFlag(ModifyFlags,GET_MODIFY_FLAG_TYPE.GMFT_OR,MemberFlags);	
+//<GenerateArea9End>
+		return this.MakePacket(Packet,ModifyFlags);
+	}
+	
+	public MakePacket(Packet: CSmartStruct,MemberFlags: Long[]): boolean
+	{
+//<GenerateArea10Start>
+		let FailCount: number = 0;
+		<IfHaveBaseClass>
+		if(!super.MakePacket(Packet,MemberFlags))
+			FailCount++;
+		</IfHaveBaseClass>
+		
+		let Flag = MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+
+		<PackOperations>
+//<GenerateArea10End>
+		return FailCount==0;
+	}
+		
+	public ParsePacket(Packet: CSmartStruct,MemberFlags: Long[]): void
+	{
+//<GenerateArea11Start>
+		<IfHaveBaseClass>
+		super.ParsePacket(Packet,MemberFlags);
+		</IfHaveBaseClass>
+		
+		let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		let UpdateFlag=Long.UZERO;
+		
+		<IfHaveMember>
+		let Pos=Packet.GetFirstMemberPosition();
+		while(Pos.Pos>0)
+		{
+			let PacketMember=Packet.GetNextMember(Pos);
+			switch(Pos.MemberID)
+			{
+			<UnpackOperations>
+			}
+		}
+		</IfHaveMember>
+//<GenerateArea11End>
+		this.m_ModifyFlag=this.m_ModifyFlag.or(UpdateFlag);
+	}
+	
+	public CloneFrom(DataObject: <ClassName>,MemberFlags: Long[]): void
+	{
+	//<GenerateArea12Start>
+		<IfHaveBaseClass>
+		super.CloneFrom(DataObject,MemberFlags);
+		</IfHaveBaseClass>
+		
+		let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		let UpdateFlag=Long.UZERO;
+		
+		<CloneOperations>
+		
+	//<GenerateArea12End>
+
+		this.m_ModifyFlag=this.m_ModifyFlag.or(UpdateFlag);
+	}
+	public GetSmartStructSize(MemberFlags: Long[]): number
+	{
+//<GenerateArea13Start>
+		let Size=0;
+		let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		<PacketSizes>
+			
+		<IfHaveBaseClass>
+		Size+=super.GetSmartStructSize(MemberFlags);
+		</IfHaveBaseClass>
+//<GenerateArea13End>	
+		return Size;
+	}
+	public Clone(): any
+	{
+//<GenerateArea14Start>
+		let DataObject=new <ClassName>();
+		DataObject.CloneFrom(this,<FULL_MODIFY_FLAG>);
+		return DataObject;
+//<GenerateArea14End>	
+	}
+//<GenerateArea15Start>
+//<GenerateArea15End>
+};
+
+ALL_CLASS["<ClassName>"] = <ClassName>;

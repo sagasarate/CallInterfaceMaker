@@ -9,7 +9,7 @@ int HandleMsg<MethodName>(CSmartStruct Packet)
 	while(Pos>0)
 	{
 		ushort MemberID=0;
-		CSmartValue Value=Packet.GetNextMember(ref Pos,ref MemberID);
+		CSmartValue PacketMember=Packet.GetNextMember(ref Pos,ref MemberID);
 		switch(MemberID)
 		{
 		<UnpackOperations>

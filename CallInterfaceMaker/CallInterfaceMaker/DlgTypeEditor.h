@@ -20,12 +20,15 @@ class CDlgTypeEditor : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgTypeEditor)
 protected:
-	CTabCtrl	m_tabMain;
+	CTabCtrl	m_tbOperations;
 	CListCtrl	m_lvTypeList;
 	CString		m_TypeName;
 	CString		m_CType;	
 	CEdit		m_edOperation;	
 	BOOL		m_IsRefType;
+	BOOL		m_UseParamBind;
+	BOOL		m_IsBaseType;
+	BOOL		m_IsVariableLen;
 	bool		m_IsModified;
 	int			m_CurSelectItem;
 public:
@@ -62,4 +65,5 @@ public:
 	afx_msg void OnTcnSelchangingTab1(NMHDR *pNMHDR, LRESULT *pResult);
 	
 	afx_msg void OnBnClickedCheckIsRefType();
+	
 };

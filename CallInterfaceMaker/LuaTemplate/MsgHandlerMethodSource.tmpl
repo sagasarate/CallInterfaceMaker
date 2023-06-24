@@ -1,0 +1,15 @@
+function <SpaceName>.C<InterfaceName>MsgHandler:HandleMsg<MethodName>(Packet)
+	<ParamDefines>
+	<IfHaveMember>
+	local Pos = Packet:GetFirstMemberPosition();
+	while Pos ~= nil do
+		local Value;
+		local MemberID;
+		Value, MemberID, Pos = Packet:GetNextMemberObject(Pos);
+		if false then	
+		<UnpackOperations>
+		end
+	end
+	</IfHaveMember>	
+	return self:<MethodName>(<Params>);
+end

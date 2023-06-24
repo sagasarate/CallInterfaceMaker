@@ -1,4 +1,4 @@
-public bool ToJson(ref JsonData StructNode, ulong[] MemberFlags)
+public<IfHaveBaseClass> new</IfHaveBaseClass> bool ToJson(JObject StructNode, ulong[] MemberFlags)
 {
 	<IfHaveBaseClass>
 	if (!base.ToJson(StructNode, MemberFlags))
@@ -10,7 +10,7 @@ public bool ToJson(ref JsonData StructNode, ulong[] MemberFlags)
 	<ToJsonOperations>
 	return true;
 }
-public bool FromJson(JsonData StructNode, ulong[] MemberFlags)
+public<IfHaveBaseClass> new</IfHaveBaseClass> bool FromJson(JObject StructNode, ulong[] MemberFlags)
 {
 	uint FailCount=0;
 	<IfHaveBaseClass>

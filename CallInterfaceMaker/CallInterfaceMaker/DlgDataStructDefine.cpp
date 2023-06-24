@@ -336,11 +336,58 @@ void CDlgDataStructDefine::OnBnClickedButtonBaseTypeDef()
 	// TODO: 在此添加控件通知处理程序代码
 	CDlgTypeEditor Dlg;
 
-	Dlg.m_TypeList = GetMainDlg()->GetBaseTypeList();
+	vector<TYPE_DEFINE>& BaseTypeList = GetMainDlg()->GetBaseTypeList();
+	INTERFACE_CONFIG& Config = GetMainDlg()->GetConfig();
+
+	Dlg.m_TypeList.resize(4);
+
+	TYPE_DEFINE& Struct = Dlg.m_TypeList[0];
+	Struct.Name = "结构";
+	Struct.Flag = TYPE_DEFINE_FLAG_SYSTEM_TYPE;
+	Struct.GenerateOperations = Config.DefaultStructGenerateOperations;
+
+	TYPE_DEFINE& Array = Dlg.m_TypeList[1];
+	Array.Name = "数组";
+	Array.Flag = TYPE_DEFINE_FLAG_SYSTEM_TYPE;
+	Array.GenerateOperations = Config.ArrayDefineConfig;
+
+	TYPE_DEFINE& Enum = Dlg.m_TypeList[2];
+	Enum.Name = "枚举";
+	Enum.Flag = TYPE_DEFINE_FLAG_SYSTEM_TYPE;
+	Enum.GenerateOperations = Config.DefaultEnumGenerateOperations;
+
+	TYPE_DEFINE& Enum64 = Dlg.m_TypeList[3];
+	Enum64.Name = "64位枚举";
+	Enum64.Flag = TYPE_DEFINE_FLAG_SYSTEM_TYPE;
+	Enum64.GenerateOperations = Config.DefaultEnum64GenerateOperations;
+
+	Dlg.m_TypeList.insert(Dlg.m_TypeList.end(), BaseTypeList.begin(), BaseTypeList.end());
+
 	if(Dlg.DoModal()==IDOK)
 	{
-		GetMainDlg()->GetBaseTypeList() = Dlg.m_TypeList;
-		GetMainDlg()->SaveTypeDef();
+		if (Dlg.m_TypeList.size() >= 4)
+		{
+			BaseTypeList.clear();
+			BaseTypeList.insert(BaseTypeList.end(), Dlg.m_TypeList.begin() + 4, Dlg.m_TypeList.end());
+
+			TYPE_DEFINE& Struct = Dlg.m_TypeList[0];
+			Config.DefaultStructGenerateOperations = Struct.GenerateOperations;
+
+			TYPE_DEFINE& Array = Dlg.m_TypeList[1];
+			Config.ArrayDefineConfig = Array.GenerateOperations;
+
+			TYPE_DEFINE& Enum = Dlg.m_TypeList[2];
+			Config.DefaultEnumGenerateOperations = Enum.GenerateOperations;
+
+			TYPE_DEFINE& Enum64 = Dlg.m_TypeList[3];
+			Config.DefaultEnum64GenerateOperations = Enum64.GenerateOperations;
+			GetMainDlg()->SaveTypeDef();
+			GetMainDlg()->SaveConfig();
+		}
+		else
+		{
+			AfxMessageBox("数据异常");
+		}
 	}
 }
 

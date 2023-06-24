@@ -1,0 +1,16 @@
+if <SpaceName>==nil then
+	<SpaceName>={};
+end
+
+<SpaceName>.C<InterfaceName>MsgCaller = 
+{
+	m_TargetID = 0;
+};
+		
+function <SpaceName>.C<InterfaceName>MsgCaller:_constructor(Operator, TargetID)
+	self.m_Operator = Operator;
+	self.m_TargetID = TargetID;			
+end
+		
+<Methods>
+<PackMethods>

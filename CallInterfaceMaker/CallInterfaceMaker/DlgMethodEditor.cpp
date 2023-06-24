@@ -42,8 +42,11 @@ void CDlgMethodEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_MethodInfo.Description);
 	DDX_Text(pDX, IDC_EDIT_METHOD_ID, m_MethodInfo.ID);
 	BOOL CanCache = (m_MethodInfo.Flag&INTERFACE_METHOD_FLAG_CAN_CACHE) ? TRUE : FALSE;
+	BOOL NoCompress = (m_MethodInfo.Flag&INTERFACE_METHOD_FLAG_NO_COMPRESS) ? TRUE : FALSE;
 	DDX_Check(pDX, IDC_CHECK_CAN_CACHE, CanCache);
-	m_MethodInfo.Flag = (CanCache ? INTERFACE_METHOD_FLAG_CAN_CACHE : 0);
+	DDX_Check(pDX, IDC_CHECK_NO_COMPRESS, NoCompress);
+	m_MethodInfo.Flag = (CanCache ? INTERFACE_METHOD_FLAG_CAN_CACHE : 0)|
+		(NoCompress ? INTERFACE_METHOD_FLAG_NO_COMPRESS : 0);
 
 	if (pDX->m_bSaveAndValidate)
 	{

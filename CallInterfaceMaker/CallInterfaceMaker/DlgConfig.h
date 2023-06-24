@@ -42,9 +42,9 @@ public:
 protected:
 	virtual void OnCancel();
 	afx_msg void OnEnChangeEdit();
-public:
-	afx_msg void OnBnClickedButton1DefaultStructGenerateOperations();
-	afx_msg void OnBnClickedButtonArrayDefineConfig();
+//public:
+//	afx_msg void OnBnClickedButton1DefaultStructGenerateOperations();
+//	afx_msg void OnBnClickedButtonArrayDefineConfig();
 	afx_msg void OnBnClickedButtonDefaultEnumGenerateOperations();
 };
 

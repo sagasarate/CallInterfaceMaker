@@ -35,18 +35,15 @@ void CDlgStructEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_MEMBER_LIST, m_lvMemberList);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_StructDefineInfo.Description);
 	DDX_Text(pDX, IDC_EDIT_OBJECT_ID, m_StructDefineInfo.ObjectID);
-	BOOL IsDataObject = (m_StructDefineInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) ? TRUE : FALSE;
-	BOOL DeclareLater = (m_StructDefineInfo.Flag&STRUCT_FLAG_DECLARE_LATER) ? TRUE : FALSE;
-	BOOL ExportXMLProcess = (m_StructDefineInfo.Flag&STRUCT_FLAG_EXPORT_XML_PROCESS) ? TRUE : FALSE;
-	BOOL ExportJsonProcess = (m_StructDefineInfo.Flag&STRUCT_FLAG_EXPORT_JSON_PROCESS) ? TRUE : FALSE;
-	DDX_Check(pDX, IDC_CHECK_IS_DATA_OBJECT, IsDataObject);
-	DDX_Check(pDX, IDC_CHECK_DECLARE_LATER, DeclareLater);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_XML_PROCESS, ExportXMLProcess);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_JSON_PROCESS, ExportJsonProcess);
-	m_StructDefineInfo.Flag = (IsDataObject ? STRUCT_FLAG_IS_DATA_OBJECT : 0) |
-		(DeclareLater ? STRUCT_FLAG_DECLARE_LATER : 0) |
-		(ExportXMLProcess ? STRUCT_FLAG_EXPORT_XML_PROCESS : 0) |
-		(ExportJsonProcess ? STRUCT_FLAG_EXPORT_JSON_PROCESS : 0);
+	DDX_Check(pDX, IDC_CHECK_IS_DATA_OBJECT, m_StructDefineInfo.Flag, STRUCT_FLAG_IS_DATA_OBJECT);
+	DDX_Check(pDX, IDC_CHECK_DECLARE_LATER, m_StructDefineInfo.Flag, STRUCT_FLAG_DECLARE_LATER);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_XML_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_XML_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_JSON_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_JSON_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_DB_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_DB_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_EDITOR_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_EDITOR_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_LOG_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_LOG_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_LUA_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_LUA_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_XLS_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_XLS_PROCESS);
 }
 
 
@@ -60,6 +57,7 @@ BEGIN_MESSAGE_MAP(CDlgStructEditor, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_MEMBER_MOVE_UP, &CDlgStructEditor::OnBnClickedButtonMemberMoveUp)
 	ON_BN_CLICKED(IDC_BUTTON_MEMBER_MOVE_DOWN, &CDlgStructEditor::OnBnClickedButtonMemberMoveDown)
 	ON_BN_CLICKED(IDC_BUTTON_MEMBER_GENERATE_OPERATIONS, &CDlgStructEditor::OnBnClickedButtonMemberGenerateOperations)
+	ON_BN_CLICKED(IDC_BUTTON_SORT, &CDlgStructEditor::OnBnClickedButtonSort)
 END_MESSAGE_MAP()
 
 
@@ -67,20 +65,34 @@ END_MESSAGE_MAP()
 void CDlgStructEditor::FillList()
 {
 	m_lvMemberList.DeleteAllItems();
-	for(size_t i=0;i<m_StructDefineInfo.MemberList.size();i++)
+	int i = 0;
+	for (STRUCT_MEMBER_INFO& Member : m_StructDefineInfo.MemberList)
 	{
 		CString Temp;
 
-		int Item=m_lvMemberList.InsertItem(i,m_StructDefineInfo.MemberList[i].Name);
-		Temp = m_StructDefineInfo.MemberList[i].Type;
-		if (m_StructDefineInfo.MemberList[i].IsArray)
-			Temp += "[ ]";
-		m_lvMemberList.SetItemText(Item, 1, Temp);
-		Temp.Format("%u",m_StructDefineInfo.MemberList[i].ID);
-		m_lvMemberList.SetItemText(Item,2,Temp);
-		m_lvMemberList.SetItemData(Item,i);
+		int Item = m_lvMemberList.InsertItem(m_lvMemberList.GetItemCount(), Member.Name);
 		
+		if (Member.IsArray)
+			Temp.Format("%s[%u,%u]", Member.Type, Member.ArrayStartLength, Member.ArrayGrowLength);
+		else
+			Temp = Member.Type;
+		m_lvMemberList.SetItemText(Item, 1, Temp);
+		Temp.Format("%u", Member.ID);
+		m_lvMemberList.SetItemText(Item, 2, Temp);
+		Temp.Format("0x%X", Member.Flag);
+		m_lvMemberList.SetItemText(Item, 3, Temp);
+		m_lvMemberList.SetItemText(Item, 4, Member.ShowName);
+		m_lvMemberList.SetItemText(Item, 5, Member.BindData);
+		m_lvMemberList.SetItemText(Item, 6, Member.DBLength);
+		if (Member.DBIndexType < DB_INDEX_TYPE_MAX)
+			m_lvMemberList.SetItemText(Item, 7, g_szDB_INDEX_TYPE[Member.DBIndexType]);
+		m_lvMemberList.SetItemText(Item, 8, Member.ExtendType);
+		m_lvMemberList.SetItemText(Item, 9, Member.PackFlag);
+		m_lvMemberList.SetItemText(Item, 10, Member.Description);
+		m_lvMemberList.SetItemData(Item, i++);
 	}
+
+	ListCtrlColAutoFit(m_lvMemberList);
 }
 
 void CDlgStructEditor::SelectItemByName(LPCTSTR szName)
@@ -108,6 +120,14 @@ BOOL CDlgStructEditor::OnInitDialog()
 	m_lvMemberList.InsertColumn(0,_T("名称"),LVCFMT_LEFT,100);
 	m_lvMemberList.InsertColumn(1,_T("类型"),LVCFMT_LEFT,100);
 	m_lvMemberList.InsertColumn(2,_T("ID"),LVCFMT_LEFT,60);
+	m_lvMemberList.InsertColumn(3, _T("Flag"), LVCFMT_LEFT, 60);
+	m_lvMemberList.InsertColumn(4, _T("显示名"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(5, _T("关联数据"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(6, _T("数据库长度"), LVCFMT_LEFT, 80);
+	m_lvMemberList.InsertColumn(7, _T("索引类型"), LVCFMT_LEFT, 60);
+	m_lvMemberList.InsertColumn(8, _T("扩展类型"), LVCFMT_LEFT, 60);
+	m_lvMemberList.InsertColumn(9, _T("打包标志位"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(10, _T("描述"), LVCFMT_LEFT, 100);
 
 	
 
@@ -271,4 +291,18 @@ void CDlgStructEditor::OnBnClickedButtonMemberGenerateOperations()
 	{
 		m_StructDefineInfo.GenerateOperations=Dlg.m_GenerateOperations;
 	}
+}
+
+static int MemberComp(LPCVOID p1, LPCVOID p2)
+{
+	const STRUCT_MEMBER_INFO* pInfo1 = (const STRUCT_MEMBER_INFO*)p1;
+	const STRUCT_MEMBER_INFO* pInfo2 = (const STRUCT_MEMBER_INFO*)p2;
+	return strcmp(pInfo1->Name, pInfo2->Name);
+}
+
+void CDlgStructEditor::OnBnClickedButtonSort()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	qsort(m_StructDefineInfo.MemberList.begin()._Ptr, m_StructDefineInfo.MemberList.size(), sizeof(STRUCT_MEMBER_INFO), MemberComp);
+	FillList();
 }

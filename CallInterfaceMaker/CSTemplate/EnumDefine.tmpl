@@ -1,5 +1,98 @@
 <Description>
-public enum <EnumName><EnumType>
+<IsFlagEnum>public enum <EnumName> : uint<!IsFlagEnum>public enum <EnumName></IsFlagEnum>
 {
 	<EnumMembers>
+};
+
+public class <EnumName>_UTILS
+{
+	public static readonly int ENUM_COUNT = <EnumMemberCount>;
+	<IfExportEnumList>
+	public static readonly uint[] VALUE_LIST = {<EnumValues>};
+	</IfExportEnumList>
+
+	<IfExportEnumStrList>
+	public static readonly string[] NAME_LIST = {<EnumStrValues>};
+	public static readonly string[] DESC_LIST = {<EnumStrDescs>};
+	</IfExportEnumStrList>
+
+	<IfExportEnumTransFn>
+	<IsFlagEnum>
+	public static string ToStr(uint Value)
+	{
+		System.Text.StringBuilder Str = new System.Text.StringBuilder();
+		<EnumToStrs>
+		return Str.ToString();
+	}
+
+	public static uint FromStr(string Str)
+	{
+		uint Flag = 0;
+		string[] Splitter = Str.Split('|');
+		for (int i = 0; i < Splitter.Length; i++)
+		{
+			<StrToEnums>
+		}	
+		return Flag;
+	}
+	public static string GetDesc(uint Value)
+	{
+		System.Text.StringBuilder Str = new System.Text.StringBuilder();
+		<EnumToDescs>
+		return Str.ToString();
+	}
+	<!IsFlagEnum>
+	public static string ToStr(uint Value)
+	{
+		<HaveEnumStrArray>
+		if (Value < ENUM_COUNT)
+		{
+			return NAME_LIST[Value];
+		}
+		</HaveEnumStrArray>
+		<NotHaveEnumStrArray>
+		switch((<EnumName>)Value)
+		{
+			<EnumToStrs>
+		}
+		</NotHaveEnumStrArray>
+		return "UNKNOW";
+	}
+
+	public static uint FromStr(string Str)
+	{
+		<StrToEnums>
+		return (uint)<EnumName>.<LastEnumValue>;
+	}
+	public static string GetDesc(uint Value)
+	{
+		<HaveEnumStrArray>
+		if (Value < ENUM_COUNT)
+		{
+			return DESC_LIST[Value];
+		}
+		</HaveEnumStrArray>
+		<NotHaveEnumStrArray>
+		switch((<EnumName>)Value)
+		{
+			<EnumToDescs>
+		}
+		</NotHaveEnumStrArray>
+		return "UNKNOW";
+	}
+	</IsFlagEnum>	
+	<IfExportEnumList>	
+	public static string GetDescs()
+	{
+		StringBuilder Desc = new StringBuilder();
+		foreach(uint Value in VALUE_LIST)
+		{
+			if (Desc.Length > 0)
+                Desc.Append("\n");
+			Desc.Append($"{Value}={GetDesc(Value)}");
+		}
+		return Desc.ToString();
+	}	
+	</IfExportEnumList>
+	</IfExportEnumTransFn>
 };

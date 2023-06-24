@@ -1,0 +1,7 @@
+case <SST_NAME>.<SST_ID>:
+	<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>
+	{
+		<UnpackOperation>
+		<IfUpdateMF>UpdateFlag=UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>
+	}
+	break;

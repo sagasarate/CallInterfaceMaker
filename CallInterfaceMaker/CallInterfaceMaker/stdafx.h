@@ -45,76 +45,125 @@
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#define CONFIG_FILE_NAME									"Config.xml"
-#define ENV_FILE_NAME										"Env.xml"
-#define TYPE_DEF_FILE_NAME									"TypeDef.xml"
+#define CONFIG_FILE_NAME											"Config.xml"
+#define ENV_FILE_NAME												"Env.xml"
+#define TYPE_DEF_FILE_NAME											"TypeDef.xml"
 
-#define INTERFACE_HEADER_TEMPLE_FILE_NAME					"InterfaceHeader.tmpl"
-#define INTERFACE_TEMPLE_FILE_NAME							"Interface.tmpl"
+#define INTERFACE_HEADER_TEMPLE_FILE_NAME							"InterfaceHeader.tmpl"
+#define INTERFACE_TEMPLE_FILE_NAME									"Interface.tmpl"
 
-#define PARAM_TEMPLE_FILE_NAME								"Param.tmpl"
-#define PARAM_DESCRIPTION_TEMPLE_FILE_NAME					"ParamDescript.tmpl"
+#define PARAM_DEFINE_TEMPLE_FILE_NAME								"ParamDefine.tmpl"
+#define PARAM_TRANS_TEMPLE_FILE_NAME								"ParamTrans.tmpl"
+#define PARAM_DESCRIPTION_TEMPLE_FILE_NAME							"ParamDescript.tmpl"
 
-#define PACK_SIZE_TEMPLE_FILE_NAME							"PackSize.tmpl"
+#define PACK_SIZE_TEMPLE_FILE_NAME									"PackSize.tmpl"
 
-#define METHOD_HEADER_TEMPLE_FILE_NAME						"MethodHeader.tmpl"
-#define METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME			"MethodHeaderPureTail.tmpl"
-#define METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME				"MethodCallerSource.tmpl"
-#define MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME 			"MsgPackMethodHeader.tmpl"
-#define MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME 			"MsgPackMethodSource.tmpl"
-#define MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME 			"MsgHandlerMethodHeader.tmpl"
-#define MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME 			"MsgHandlerMethodSource.tmpl"
+#define METHOD_HEADER_TEMPLE_FILE_NAME								"MethodHeader.tmpl"
+#define METHOD_HEADER_PURE_TAIL_TEMPLE_FILE_NAME					"MethodHeaderPureTail.tmpl"
+#define METHOD_CALLER_SOURCE_TEMPLE_FILE_NAME						"MethodCallerSource.tmpl"
+#define MSG_PACK_METHOD_HEADER_TEMPLE_FILE_NAME 					"MsgPackMethodHeader.tmpl"
+#define MSG_PACK_METHOD_SOURCE_TEMPLE_FILE_NAME 					"MsgPackMethodSource.tmpl"
+#define MSG_HANDLER_METHOD_HEADER_TEMPLE_FILE_NAME 					"MsgHandlerMethodHeader.tmpl"
+#define MSG_HANDLER_METHOD_SOURCE_TEMPLE_FILE_NAME 					"MsgHandlerMethodSource.tmpl"
 
-#define MSG_MAP_INIT_TEMPLE_FILE_NAME						"MsgMapInit.tmpl"
-
-
-#define MSG_CALLER_HEADER_TEMPLE_FILE_NAME					"MsgCallerHeader.tmpl"
-#define MSG_CALLER_SOURCE_TEMPLE_FILE_NAME					"MsgCallerSource.tmpl"
+#define MSG_MAP_INIT_TEMPLE_FILE_NAME								"MsgMapInit.tmpl"
 
 
-#define MSG_HANDLER_HEADER_TEMPLE_FILE_NAME					"MsgHandlerHeader.tmpl"
-#define MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME					"MsgHandlerSource.tmpl"
+#define MSG_CALLER_HEADER_TEMPLE_FILE_NAME							"MsgCallerHeader.tmpl"
+#define MSG_CALLER_SOURCE_TEMPLE_FILE_NAME							"MsgCallerSource.tmpl"
 
-#define DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME			"DataObjectDefineHeader.tmpl"
-#define DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME			"DataObjectDefineSource.tmpl"
 
-#define STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME				"StructDefineHeader.tmpl"
-#define ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME					"EnumDefineHeader.tmpl"
-#define SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME			"SystemEnumDefineHeader.tmpl"
-#define STRUCT_DEFINE_TEMPLE_FILE_NAME						"StructDefine.tmpl"
-#define STRUCT_MEMBER_TEMPLE_FILE_NAME						"StructMember.tmpl"
-#define DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME					"DataObjectMember.tmpl"
+#define MSG_HANDLER_HEADER_TEMPLE_FILE_NAME							"MsgHandlerHeader.tmpl"
+#define MSG_HANDLER_SOURCE_TEMPLE_FILE_NAME							"MsgHandlerSource.tmpl"
 
-#define DATA_OBJECT_MODIFY_FLAGS_TEMPLE_FILE_NAME			"DataObjectModifyFlags.tmpl"
-#define DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME		"DataObjectModifyFlagDefine.tmpl"
-#define DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME		"DataObjectModifyFlagUnit.tmpl"
+#define DATA_OBJECT_DEFINE_HEADER_TEMPLE_FILE_NAME					"DataObjectDefineHeader.tmpl"
+#define DATA_OBJECT_DEFINE_SOURCE_TEMPLE_FILE_NAME					"DataObjectDefineSource.tmpl"
 
-#define PACK_OPERATION_UNIT_TEMPLE_FILE_NAME				"PackOperationUnit.tmpl"
-#define UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME				"UnpackOperationUnit.tmpl"
+#define STRUCT_DEFINE_HEADER_TEMPLE_FILE_NAME						"StructDefineHeader.tmpl"
+#define ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME							"EnumDefineHeader.tmpl"
+#define SYSTEM_ENUM_DEFINE_HEADER_TEMPLE_FILE_NAME					"SystemEnumDefineHeader.tmpl"
+#define STRUCT_DEFINE_TEMPLE_FILE_NAME								"StructDefine.tmpl"
+#define STRUCT_MEMBER_TEMPLE_FILE_NAME								"StructMember.tmpl"
+#define DATA_OBJECT_MEMBER_TEMPLE_FILE_NAME							"DataObjectMember.tmpl"
 
-#define TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME				"ToXMLOperationUnit.tmpl"
-#define FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME			"FromXMLOperationUnit.tmpl"
-#define STRUCT_XML_PROCESS_TEMPLE_FILE_NAME					"StructXMLProcess.tmpl"
+#define DATA_OBJECT_MODIFY_FLAGS_HEADER_TEMPLE_FILE_NAME			"DataObjectModifyFlagsHeader.tmpl"
+#define DATA_OBJECT_MODIFY_FLAGS_SOURCE_TEMPLE_FILE_NAME			"DataObjectModifyFlagsSource.tmpl"
+#define DATA_OBJECT_MODIFY_FLAG_HEADER_DEFINE_TEMPLE_FILE_NAME		"DataObjectModifyFlagHeaderDefine.tmpl"
+#define DATA_OBJECT_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME				"DataObjectModifyFlagDefine.tmpl"
+#define DATA_OBJECT_MODIFY_FLAG_UNIT_TEMPLE_FILE_NAME				"DataObjectModifyFlagUnit.tmpl"
 
-#define TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME				"ToJsonOperationUnit.tmpl"
-#define FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME			"FromJsonOperationUnit.tmpl"
-#define STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME				"StructJsonProcess.tmpl"
-#define DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME			"DataObjectJsonProcess.tmpl"
-#define DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME	"DataObjectJsonProcessHeader.tmpl"
+#define PACK_OPERATION_UNIT_TEMPLE_FILE_NAME						"PackOperationUnit.tmpl"
+#define UNPACK_OPERATION_UNIT_TEMPLE_FILE_NAME						"UnpackOperationUnit.tmpl"
 
-#define ENUM_DFINE_TEMPLE_FILE_NAME							"EnumDefine.tmpl"
-#define ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME					"EnumMemberDefine.tmpl"
-#define ENUM_STR_VALUE_DFINE_TEMPLE_FILE_NAME				"EnumStrValueDefine.tmpl"
+#define TO_XML_OPERATION_UNIT_TEMPLE_FILE_NAME						"ToXMLOperationUnit.tmpl"
+#define FROM_XML_OPERATION_UNIT_TEMPLE_FILE_NAME					"FromXMLOperationUnit.tmpl"
+#define STRUCT_XML_PROCESS_TEMPLE_FILE_NAME							"StructXMLProcess.tmpl"
 
-#define CONST_DFINE_TEMPLE_FILE_NAME						"ConstDefine.tmpl"
-#define MACRO_DFINE_TEMPLE_FILE_NAME						"MacroDefine.tmpl"
-#define CONST_DFINE_HEADER_TEMPLE_FILE_NAME					"ConstDefineHeader.tmpl"
+#define TO_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME						"ToJsonOperationUnit.tmpl"
+#define FROM_JSON_OPERATION_UNIT_TEMPLE_FILE_NAME					"FromJsonOperationUnit.tmpl"
+#define STRUCT_JSON_PROCESS_TEMPLE_FILE_NAME						"StructJsonProcess.tmpl"
+#define DATA_OBJECT_JSON_PROCESS_TEMPLE_FILE_NAME					"DataObjectJsonProcess.tmpl"
+#define DATA_OBJECT_JSON_PROCESS_HEADER_TEMPLE_FILE_NAME			"DataObjectJsonProcessHeader.tmpl"
 
-#define STRING_CONST_DFINE_TEMPLE_FILE_NAME					"StringConstDefine.tmpl"
+#define STRUCT_DB_PROCESS_TEMPLE_FILE_NAME							"StructDBProcess.tmpl"
+#define DATA_OBJECT_DB_PROCESS_TEMPLE_FILE_NAME						"DataObjectDBProcess.tmpl"
+#define DATA_OBJECT_DB_PROCESS_HEADER_TEMPLE_FILE_NAME				"DataObjectDBProcessHeader.tmpl"
+#define DB_FIELD_NAME_TEMPLE_FILE_NAME								"DBFieldName.tmpl"
+#define DB_FIELD_DEFINE_UNIT_TEMPLE_FILE_NAME						"DBFieldDefineUnit.tmpl"
+#define DB_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME							"DBKeyDefineUnit.tmpl"
+#define DB_PRIMARY_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME					"DBPrimaryKeyDefineUnit.tmpl"
+#define DB_UNIQUE_KEY_DEFINE_UNIT_TEMPLE_FILE_NAME					"DBUniqueKeyDefineUnit.tmpl"
+
+#define ENUM_DFINE_TEMPLE_FILE_NAME									"EnumDefine.tmpl"
+#define ENUM_DFINE_64_TEMPLE_FILE_NAME								"EnumDefine64.tmpl"
+#define ENUM_MEMBER_DFINE_TEMPLE_FILE_NAME							"EnumMemberDefine.tmpl"
+#define ENUM_MEMBER_DFINE_64_TEMPLE_FILE_NAME						"EnumMemberDefine64.tmpl"
+#define ENUM_BIT_MASK_MEMBER_DFINE_TEMPLE_FILE_NAME					"EnumBitMaskMemberDefine.tmpl"
+#define ENUM_BIT_MASK_MEMBER_DFINE_64_TEMPLE_FILE_NAME				"EnumBitMaskMemberDefine64.tmpl"
+#define ENUM_STR_VALUE_UNIT_TEMPLE_FILE_NAME						"EnumStrValueUnit.tmpl"
+#define ENUM_LIST_UNIT_TEMPLE_FILE_NAME								"EnumListUnit.tmpl"
+#define ENUM_TO_STR_UNIT_TEMPLE_FILE_NAME							"EnumToStrUnit.tmpl"
+#define STR_TO_ENUM_UNIT_TEMPLE_FILE_NAME							"StrToEnum.tmpl"
+#define ENUM_BIND_DATA_FILL_UNIT_TEMPLE_FILE_NAME					"EnumBindDataFillUnit.tmpl"
+//#define ENUM_BIND_DATA_FETCH_UNIT_TEMPLE_FILE_NAME					"EnumBindDataFetchUnit.tmpl"
+
+#define CONST_DFINE_TEMPLE_FILE_NAME								"ConstDefine.tmpl"
+#define MACRO_DFINE_TEMPLE_FILE_NAME								"MacroDefine.tmpl"
+#define CONST_DFINE_HEADER_TEMPLE_FILE_NAME							"ConstDefineHeader.tmpl"
+
+#define STRING_CONST_DFINE_TEMPLE_FILE_NAME							"StringConstDefine.tmpl"
+
+#define IMPORT_DECLARE_TEMPLE_FILE_NAME								"ImportDeclare.tmpl"
+
+#define DATA_OBJECT_CLEAR_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME		"DataObjectClearModifyFlagDefine.tmpl"
+#define DATA_OBJECT_GET_MODIFY_FLAG_DEFINE_TEMPLE_FILE_NAME			"DataObjectGetModifyFlagDefine.tmpl"
+#define DATA_OBJECT_IS_MODIFIED_DEFINE_TEMPLE_FILE_NAME				"DataObjectIsModifiedDefine.tmpl"
+
+#define STRUCT_EDITOR_PROCESS_TEMPLE_FILE_NAME						"StructEditorProcess.tmpl"
+#define CREATE_LIST_HEADER_UNIT_TEMPLE_FILE_NAME					"CreateListHeaderUnit.tmpl"
+#define FILL_LIST_ITEM_UNIT_TEMPLE_FILE_NAME						"FillListItemUnit.tmpl"
+#define PROPERTY_GRID_FETCH_UNIT_TEMPLE_FILE_NAME					"PropertyGridFetchUnit.tmpl"
+#define PROPERTY_GRID_ADD_ITEM_UNIT_TEMPLE_FILE_NAME				"PropertyGridAddItemUnit.tmpl"
+#define PROPERTY_GRID_DEL_ITEM_UNIT_TEMPLE_FILE_NAME				"PropertyGridDelItemUnit.tmpl"
+#define PROPERTY_GRID_MOVE_ITEM_UNIT_TEMPLE_FILE_NAME				"PropertyGridMoveItemUnit.tmpl"
+
+#define STRUCT_LOG_PROCESS_TEMPLE_FILE_NAME							"StructLogProcess.tmpl"
+
+#define STRUCT_LUA_PROCESS_TEMPLE_FILE_NAME							"StructLuaProcess.tmpl"
+#define DATA_OBJECT_LUA_PROCESS_TEMPLE_FILE_NAME					"DataObjectLuaProcess.tmpl"
+#define DATA_OBJECT_LUA_PROCESS_HEADER_TEMPLE_FILE_NAME				"DataObjectLuaProcessHeader.tmpl"
+#define TO_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME				"ToLuaTableOperationUnit.tmpl"
+#define FROM_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME				"FromLuaTableOperationUnit.tmpl"
+
+#define STRUCT_XLS_PROCESS_TEMPLE_FILE_NAME							"StructXLSProcess.tmpl"
+
+
+#define ALL_DEFINES_TEMPLE_FILE_NAME								"AllDefines.tmpl"
 
 #define USE_CRT_DETAIL_NEW
 
 #include "..\..\Libs\Utils\Utils.h"
+#include "..\..\Libs\MFCExtensionLib\MFCExtensionLib.h"
 
 #include "resource.h"
 
@@ -151,6 +200,11 @@ enum STRUCT_FLAG
 	STRUCT_FLAG_DECLARE_LATER = (1<<1),
 	STRUCT_FLAG_EXPORT_XML_PROCESS = (1<<2),
 	STRUCT_FLAG_EXPORT_JSON_PROCESS = (1 << 3),
+	STRUCT_FLAG_EXPORT_DB_PROCESS = (1 << 4),
+	STRUCT_FLAG_EXPORT_EDITOR_PROCESS = (1 << 5),
+	STRUCT_FLAG_EXPORT_LOG_PROCESS = (1 << 6),
+	STRUCT_FLAG_EXPORT_LUA_PROCESS = (1 << 7),
+	STRUCT_FLAG_EXPORT_XLS_PROCESS = (1 << 8),
 };
 
 enum STRUCT_MEMBER_FLAG
@@ -159,15 +213,25 @@ enum STRUCT_MEMBER_FLAG
 	STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET=(1<<1),
 	STRUCT_MEMBER_FLAG_MERGE_TO_PARENT=(1<<2),
 	STRUCT_MEMBER_FLAG_MUST_PACK=(1<<3),
+	STRUCT_MEMBER_FLAG_HIDE_IN_EDITOR_LIST = (1 << 4),
+	STRUCT_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID = (1 << 5),
+	STRUCT_MEMBER_FLAG_IGNORE_IN_LUA_PROCESS = (1 << 6),
+	STRUCT_MEMBER_FLAG_HIDE_IN_XLS = (1 << 7),
+	STRUCT_MEMBER_FLAG_IS_KEY = (1 << 8),
 };
 
 enum TYPE_DEFINE_FLAG
 {
-	TYPE_DEFINE_FLAG_STRUCT=1,
-	TYPE_DEFINE_FLAG_DATA_OBJECT=(1<<1),
+	TYPE_DEFINE_FLAG_STRUCT = 1,
+	TYPE_DEFINE_FLAG_DATA_OBJECT = (1 << 1),
 	TYPE_DEFINE_FLAG_REF_TYPE = (1 << 2),
 	TYPE_DEFINE_FLAG_ENUM = (1 << 3),
 	TYPE_DEFINE_FLAG_64BIT = (1 << 4),
+	TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND = (1 << 5),
+	TYPE_DEFINE_FLAG_BASE_TYPE = (1 << 6),
+	TYPE_DEFINE_FLAG_VARIABLE_LEN = (1 << 7),
+	TYPE_DEFINE_FLAG_SYSTEM_TYPE = (1 << 8),
+	TYPE_DEFINE_FLAG_ENUM_HAVE_STR_TRANS = (1 << 9),
 };
 
 
@@ -175,6 +239,16 @@ enum ENUM_DEFINE_FLAG
 {
 	ENUM_DEFINE_FLAG_IS_64BIT=1,
 	ENUM_DEFINE_FLAG_EXPORT_STR_VALUE=(1<<1),
+	ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN = (1 << 3),
+	ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST = (1 << 4),
+	ENUM_DEFINE_FLAG_IS_FLAG = (1 << 5),
+	ENUM_DEFINE_FLAG_EXPORT_BIND_DATA_PROCESS = (1 << 6),
+};
+
+enum ENUM_MEMBER_FLAG
+{
+	ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER = 1,
+	ENUM_MEMBER_FLAG_IS_BIT_MASK = (1 << 2),
 };
 
 enum DATA_STRUCT_TYPE
@@ -187,10 +261,30 @@ enum DATA_STRUCT_TYPE
 
 enum INTERFACE_METHOD_FLAG
 {
-	INTERFACE_METHOD_FLAG_CAN_CACHE=1,
+	INTERFACE_METHOD_FLAG_CAN_CACHE = 1,
+	INTERFACE_METHOD_FLAG_NO_COMPRESS = (1 << 1),
+};
+
+enum DB_INDEX_TYPE
+{
+	DB_INDEX_TYPE_NONE,
+	DB_INDEX_TYPE_KEY,
+	DB_INDEX_TYPE_PRIMARY_KEY,
+	DB_INDEX_TYPE_UNIQUE_KEY,
+	DB_INDEX_TYPE_MAX,
+};
+
+enum PACK_OPERATION_FLAG
+{
+	PACK_OPERATION_FLAG_IN_INTERFACE = 1,
+	PACK_OPERATION_FLAG_IN_DATA_OBJECT = 1 << 1,
+	PACK_OPERATION_FLAG_NEED_MF_CHECK = 1 << 2,
+	PACK_OPERATION_FLAG_IS_ARRAY = 1 << 3,
 };
 
 const LPCTSTR g_szDATA_STRUCT_TYPE[DATA_STRUCT_MAX]={"常量","枚举","结构"};
+
+const LPCTSTR g_szDB_INDEX_TYPE[DB_INDEX_TYPE_MAX] = { "无","索引","主键","唯一索引" };
 
 struct MODIFY_FLAG_UNIT
 {
@@ -224,6 +318,20 @@ struct GENERATE_OPERATIONS_INFO
 	CString						SetMethodDefine;
 	CString						IndexOperation;
 	CString						ConstIndexOperation;
+	CString						ToStringOperation;
+	CString						DBFieldDefineOperation;
+	CString						DBInsertFormatOperation;
+	CString						DBPutOperation;
+	CString						DBGetOperation;
+	CString						PropertyGridFillOperation;
+	//CString						PropertyGridFetchOperation;
+	CString						LogSendOperation;
+	CString						ToLuaOperation;
+	CString						FromLuaOperation;
+	CString						CreateXLSColumnOperation;
+	CString						CheckXLSColumnOperation;
+	CString						ToXLSOperation;
+	CString						FromXLSOperation;
 };
 
 class BASE_DATA_STRUCT_DEFINE_LIST
@@ -249,19 +357,26 @@ struct STRUCT_MEMBER_INFO
 {
 	CString	Name;
 	CString	Type;
+	BYTE	DBIndexType;
 	UINT	Flag;
 	BOOL	IsArray;
 	UINT	ArrayStartLength;
 	UINT	ArrayGrowLength;
+	CString	DBLength;
+	CString ShowName;
 	CString	Description;
+	CString	PackFlag;
 	UINT	ID;
+	CString	BindData;
+	CString ExtendType;
 	STRUCT_MEMBER_INFO()
 	{
-		Flag=0;
-		IsArray=false;
-		ArrayStartLength=16;
-		ArrayGrowLength=8;
-		ID=1;
+		Flag = 0;
+		DBIndexType = DB_INDEX_TYPE_NONE;
+		IsArray = false;
+		ArrayStartLength = 0;
+		ArrayGrowLength = 8;
+		ID = 1;
 	}
 };
 
@@ -295,13 +410,13 @@ struct STRUCT_DEFINE_INFO
 	CString						Description;
 	UINT						Flag;
 	UINT						ObjectID;
-	UINT						IDSeed;
+	UINT						IDSeed;	
 	GENERATE_OPERATIONS_INFO	GenerateOperations;	
 	STRUCT_DEFINE_INFO()
-	{		
+	{
 		Flag = 0;
-		ObjectID=0;
-		IDSeed=1;
+		ObjectID = 0;
+		IDSeed = 1;		
 	}
 };
 
@@ -310,6 +425,16 @@ class STRUCT_DEFINE_LIST:public BASE_DATA_STRUCT_DEFINE_LIST
 public:
 	vector<STRUCT_DEFINE_INFO>		StructList;	
 	virtual ~STRUCT_DEFINE_LIST()
+	{
+
+	}
+};
+
+class STRUCT_DEFINE_LIST2 :public BASE_DATA_STRUCT_DEFINE_LIST
+{
+public:
+	vector<STRUCT_DEFINE_INFO*>		StructList;
+	virtual ~STRUCT_DEFINE_LIST2()
 	{
 
 	}
@@ -331,7 +456,12 @@ struct ENUM_MEMBER_INFO
 	CString Value;
 	CString StrValue;
 	CString	Description;
-	
+	UINT	Flag;	
+	CString	BindDataType;
+	ENUM_MEMBER_INFO()
+	{
+		Flag = 0;
+	}
 };
 
 struct ENUM_DEFINE_INFO
@@ -414,6 +544,7 @@ struct METHOD_PARAM
 	bool		CanNull;
 	bool		IsReference;
 	CString		Description;
+	CString		PackFlag;
 };
 
 struct INTERFACE_METHOD_OLD
@@ -461,6 +592,7 @@ struct INTERFACE_METHOD
 	{
 		Type = INTERFACE_METHOD_TYPE_CALL;
 		ID = 0;
+		Flag = 0;
 		ParamIDSeed = 1;
 	}
 };
@@ -546,7 +678,8 @@ struct EXPORT_CONFIG
 };
 
 struct INTERFACE_CONFIG
-{
+{	
+	EXPORT_CONFIG				OneFileExportConfig;
 	EXPORT_CONFIG				InterfaceHeaderExportConfig;
 	EXPORT_CONFIG				StructExportConfig;
 	EXPORT_CONFIG				EnumExportConfig;
@@ -559,75 +692,56 @@ struct INTERFACE_CONFIG
 	EXPORT_CONFIG				HandlerSourceExportConfig;
 	EXPORT_CONFIG				DataObjectHeaderExportConfig;
 	EXPORT_CONFIG				DataObjectSourceExportConfig;
-	EXPORT_CONFIG				DataObjectModifyFlagsExportConfig;
-	GENERATE_OPERATIONS_INFO	DefaultStructGenerateOperations;	
+	EXPORT_CONFIG				DataObjectModifyFlagsHeaderExportConfig;
+	EXPORT_CONFIG				DataObjectModifyFlagsSourceExportConfig;
+	GENERATE_OPERATIONS_INFO	DefaultStructGenerateOperations;
 	GENERATE_OPERATIONS_INFO	DefaultEnumGenerateOperations;
+	GENERATE_OPERATIONS_INFO	DefaultEnum64GenerateOperations;
 	GENERATE_OPERATIONS_INFO	ArrayDefineConfig;
+	CString						CommentPrefix;
+	CString						LocalVariableDefinePrefix;
+	CString						MemberVariablePrefix;
+	CString						DefaultPacketName;
+	CString						DefaultPacketMemberName;
+	BOOL						SupportBigInt;
 	INTERFACE_CONFIG()
 	{
-		InterfaceHeaderExportConfig.IsExport=true;
-		InterfaceHeaderExportConfig.ExportExt="h";
-		StructExportConfig.IsExport=true;
-		StructExportConfig.ExportExt="h";
-		EnumExportConfig.IsExport=true;
-		EnumExportConfig.ExportExt="h";
-		ConstExportConfig.IsExport=true;
-		ConstExportConfig.ExportExt="h";
-		DataStructHeaderExportConfig.IsExport=true;
-		DataStructHeaderExportConfig.ExportExt="h";
-		InterfaceExportConfig.IsExport=true;
-		InterfaceExportConfig.ExportExt="h";
-		CallHeaderExportConfig.IsExport=true;
-		CallHeaderExportConfig.ExportExt="h";
-		CallSourceExportConfig.IsExport=true;
-		CallSourceExportConfig.ExportExt="cpp";
-		HandlerHeaderExportConfig.IsExport=true;
-		HandlerHeaderExportConfig.ExportExt="h";
-		HandlerSourceExportConfig.IsExport=true;
-		HandlerSourceExportConfig.ExportExt="cpp";
-		DataObjectHeaderExportConfig.IsExport=true;
-		DataObjectHeaderExportConfig.ExportExt="h";
-		DataObjectSourceExportConfig.IsExport=true;
-		DataObjectSourceExportConfig.ExportExt="cpp";
-		DataObjectModifyFlagsExportConfig.IsExport=true;
-		DataObjectModifyFlagsExportConfig.ExportExt="h";
-		DefaultStructGenerateOperations.PackOperation=
-			"<IfMFCheck>if(Flag&<ModifyFlag>)</IfMFCheck>\r\n"
-			"{\r\n"
-			"	UINT BufferSize;\r\n"
-			"	void * pBuffer=Packet.PrepareMember(BufferSize);\r\n"
-			"	CSmartStruct SubPacket(pBuffer,BufferSize,true);\r\n"
-			"	if(!<Variable>.MakePacket(SubPacket)) FailCount++;\r\n"
-			"	Packet.FinishMember(<SST_ID>,SubPacket.GetDataLen());\r\n"
-			"}\r\n";			
-			"</IfNotMFCheck>\r\n";
-		DefaultStructGenerateOperations.UnpackOperation=
-			"case <SST_ID>:\r\n"
-			"	<IfMonitorUpdate>if(Flag&<ModifyFlag>)</IfMonitorUpdate>\r\n"
-			"	{\r\n"
-			"		<Variable>.ParsePacket(Value);\r\n"
-			"		<IfMonitorUpdate>UpdateFlag|=<ModifyFlag>;</IfMonitorUpdate>\r\n"
-			"	}\r\n"
-			"	break;";
-		DefaultStructGenerateOperations.SizeCaculateOperation=			
-			"CSmartStruct::GetStructMemberSize(<Variable>.GetSmartStructSize()+CSmartStruct::GetEmptyStructSize())";
-		DefaultStructGenerateOperations.ReferenceDefine="<Type>&";
-		DefaultStructGenerateOperations.ReferenceUse="<Variable>";
-		DefaultStructGenerateOperations.VariableDefine="<Type><Space><Variable>;";
-		DefaultStructGenerateOperations.InitOperation="<Variable>.Clear();";
-
-		ArrayDefineConfig.PackOperation="";
-		ArrayDefineConfig.UnpackOperation="";
-		ArrayDefineConfig.SizeCaculateOperation="";
-		ArrayDefineConfig.ReferenceDefine="<Type>&";
-		ArrayDefineConfig.ReferenceUse="<Variable>";
-		ArrayDefineConfig.VariableDefine="CEasyArray<<Type>><Space><Variable>;";
-		ArrayDefineConfig.InitOperation="<Variable>.Clear();";
-		ArrayDefineConfig.CloneOperation="";
-		ArrayDefineConfig.GetMethodDeclare="";
-		ArrayDefineConfig.GetMethodDefine="";
-		ArrayDefineConfig.SetMethodDeclare="";
-		ArrayDefineConfig.SetMethodDefine="";
+		OneFileExportConfig.IsExport = false;
+		OneFileExportConfig.ExportExt = "h";
+		InterfaceHeaderExportConfig.IsExport = true;
+		InterfaceHeaderExportConfig.ExportExt = "h";
+		StructExportConfig.IsExport = true;
+		StructExportConfig.ExportExt = "h";
+		EnumExportConfig.IsExport = true;
+		EnumExportConfig.ExportExt = "h";
+		ConstExportConfig.IsExport = true;
+		ConstExportConfig.ExportExt = "h";
+		DataStructHeaderExportConfig.IsExport = true;
+		DataStructHeaderExportConfig.ExportExt = "h";
+		InterfaceExportConfig.IsExport = true;
+		InterfaceExportConfig.ExportExt = "h";
+		CallHeaderExportConfig.IsExport = true;
+		CallHeaderExportConfig.ExportExt = "h";
+		CallSourceExportConfig.IsExport = true;
+		CallSourceExportConfig.ExportExt = "cpp";
+		HandlerHeaderExportConfig.IsExport = true;
+		HandlerHeaderExportConfig.ExportExt = "h";
+		HandlerSourceExportConfig.IsExport = true;
+		HandlerSourceExportConfig.ExportExt = "cpp";
+		DataObjectHeaderExportConfig.IsExport = true;
+		DataObjectHeaderExportConfig.ExportExt = "h";
+		DataObjectSourceExportConfig.IsExport = true;
+		DataObjectSourceExportConfig.ExportExt = "cpp";
+		DataObjectModifyFlagsHeaderExportConfig.IsExport = true;
+		DataObjectModifyFlagsHeaderExportConfig.ExportExt = "h";
+		DataObjectModifyFlagsSourceExportConfig.IsExport = true;
+		DataObjectModifyFlagsSourceExportConfig.ExportExt = "cpp";		
+		CommentPrefix = "//";
+		LocalVariableDefinePrefix = "";
+		MemberVariablePrefix = "";
+		DefaultPacketName = "Packet";
+		DefaultPacketMemberName = "PacketMember";
+		SupportBigInt = TRUE;
 	}
 };
 
@@ -639,7 +753,9 @@ struct RUN_ENV_INFO
 };
 
 
-
+void TabInitOperations(CTabCtrl& tbOperations);
+void TabShowOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPERATIONS_INFO& Operation);
+void TabFetchOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPERATIONS_INFO& Operation);
 
 
 #include "DlgGenerateOperationsEditor.h"

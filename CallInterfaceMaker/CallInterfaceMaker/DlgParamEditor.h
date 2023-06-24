@@ -45,6 +45,7 @@ protected:
 	BOOL			m_CanNull;
 	BOOL			m_IsReference;
 	UINT			m_ID;
+	CString			m_PackFlag;
 public:
 	void SetID(UINT ID);
 	void SetData(METHOD_PARAM& ParamInfo);
@@ -71,6 +72,7 @@ inline void CDlgParamEditor::SetData(METHOD_PARAM& ParamInfo)
 	m_CanNull=ParamInfo.CanNull;	
 	m_IsReference=ParamInfo.IsReference;
 	m_ID=ParamInfo.ID;
+	m_PackFlag = ParamInfo.PackFlag;
 }
 
 inline void CDlgParamEditor::GetData(METHOD_PARAM& ParamInfo)
@@ -83,4 +85,5 @@ inline void CDlgParamEditor::GetData(METHOD_PARAM& ParamInfo)
 	ParamInfo.CanNull=m_CanNull;
 	ParamInfo.IsReference=m_IsReference;
 	ParamInfo.ID=m_ID;
+	ParamInfo.PackFlag = m_PackFlag;
 }
