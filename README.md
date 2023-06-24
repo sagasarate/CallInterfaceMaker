@@ -1,3 +1,6 @@
+2023-6-23：增加TypeScript和Lua模板，使得可以导出这些语言的版本
+
+
 这是一个接口代码生成工具，可以生成用于网络通讯的协议以及相关的数据结构，支持生成c++和C#的代码
 所需依赖库可在https://github.com/sagasarate/EasyGameLibs中找到
 
