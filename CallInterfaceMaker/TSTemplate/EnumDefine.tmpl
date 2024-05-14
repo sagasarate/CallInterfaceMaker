@@ -95,17 +95,4 @@ export class <EnumName>_UTILS
 	}	
 	</IfExportEnumList>
 	</IfExportEnumTransFn>
-
-	<IfExportBindDataProcess>
-	public static FillBindData(PGNode: any, FillType: number, BindData: any[], BindDataType : string, StartIndex: number, MemberID: number): boolean
-	{		
-		switch(FillType)
-		{
-		<BindDataFillOperations>
-		default:
-			return false;
-		}
-		return true;
-	}
-	</IfExportBindDataProcess>
 };

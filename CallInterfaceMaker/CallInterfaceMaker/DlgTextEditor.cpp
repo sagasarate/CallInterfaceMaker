@@ -35,7 +35,7 @@ CDlgTextEditor::~CDlgTextEditor()
 void CDlgTextEditor::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT1, m_Text);
+	DDX_Text(pDX, IDC_EDIT_CONTENT, m_Text);
 }
 
 

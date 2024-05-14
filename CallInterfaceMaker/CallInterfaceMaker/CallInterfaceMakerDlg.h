@@ -407,7 +407,7 @@ protected:
 	CString MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo, LPCTSTR SpaceName, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace);
 
 	CString MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& StructDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace);
-	CString MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, bool AllMemberAddSplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 
 	CString MakeCloneOperations(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLeftValue,LPCTSTR szRightValue, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeCloneOperation(LPCTSTR VariableName, TYPE_DEFINE* pTypeInfo, bool IsArray, bool InDataObject, bool BeCheckMF, bool BeUpdateMF, LPCTSTR PackFlag,
@@ -523,6 +523,7 @@ protected:
 	UINT GetStructMemberCount(STRUCT_DEFINE_INFO& StructInfo);
 	STRUCT_MEMBER_INFO* IsBeBind(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR MemberName);
 	STRUCT_MEMBER_INFO* GetStructKeyMember(LPCTSTR StructName);
+	CString ParserEnumValue(CString Value, bool IsBitMask);
 public:
 	void GetDataObjectListSorted(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, vector<STRUCT_DEFINE_INFO *>& DataObjectList);
 	static int InterfaceInfoComp(LPCVOID p1, LPCVOID p2);
@@ -531,6 +532,7 @@ public:
 	static int EnumComp(LPCVOID p1, LPCVOID p2);
 	static int ConstComp(LPCVOID p1, LPCVOID p2);
 	static int DataObjectComp(LPCVOID p1, LPCVOID p2);
+	static int ModifyFlagComp(LPCVOID p1, LPCVOID p2);
 	
 	
 	

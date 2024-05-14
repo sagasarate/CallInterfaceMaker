@@ -1,4 +1,4 @@
-function <SpaceName>.C<InterfaceName>MsgCaller:<MethodName>(<Params>)
+﻿function <SpaceName>.C<InterfaceName>MsgCaller:<MethodName>(<Params>)
 	if self.m_Operator == nil then
 		return COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
 	end
@@ -23,9 +23,11 @@ function <SpaceName>.C<InterfaceName>MsgCaller:<MethodName>(<Params>)
 		if self.m_Operator:SendMessage(self.m_TargetID, MsgID, MsgFlag, MsgBuffer) then
 			return COMMON_RESULT_CODE.COMMON_RESULT_SUCCEED;
 		else
+			Common.LogWithStack(10, "Msg Send Failed");
 			return COMMON_RESULT_CODE.COMMON_RESULT_MSG_SEND_ERROR;
 		end
 	else
+		Common.LogWithStack(10, "Msg Pack Error");
 		return COMMON_RESULT_CODE.COMMON_RESULT_MSG_PACK_ERROR;
 	end
 end

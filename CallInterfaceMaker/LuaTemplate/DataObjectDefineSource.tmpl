@@ -33,7 +33,7 @@ MergeObject(<SpaceName>.<ClassName>,{
 	
 function <SpaceName>.<ClassName>:Clear(OnlyClearNil)
 	<IfHaveBaseClass>
-	<SpaceName>.<BaseClass>.Clear(self, OnlyClearNil);
+	<SpaceName>.<BaseClass>:Clear(self, OnlyClearNil);
 	</IfHaveBaseClass>
 
 	self.m_ModifyFlag = 0;
@@ -56,7 +56,7 @@ end
 
 
 function <SpaceName>.<ClassName>:GetModifyFlag(ModifyFlags, GetType, MemberFlags)
-	<IfHaveBaseClass><SpaceName>.<BaseClass>.GetModifyFlag(self, ModifyFlags, GetType, MemberFlags);</IfHaveBaseClass>
+	<IfHaveBaseClass><SpaceName>.<BaseClass>:GetModifyFlag(self, ModifyFlags, GetType, MemberFlags);</IfHaveBaseClass>
 
 	if GetType == <SpaceName>.GET_MODIFY_FLAG_TYPE.GMFT_COPY then
 		ModifyFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1] = self.m_ModifyFlag & MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
@@ -85,7 +85,7 @@ end
 	
 function <SpaceName>.<ClassName>:ClearModifyFlag(MemberFlags)
 --<GenerateArea8Start>
-		<IfHaveBaseClass><SpaceName>.<BaseClass>.ClearModifyFlag(self,MemberFlags);</IfHaveBaseClass>
+		<IfHaveBaseClass><SpaceName>.<BaseClass>:ClearModifyFlag(self,MemberFlags);</IfHaveBaseClass>
 		m_ModifyFlag = m_ModifyFlag&(~MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1]);
 		<DataObjectMembersClearModifyFlag>
 --<GenerateArea8End>
@@ -106,7 +106,7 @@ function <SpaceName>.<ClassName>:MakePacket(Packet, MemberFlags)
 --<GenerateArea10Start>
 		local FailCount = 0;
 		<IfHaveBaseClass>
-		if not <SpaceName>.<BaseClass>.MakePacket(self,Packet, MemberFlags) then
+		if not <SpaceName>.<BaseClass>:MakePacket(self,Packet, MemberFlags) then
 			FailCount = FailCount + 1;
 		end
 		</IfHaveBaseClass>
@@ -121,7 +121,7 @@ end
 function <SpaceName>.<ClassName>:ParsePacket(Packet, MemberFlags)
 --<GenerateArea11Start>
 		<IfHaveBaseClass>
-		<SpaceName>.<BaseClass>.ParsePacket(self,Packet, MemberFlags);
+		<SpaceName>.<BaseClass>:ParsePacket(self,Packet, MemberFlags);
 		</IfHaveBaseClass>
 		
 		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
@@ -145,7 +145,7 @@ end
 function <SpaceName>.<ClassName>:CloneFrom(DataObject, MemberFlags)
 	--<GenerateArea12Start>
 		<IfHaveBaseClass>
-		<SpaceName>.<BaseClass>.CloneFrom(self,DataObject,MemberFlags);
+		<SpaceName>.<BaseClass>:CloneFrom(self,DataObject,MemberFlags);
 		</IfHaveBaseClass>
 		
 		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
@@ -166,7 +166,7 @@ function <SpaceName>.<ClassName>:GetSmartStructSize(MemberFlags)
 		<PacketSizes>
 			
 		<IfHaveBaseClass>
-		Size = Size + <SpaceName>.<BaseClass>.GetSmartStructSize(self,MemberFlags);
+		Size = Size + <SpaceName>.<BaseClass>:GetSmartStructSize(self,MemberFlags);
 		</IfHaveBaseClass>
 --<GenerateArea13End>	
 		return Size;

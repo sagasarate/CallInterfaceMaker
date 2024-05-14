@@ -29,6 +29,7 @@ public <IfHaveBaseClass>new </IfHaveBaseClass>int ToXLS(CellRange XLSRange, int 
 public <IfHaveBaseClass>new </IfHaveBaseClass>bool FromXLS(CellRange XLSRange, int StartRow, string MsgPrefix)
 {
 	int Col;
+	string ValueStr;
 	<IfHaveBaseClass>
 	if(!base.FromXLS(XLSRange, StartRow, MsgPrefix)))
 		return false;

@@ -1,4 +1,4 @@
-// DlgStructEditor.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// DlgStructEditor.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 
 
 
-// CDlgEnumEditor ¶Ô»°¿ò
+// CDlgEnumEditor å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CDlgEnumEditor, CDialog)
 
@@ -28,6 +28,7 @@ void CDlgEnumEditor::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_NAME, m_EnumDefineInfo.Name);
 	DDX_Text(pDX, IDC_EDIT_SHORT_NAME, m_EnumDefineInfo.ShortName);	
+	DDX_Text(pDX, IDC_EDIT_SHOW_NAME, m_EnumDefineInfo.ShowName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_EnumDefineInfo.Description);
 
 
@@ -49,11 +50,12 @@ void CDlgEnumEditor::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Check(pDX, IDC_CHECK_NOT_EXPORT_OTHER, m_EnumMemberInfo.Flag, ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER);
 	DDX_Check(pDX, IDC_CHECK_IS_BIT_MASK, m_EnumMemberInfo.Flag, ENUM_MEMBER_FLAG_IS_BIT_MASK);
+	DDX_Check(pDX, IDC_CHECK_HIDE_IN_PROPERTY_GRID, m_EnumMemberInfo.Flag, ENUM_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID);
 
 	if (pDX->m_bSaveAndValidate)
 	{
 		m_cbBindDataType.GetWindowText(m_EnumMemberInfo.BindDataType);
-		if (m_EnumMemberInfo.BindDataType == "ÎŞ")
+		if (m_EnumMemberInfo.BindDataType == "æ— ")
 			m_EnumMemberInfo.BindDataType = "";
 	}
 	else
@@ -76,7 +78,7 @@ BEGIN_MESSAGE_MAP(CDlgEnumEditor, CDialog)
 END_MESSAGE_MAP()
 
 
-// CDlgEnumEditor ÏûÏ¢´¦Àí³ÌĞò
+// CDlgEnumEditor æ¶ˆæ¯å¤„ç†ç¨‹åº
 void CDlgEnumEditor::FillList()
 {
 	m_lvMemberList.DeleteAllItems();
@@ -116,38 +118,38 @@ BOOL CDlgEnumEditor::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	m_lvMemberList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
-	m_lvMemberList.InsertColumn(0,_T("Ãû³Æ"),LVCFMT_LEFT,300);
-	m_lvMemberList.InsertColumn(1,_T("Öµ"),LVCFMT_LEFT,60);	
-	m_lvMemberList.InsertColumn(2, _T("±êÖ¾Î»"), LVCFMT_LEFT, 60);
-	m_lvMemberList.InsertColumn(3,_T("ÏÔÊ¾Ãû"),LVCFMT_LEFT,100);
-	m_lvMemberList.InsertColumn(4, _T("¹ØÁªÊı¾İÀàĞÍ"), LVCFMT_LEFT, 100);
-	m_lvMemberList.InsertColumn(5, _T("ÃèÊö"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(0,_T("åç§°"),LVCFMT_LEFT,300);
+	m_lvMemberList.InsertColumn(1,_T("å€¼"),LVCFMT_LEFT,60);	
+	m_lvMemberList.InsertColumn(2, _T("æ ‡å¿—ä½"), LVCFMT_LEFT, 60);
+	m_lvMemberList.InsertColumn(3,_T("æ˜¾ç¤ºå"),LVCFMT_LEFT,100);
+	m_lvMemberList.InsertColumn(4, _T("å…³è”æ•°æ®ç±»å‹"), LVCFMT_LEFT, 100);
+	m_lvMemberList.InsertColumn(5, _T("æè¿°"), LVCFMT_LEFT, 100);
 
 	m_cbBindDataType.ResetContent();
-	m_cbBindDataType.AddString(_T("ÎŞ"));
+	m_cbBindDataType.AddString(_T("æ— "));
 	for (UINT i = 0; i < GetMainDlg()->GetVarTypeCount(); i++)
 	{
 		m_cbBindDataType.AddString(GetMainDlg()->GetVarType(i)->Name);
 	}
-	
+	//m_cbBindDataType.LimitText(0);
 	FillList();
 
 	
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-	// Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+	// å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 void CDlgEnumEditor::OnBnClickedButtonAddMember()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	UpdateData(true);
 
 	if(m_EnumMemberInfo.Name.IsEmpty())
 	{
-		AfxMessageBox("ÇëÊäÈë³ÉÔ±Ãû³Æ");
+		AfxMessageBox("è¯·è¾“å…¥æˆå‘˜åç§°");
 		return;
 	}
 	
@@ -158,7 +160,7 @@ void CDlgEnumEditor::OnBnClickedButtonAddMember()
 
 void CDlgEnumEditor::OnBnClickedButtonEditMember()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvMemberList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
@@ -175,14 +177,14 @@ void CDlgEnumEditor::OnBnClickedButtonEditMember()
 
 void CDlgEnumEditor::OnBnClickedButtonDelMember()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvMemberList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
 		int Item=m_lvMemberList.GetNextSelectedItem(Pos);
 		size_t Index=m_lvMemberList.GetItemData(Item);
 		CString Msg;
-		Msg.Format("ÊÇ·ñÒªÉ¾³ı³ÉÔ±[%s]",
+		Msg.Format("æ˜¯å¦è¦åˆ é™¤æˆå‘˜[%s]",
 			m_lvMemberList.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -196,7 +198,7 @@ void CDlgEnumEditor::OnBnClickedButtonDelMember()
 
 void CDlgEnumEditor::OnBnClickedOk()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	UpdateData(true);	
 
 	m_EnumDefineInfo.Name.Trim();
@@ -212,7 +214,7 @@ void CDlgEnumEditor::OnBnClickedOk()
 
 void CDlgEnumEditor::OnBnClickedButtonMemberMoveUp()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvMemberList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
@@ -231,7 +233,7 @@ void CDlgEnumEditor::OnBnClickedButtonMemberMoveUp()
 
 void CDlgEnumEditor::OnBnClickedButtonMemberMoveDown()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvMemberList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
@@ -252,7 +254,7 @@ void CDlgEnumEditor::OnBnClickedButtonMemberMoveDown()
 void CDlgEnumEditor::OnNMClickListMemberList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	*pResult = 0;
 
 	POSITION Pos=m_lvMemberList.GetFirstSelectedItemPosition();
@@ -278,7 +280,7 @@ static int MemberComp(LPCVOID p1, LPCVOID p2)
 
 void CDlgEnumEditor::OnBnClickedButtonSort()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	qsort(m_EnumDefineInfo.MemberList.begin()._Ptr, m_EnumDefineInfo.MemberList.size(), sizeof(ENUM_MEMBER_INFO), MemberComp);
 	FillList();
 }

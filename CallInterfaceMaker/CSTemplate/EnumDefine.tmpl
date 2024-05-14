@@ -6,9 +6,9 @@
 
 public class <EnumName>_UTILS
 {
-	public static readonly int ENUM_COUNT = <EnumMemberCount>;
+	public const int ENUM_COUNT = <EnumMemberCount>;
 	<IfExportEnumList>
-	public static readonly uint[] VALUE_LIST = {<EnumValues>};
+	public static readonly <EnumName>[] VALUE_LIST = {<EnumValues>};
 	</IfExportEnumList>
 
 	<IfExportEnumStrList>
@@ -18,16 +18,16 @@ public class <EnumName>_UTILS
 
 	<IfExportEnumTransFn>
 	<IsFlagEnum>
-	public static string ToStr(uint Value)
+	public static string ToStr(<EnumName> Value)
 	{
 		System.Text.StringBuilder Str = new System.Text.StringBuilder();
 		<EnumToStrs>
 		return Str.ToString();
 	}
 
-	public static uint FromStr(string Str)
+	public static <EnumName> FromStr(string Str)
 	{
-		uint Flag = 0;
+		<EnumName> Flag = 0;
 		string[] Splitter = Str.Split('|');
 		for (int i = 0; i < Splitter.Length; i++)
 		{
@@ -35,19 +35,19 @@ public class <EnumName>_UTILS
 		}	
 		return Flag;
 	}
-	public static string GetDesc(uint Value)
+	public static string GetDesc(<EnumName> Value)
 	{
 		System.Text.StringBuilder Str = new System.Text.StringBuilder();
 		<EnumToDescs>
 		return Str.ToString();
 	}
 	<!IsFlagEnum>
-	public static string ToStr(uint Value)
+	public static string ToStr(<EnumName> Value)
 	{
 		<HaveEnumStrArray>
-		if (Value < ENUM_COUNT)
+		if ((int)Value < ENUM_COUNT)
 		{
-			return NAME_LIST[Value];
+			return NAME_LIST[(int)Value];
 		}
 		</HaveEnumStrArray>
 		<NotHaveEnumStrArray>
@@ -59,17 +59,17 @@ public class <EnumName>_UTILS
 		return "UNKNOW";
 	}
 
-	public static uint FromStr(string Str)
+	public static <EnumName> FromStr(string Str)
 	{
 		<StrToEnums>
-		return (uint)<EnumName>.<LastEnumValue>;
+		return <EnumName>.<LastEnumValue>;
 	}
-	public static string GetDesc(uint Value)
+	public static string GetDesc(<EnumName> Value)
 	{
 		<HaveEnumStrArray>
-		if (Value < ENUM_COUNT)
+		if ((int)Value < ENUM_COUNT)
 		{
-			return DESC_LIST[Value];
+			return DESC_LIST[(int)Value];
 		}
 		</HaveEnumStrArray>
 		<NotHaveEnumStrArray>
@@ -85,7 +85,7 @@ public class <EnumName>_UTILS
 	public static string GetDescs()
 	{
 		StringBuilder Desc = new StringBuilder();
-		foreach(uint Value in VALUE_LIST)
+		foreach(<EnumName> Value in VALUE_LIST)
 		{
 			if (Desc.Length > 0)
                 Desc.Append("\n");

@@ -72,6 +72,7 @@ void CDlgConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DEFAULT_PACKET_NAME, m_Config.DefaultPacketName);
 	DDX_Text(pDX, IDC_EDIT_DEFAULT_PACKET_MEMBER_NAME, m_Config.DefaultPacketMemberName);
 	DDX_Check(pDX, IDC_SUPPORT_BIG_INT, m_Config.SupportBigInt);
+	DDX_Check(pDX, IDC_FORCE_EXPORT_ALL, m_Config.ForceExportAll);
 }
 
 

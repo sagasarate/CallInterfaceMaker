@@ -249,6 +249,7 @@ enum ENUM_MEMBER_FLAG
 {
 	ENUM_MEMBER_FLAG_NOT_EXPORT_OTHER = 1,
 	ENUM_MEMBER_FLAG_IS_BIT_MASK = (1 << 2),
+	ENUM_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID = (1 << 3),
 };
 
 enum DATA_STRUCT_TYPE
@@ -405,6 +406,7 @@ struct STRUCT_DEFINE_INFO
 {
 	CString						Name;
 	CString						ShortName;
+	CString						ShowName;
 	CString						BaseStruct;
 	vector<STRUCT_MEMBER_INFO>	MemberList;
 	CString						Description;
@@ -468,6 +470,7 @@ struct ENUM_DEFINE_INFO
 {
 	CString						Name;
 	CString						ShortName;	
+	CString						ShowName;
 	UINT						Flag;
 	vector<ENUM_MEMBER_INFO>	MemberList;
 	CString						Description;
@@ -703,7 +706,8 @@ struct INTERFACE_CONFIG
 	CString						MemberVariablePrefix;
 	CString						DefaultPacketName;
 	CString						DefaultPacketMemberName;
-	BOOL						SupportBigInt;
+	bool						SupportBigInt;
+	bool						ForceExportAll;
 	INTERFACE_CONFIG()
 	{
 		OneFileExportConfig.IsExport = false;
@@ -741,7 +745,8 @@ struct INTERFACE_CONFIG
 		MemberVariablePrefix = "";
 		DefaultPacketName = "Packet";
 		DefaultPacketMemberName = "PacketMember";
-		SupportBigInt = TRUE;
+		SupportBigInt = true;
+		ForceExportAll = false;
 	}
 };
 

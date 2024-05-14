@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CDlgDataObjectModifyFlagManager, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_MOVE_UP, &CDlgDataObjectModifyFlagManager::OnBnClickedButtonMoveUp)
 	ON_BN_CLICKED(IDC_BUTTON_MOVE_DOWN, &CDlgDataObjectModifyFlagManager::OnBnClickedButtonMoveDown)
 	ON_BN_CLICKED(IDC_BUTTON_MOVE_SORT, &CDlgDataObjectModifyFlagManager::OnBnClickedButtonMoveSort)
+	ON_BN_CLICKED(IDC_BUTTON_SORT, &CDlgDataObjectModifyFlagManager::OnBnClickedButtonSort)
 END_MESSAGE_MAP()
 
 
@@ -255,4 +256,11 @@ void CDlgDataObjectModifyFlagManager::CheckModifyFlagUnitMembers(vector<STRUCT_D
 			}
 		}
 	}
+}
+
+void CDlgDataObjectModifyFlagManager::OnBnClickedButtonSort()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	qsort(m_DataObjectModifyFlags.begin()._Ptr, m_DataObjectModifyFlags.size(), sizeof(DATA_OBJECT_MODIFY_FLAG), CCallInterfaceMakerDlg::ModifyFlagComp);
+	FillList();
 }

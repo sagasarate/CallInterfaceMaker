@@ -61,30 +61,22 @@
 #define IDC_COMBO_TYPE2                 1013
 #define IDC_COMBO_DB_INDEX_TYPE         1013
 #define IDC_EDIT_DESCRIPTION            1014
-#define IDC_EDIT1                       1014
 #define IDC_EDIT_DEFAULT_VALUE          1015
 #define IDC_RADIO_CALL                  1015
 #define IDC_EDIT_CTYPE                  1015
 #define IDC_BUTTON_PARAM_UP2            1015
 #define IDC_BUTTON_PARAM_DOWN           1015
-#define IDC_EDIT2                       1015
 #define IDC_EDIT_MEMBER_DESCRIPTION     1015
-#define IDC_EDIT_SHOW_NAME              1015
 #define IDC_RADIO_CALL_BACK             1016
-#define IDC_EDIT3                       1016
 #define IDC_EDIT_BIND_DATA              1016
 #define IDC_CHECK_CAN_NULL              1017
-#define IDC_EDIT4                       1017
 #define IDC_BUTTON_STRUCT_DEF           1017
-#define IDC_EDIT_BIND_DATA2             1017
 #define IDC_EDIT_EXTEND_TYPE            1017
 #define IDC_CHECK_IS_REFERENCE          1018
-#define IDC_EDIT5                       1018
 #define IDC_BUTTON_ENUM_DEF             1018
 #define IDC_BUTTON_STRUCT_DEF2          1018
 #define IDC_BUTTON_DATA_STRUCT_DEF      1018
 #define IDC_EDIT_PARAM_ID               1019
-#define IDC_EDIT6                       1019
 #define IDC_BUTTON_SELECT_ALL_INTERFACE 1019
 #define IDC_LIST_TYPES                  1020
 #define IDC_BUTTON_ARRANGE_IDS          1020
@@ -138,6 +130,7 @@
 #define IDC_CHECK_EXP_ONE_FILE          1039
 #define IDC_EDIT_VARIABLE_DEFINE        1040
 #define IDC_SUPPORT_BIG_INT             1040
+#define IDC_FORCE_EXPORT_ALL            1041
 #define IDC_CHECK_EXCLUDE_IN_PACKET     1043
 #define IDC_CHECK_IS_DATA_OBJECT        1043
 #define IDC_CHECK_MERGE_TO_PARENT       1044
@@ -195,6 +188,7 @@
 #define IDC_CHECK_CAN_CACHE2            1064
 #define IDC_CHECK_NO_COMPRESS           1064
 #define IDC_CHECK_BASE_TYPE             1064
+#define IDC_EDIT_SHORT_NAME2            1064
 #define IDC_COMBO_METHOD_TYPE           1065
 #define IDC_CHECK_VARIABLE_LEN          1065
 #define IDC_TAB_PARAM_LIST              1066
@@ -226,7 +220,9 @@
 #define IDC_EDIT_SIZE_CACULATE_OPERATION 1317
 #define IDC_EDIT_REFERENCE_DEFINE       1318
 #define IDC_COMBO_BIND_DATA_TYPE        1319
-#define IDC_EDIT_PACK_FLAG              10151
+#define IDC_EDIT_CONTENT                1320
+#define IDC_EDIT_SHOW_NAME              10151
+#define IDC_EDIT_PACK_FLAG              10152
 
 // Next default values for new objects
 // 

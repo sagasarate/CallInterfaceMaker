@@ -31,6 +31,7 @@ void CDlgStructEditor::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_STRUCT_NAME, m_StructDefineInfo.Name);
 	DDX_Text(pDX, IDC_EDIT_STRUCT_SHORT_NAME, m_StructDefineInfo.ShortName);
+	DDX_Text(pDX, IDC_EDIT_SHOW_NAME, m_StructDefineInfo.ShowName);
 	DDX_Control(pDX, IDC_COMBO_BASE_STRUCT, m_cbBaseStruct);
 	DDX_Control(pDX, IDC_LIST_MEMBER_LIST, m_lvMemberList);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_StructDefineInfo.Description);

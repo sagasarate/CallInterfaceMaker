@@ -38,4 +38,5 @@ public:
 
 	MODIFY_FLAG_UNIT * FindModifyFlagUnit(DATA_OBJECT_MODIFY_FLAG& DataObjectModifyFlag,LPCTSTR ClassName);
 	void CheckModifyFlagUnitMembers(vector<STRUCT_DEFINE_INFO *>& DataObjectList, MODIFY_FLAG_UNIT& DataObjectModifyFlag);
+	afx_msg void OnBnClickedButtonSort();
 };

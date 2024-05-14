@@ -1,15 +1,15 @@
+ï»¿/****************************************************************************/
+/*                                                                          */
+/*      æ–‡ä»¶å:    CallInterfaceMakerDlg.cpp                                */
+/*      åˆ›å»ºæ—¥æœŸ:  2012å¹´04æœˆ22æ—¥                                           */
+/*      ä½œè€…:      Sagasarate                                               */
+/*                                                                          */
+/*      æœ¬è½¯ä»¶ç‰ˆæƒå½’Sagasarate(sagasarate@sina.com)æ‰€æœ‰                     */
+/*      ä½ å¯ä»¥å°†æœ¬è½¯ä»¶ç”¨äºä»»ä½•å•†ä¸šå’Œéå•†ä¸šè½¯ä»¶å¼€å‘ï¼Œä½†                      */
+/*      å¿…é¡»ä¿ç•™æ­¤ç‰ˆæƒå£°æ˜                                                  */
+/*                                                                          */
 /****************************************************************************/
-/*                                                                          */
-/*      ÎÄ¼şÃû:    CallInterfaceMakerDlg.cpp                                */
-/*      ´´½¨ÈÕÆÚ:  2012Äê04ÔÂ22ÈÕ                                           */
-/*      ×÷Õß:      Sagasarate                                               */
-/*                                                                          */
-/*      ±¾Èí¼ş°æÈ¨¹éSagasarate(sagasarate@sina.com)ËùÓĞ                     */
-/*      Äã¿ÉÒÔ½«±¾Èí¼şÓÃÓÚÈÎºÎÉÌÒµºÍ·ÇÉÌÒµÈí¼ş¿ª·¢£¬µ«                      */
-/*      ±ØĞë±£Áô´Ë°æÈ¨ÉùÃ÷                                                  */
-/*                                                                          */
-/****************************************************************************/
-// CallInterfaceMakerDlg.cpp : ÊµÏÖÎÄ¼ş
+// CallInterfaceMakerDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -22,20 +22,20 @@
 #endif
 
 
-// ÓÃÓÚÓ¦ÓÃ³ÌĞò¡°¹ØÓÚ¡±²Ëµ¥ÏîµÄ CAboutDlg ¶Ô»°¿ò
+// ç”¨äºåº”ç”¨ç¨‹åºâ€œå…³äºâ€èœå•é¡¹çš„ CAboutDlg å¯¹è¯æ¡†
 
 class CAboutDlg : public CDialog
 {
 public:
 	CAboutDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 	enum { IDD = IDD_ABOUTBOX };
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
-// ÊµÏÖ
+// å®ç°
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -53,7 +53,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CCallInterfaceMakerDlg ¶Ô»°¿ò
+// CCallInterfaceMakerDlg å¯¹è¯æ¡†
 
 
 
@@ -116,15 +116,15 @@ ON_BN_CLICKED(IDC_BUTTON_MOVE_INTERFACE, &CCallInterfaceMakerDlg::OnBnClickedBut
 END_MESSAGE_MAP()
 
 
-// CCallInterfaceMakerDlg ÏûÏ¢´¦Àí³ÌĞò
+// CCallInterfaceMakerDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 BOOL CCallInterfaceMakerDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// ½«¡°¹ØÓÚ...¡±²Ëµ¥ÏîÌí¼Óµ½ÏµÍ³²Ëµ¥ÖĞ¡£
+	// å°†â€œå…³äº...â€èœå•é¡¹æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­ã€‚
 
-	// IDM_ABOUTBOX ±ØĞëÔÚÏµÍ³ÃüÁî·¶Î§ÄÚ¡£
+	// IDM_ABOUTBOX å¿…é¡»åœ¨ç³»ç»Ÿå‘½ä»¤èŒƒå›´å†…ã€‚
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -140,12 +140,12 @@ BOOL CCallInterfaceMakerDlg::OnInitDialog()
 		}
 	}
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ĞĞ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	// è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+	//  æ‰§è¡Œæ­¤æ“ä½œ
+	SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+	SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
 	m_TypeDefFileName=CFileTools::MakeModuleFullPath(NULL,TYPE_DEF_FILE_NAME);
 	
@@ -159,17 +159,17 @@ BOOL CCallInterfaceMakerDlg::OnInitDialog()
 	m_lvInterfaceList.SetExtendedStyle(LVS_EX_CHECKBOXES|LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
 
 
-	m_lvInterfaceList.InsertColumn(0,"Ãû³Æ",LVCFMT_LEFT,200);
-	m_lvInterfaceList.InsertColumn(1, "Ä£¿é", LVCFMT_LEFT, 100);
-	m_lvInterfaceList.InsertColumn(2,"·½·¨ÊıÁ¿",LVCFMT_LEFT,60);
+	m_lvInterfaceList.InsertColumn(0,"åç§°",LVCFMT_LEFT,200);
+	m_lvInterfaceList.InsertColumn(1, "æ¨¡å—", LVCFMT_LEFT, 100);
+	m_lvInterfaceList.InsertColumn(2,"æ–¹æ³•æ•°é‡",LVCFMT_LEFT,60);
 	m_lvInterfaceList.InsertColumn(3,"ID",LVCFMT_LEFT,60);
-	m_lvInterfaceList.InsertColumn(4,"ÃèÊö",LVCFMT_LEFT,200);
+	m_lvInterfaceList.InsertColumn(4,"æè¿°",LVCFMT_LEFT,200);
 
 
 
 
 	FillListItem();
-	return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+	return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
 void CCallInterfaceMakerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -185,19 +185,19 @@ void CCallInterfaceMakerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void CCallInterfaceMakerDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+		CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+		// ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -205,7 +205,7 @@ void CCallInterfaceMakerDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// »æÖÆÍ¼±ê
+		// ç»˜åˆ¶å›¾æ ‡
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -214,8 +214,8 @@ void CCallInterfaceMakerDlg::OnPaint()
 	}
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR CCallInterfaceMakerDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -224,7 +224,7 @@ HCURSOR CCallInterfaceMakerDlg::OnQueryDragIcon()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonAddInterface()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDlgInterfaceEdtor Dlg;
 		
 	if(Dlg.DoModal()==IDOK)
@@ -238,7 +238,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonAddInterface()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonEditInterface()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvInterfaceList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
@@ -261,13 +261,13 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonEditInterface()
 	}
 	else
 	{
-		MessageBox("ÇëÑ¡ÔñÒ»¸ö½Ó¿Ú");
+		MessageBox("è¯·é€‰æ‹©ä¸€ä¸ªæ¥å£");
 	}
 }
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonDelInterface()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	POSITION Pos=m_lvInterfaceList.GetFirstSelectedItemPosition();
 	if(Pos)
 	{
@@ -279,7 +279,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonDelInterface()
 		if (pInterfaceInfo)
 		{
 			CString Msg;
-			Msg.Format("ÊÇ·ñÒªÉ¾³ı½Ó¿Ú[%s]",pInterfaceInfo->Name);
+			Msg.Format("æ˜¯å¦è¦åˆ é™¤æ¥å£[%s]",pInterfaceInfo->Name);
 			if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 			{
 				if (DeleteInterfaceInfoByID(ModuleID, InterfaceID))
@@ -294,7 +294,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonDelInterface()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDlgModuleSelector Dlg;
 	if (Dlg.DoModal() == IDOK)
 	{
@@ -335,7 +335,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 
 //void CCallInterfaceMakerDlg::OnBnClickedButtonEditPrefix()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	CDlgTextEditor Dlg;
 //
 //	Dlg.SetText(m_InterfaceDefine.InterfacePrefix);
@@ -347,7 +347,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 //
 //void CCallInterfaceMakerDlg::OnBnClickedButtonEditPostfix()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	CDlgTextEditor Dlg;
 //
 //	Dlg.SetText(m_InterfaceDefine.InterfacePostFix);
@@ -456,7 +456,7 @@ bool CCallInterfaceMakerDlg::SaveTypeDef()
 	if (!Xml.SaveToFile(Xml.document(), m_TypeDefFileName, CP_UTF8))
 	{
 		CString Msg;
-		Msg.Format("±£´æÎÄ¼şÊ§°Ü%s", m_TypeDefFileName);
+		Msg.Format("ä¿å­˜æ–‡ä»¶å¤±è´¥%s", m_TypeDefFileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -475,7 +475,7 @@ bool CCallInterfaceMakerDlg::LoadTemple(LPCTSTR FileName, CString& TemplateStr)
 	else
 	{
 		CString Msg;
-		Msg.Format("ÎŞ·¨´ò¿ªÎÄ¼ş%s", (LPCTSTR)FilePath);
+		Msg.Format("æ— æ³•æ‰“å¼€æ–‡ä»¶%s", (LPCTSTR)FilePath);
 		MessageBox(Msg);
 		return false;
 	}
@@ -753,7 +753,10 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 						m_InterfaceConfig.DefaultPacketMemberName = OtherConfig.attribute("DefaultPacketMemberName").getvalue();
 
 					if (OtherConfig.has_attribute("SupportBigInt"))
-						m_InterfaceConfig.SupportBigInt = (bool)OtherConfig.attribute("DefaultPacketMeSupportBigIntmberName");
+						m_InterfaceConfig.SupportBigInt = OtherConfig.attribute("SupportBigInt");
+
+					if (OtherConfig.has_attribute("ForceExportAll"))
+						m_InterfaceConfig.ForceExportAll = OtherConfig.attribute("ForceExportAll");
 				}
 			}
 		}
@@ -762,7 +765,7 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 	else
 	{
 		CString Msg;
-		Msg.Format("ÎŞ·¨´ò¿ªÎÄ¼ş%s",FileName);
+		Msg.Format("æ— æ³•æ‰“å¼€æ–‡ä»¶%s",FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -942,14 +945,17 @@ bool CCallInterfaceMakerDlg::SaveConfig()
 			m_InterfaceConfig.DefaultPacketMemberName);
 
 		OtherConfig.append_attribute("SupportBigInt",
-			(bool)m_InterfaceConfig.SupportBigInt);
+			m_InterfaceConfig.SupportBigInt);
+
+		OtherConfig.append_attribute("ForceExportAll",
+			m_InterfaceConfig.ForceExportAll);
 	}
 
 	CString FileName = CFileTools::MakeModuleFullPath(NULL, CONFIG_FILE_NAME);
 	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
 	{
 		CString Msg;
-		Msg.Format("±£´æÎÄ¼şÊ§°Ü%s", FileName);
+		Msg.Format("ä¿å­˜æ–‡ä»¶å¤±è´¥%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -1002,7 +1008,7 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 	else
 	{
 		CString Msg;
-		Msg.Format("ÎŞ·¨´ò¿ªÎÄ¼ş%s",FileName);
+		Msg.Format("æ— æ³•æ‰“å¼€æ–‡ä»¶%s",FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -1044,7 +1050,7 @@ bool CCallInterfaceMakerDlg::SaveEnv()
 	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
 	{
 		CString Msg;
-		Msg.Format("±£´æÎÄ¼şÊ§°Ü%s", FileName);
+		Msg.Format("ä¿å­˜æ–‡ä»¶å¤±è´¥%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -1133,6 +1139,13 @@ int CCallInterfaceMakerDlg::DataObjectComp(LPCVOID p1, LPCVOID p2)
 		return 1;
 	else
 		return 0;
+}
+
+int CCallInterfaceMakerDlg::ModifyFlagComp(LPCVOID p1, LPCVOID p2)
+{
+	const DATA_OBJECT_MODIFY_FLAG* pInfo1 = (const DATA_OBJECT_MODIFY_FLAG*)p1;
+	const DATA_OBJECT_MODIFY_FLAG* pInfo2 = (const DATA_OBJECT_MODIFY_FLAG*)p2;
+	return strcmp(pInfo1->Name, pInfo2->Name);
 }
 
 static int TypeDefineCompare(const void * p1, const void * p2)
@@ -1266,7 +1279,7 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonLoad()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë	
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 	
 	CFileDialog Dlg(true, "*.xml", "*.xml", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
 
 	if(!m_RunEnvInfo.RecentDataDir.IsEmpty())
@@ -1301,7 +1314,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonLoad()
 }
 void CCallInterfaceMakerDlg::OnBnClickedButtonSave()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (m_MainModule.ModuleDefineFileName.IsEmpty())
 	{
 		OnBnClickedButtonSaveAs();
@@ -1319,7 +1332,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSave()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonSaveAs()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CFileDialog Dlg(false,"*.xml","*.xml",OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,"XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
 
 	if(Dlg.DoModal()==IDOK)
@@ -1351,7 +1364,7 @@ int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg,LPARAM lParam,LPARAM lpData)
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	UpdateData(true);
 
 
@@ -1362,7 +1375,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 	ZeroMemory(&bi,sizeof(bi));
 
 	//bi.pszDisplayName=FilePath;
-	bi.lpszTitle="ÇëÑ¡ÔñÊä³öÄ¿Â¼";
+	bi.lpszTitle="è¯·é€‰æ‹©è¾“å‡ºç›®å½•";
 	bi.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_SHAREABLE;
 	bi.lpfn=BrowseCallbackProc;
 	pidl=::SHBrowseForFolder(&bi);
@@ -1382,7 +1395,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 		SaveEnv();		
 		MakeCurVarType(true);
 		Export(FilePath);		
-		AfxMessageBox("µ¼³öÍê±Ï");	
+		AfxMessageBox("å¯¼å‡ºå®Œæ¯•");	
 
 	}	
 
@@ -1392,7 +1405,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 
 void CCallInterfaceMakerDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	SaveConfig();
 	if (m_IsLoaded)
@@ -1402,7 +1415,7 @@ void CCallInterfaceMakerDlg::OnCancel()
 
 void CCallInterfaceMakerDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	//CDialog::OnOK();
 }
@@ -1672,7 +1685,7 @@ bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INF
 			{
 				OldInterfaceDefines.Clear();
 				ModuleInfo.Clear();
-				AfxMessageBox("×ª»»¾É°æ±¾ÎÄ¼şÊ§°Ü");
+				AfxMessageBox("è½¬æ¢æ—§ç‰ˆæœ¬æ–‡ä»¶å¤±è´¥");
 				return false;
 			}
 		}
@@ -1680,7 +1693,7 @@ bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INF
 		{
 			OldInterfaceDefines.Clear();
 			CString Msg;
-			Msg.Format("¼ÓÔØÊ§°Ü%s", FileName);
+			Msg.Format("åŠ è½½å¤±è´¥%s", FileName);
 			AfxMessageBox(Msg);
 			return false;
 		}
@@ -1695,7 +1708,7 @@ bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INF
 		{
 			ModuleInfo.Clear();
 			CString Msg;
-			Msg.Format("¼ÓÔØÊ§°Ü%s", FileName);
+			Msg.Format("åŠ è½½å¤±è´¥%s", FileName);
 			AfxMessageBox(Msg);
 			return false;
 		}
@@ -1971,6 +1984,7 @@ bool CCallInterfaceMakerDlg::SaveStructDefine(xml_node& Structs,vector<STRUCT_DE
 		xml_node Struct=Structs.append_child(node_element,"Struct");
 		Struct.append_attribute("Name",(LPCTSTR)StructDefineList[i].Name);
 		Struct.append_attribute("ShortName",(LPCTSTR)StructDefineList[i].ShortName);
+		Struct.append_attribute("ShowName", (LPCTSTR)StructDefineList[i].ShowName);
 		Struct.append_attribute("BaseStruct",(LPCTSTR)StructDefineList[i].BaseStruct);		
 		Struct.append_attribute("Description",(LPCTSTR)StructDefineList[i].Description);
 		Struct.append_attribute("IDSeed",(UINT)StructDefineList[i].IDSeed);		
@@ -2014,6 +2028,7 @@ bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs,vector<STRUCT_DE
 			STRUCT_DEFINE_INFO StructDefine;
 			StructDefine.Name = (LPCTSTR)Struct.attribute("Name").getvalue();
 			StructDefine.ShortName = (LPCTSTR)Struct.attribute("ShortName").getvalue();
+			StructDefine.ShowName = (LPCTSTR)Struct.attribute("ShowName").getvalue();
 			StructDefine.BaseStruct = (LPCTSTR)Struct.attribute("BaseStruct").getvalue();
 			StructDefine.Description = ((LPCTSTR)Struct.attribute("Description").getvalue());
 			StructDefine.IDSeed=(UINT)Struct.attribute("IDSeed");
@@ -2108,6 +2123,7 @@ bool CCallInterfaceMakerDlg::SaveEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_I
 		xml_node Enum=Enums.append_child(node_element,"Enum");
 		Enum.append_attribute("Name",(LPCTSTR)EnumDefineList[i].Name);
 		Enum.append_attribute("ShortName",(LPCTSTR)EnumDefineList[i].ShortName);
+		Enum.append_attribute("ShowName", (LPCTSTR)EnumDefineList[i].ShowName);
 		Enum.append_attribute("Flag",(UINT)EnumDefineList[i].Flag);
 		Enum.append_attribute("Description",(LPCTSTR)EnumDefineList[i].Description);
 				
@@ -2138,6 +2154,7 @@ bool CCallInterfaceMakerDlg::LoadEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_I
 			ENUM_DEFINE_INFO EnumDefine;
 			EnumDefine.Name = (LPCTSTR)Enum.attribute("Name").getvalue();
 			EnumDefine.ShortName = (LPCTSTR)Enum.attribute("ShortName").getvalue();
+			EnumDefine.ShowName = (LPCTSTR)Enum.attribute("ShowName").getvalue();
 			EnumDefine.Flag=(UINT)Enum.attribute("Flag");
 			EnumDefine.Description = ((LPCTSTR)Enum.attribute("Description").getvalue());
 			
@@ -2366,7 +2383,7 @@ void CCallInterfaceMakerDlg::WriteStringToFile(LPCTSTR OutputFileName, CString& 
 		if (!OutputFile.SaveToFile(Str, OutputFileName))
 		{
 			CString Msg;
-			Msg.Format("ÎŞ·¨´ò¿ªÎÄ¼ş%s", OutputFileName);
+			Msg.Format("æ— æ³•æ‰“å¼€æ–‡ä»¶%s", OutputFileName);
 			MessageBox(Msg);
 		}
 	}
@@ -2408,7 +2425,7 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 {
 	if (Depth > 32)
 	{
-		//AfxMessageBox("½á¹¹ÒÀÀµËÑË÷²ãÊı¹ı¶à£¬¿ÉÄÜÓĞÑ­»·ÒÀÀµ");
+		//AfxMessageBox("ç»“æ„ä¾èµ–æœç´¢å±‚æ•°è¿‡å¤šï¼Œå¯èƒ½æœ‰å¾ªç¯ä¾èµ–");
 		return;
 	}
 	if (!StructInfo.BaseStruct.IsEmpty())
@@ -2419,7 +2436,7 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 			if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
 			{
 				AddUnique(DependList, pType->Name);
-				//ÕÒµ½ÒÀÀµ½á¹¹µÄĞÅÏ¢
+				//æ‰¾åˆ°ä¾èµ–ç»“æ„çš„ä¿¡æ¯
 				for (size_t j = 0; j < StructList.size(); j++)
 				{
 					if (StructList[j].Name == pType->Name)
@@ -2440,9 +2457,9 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 			{
 				if (pType->Name != StructInfo.Name)
 				{
-					//ÅÅ³ı×ÔÎÒÒÀÀµ
+					//æ’é™¤è‡ªæˆ‘ä¾èµ–
 					AddUnique(DependList, pType->Name);
-					//ÕÒµ½ÒÀÀµ½á¹¹µÄĞÅÏ¢
+					//æ‰¾åˆ°ä¾èµ–ç»“æ„çš„ä¿¡æ¯
 					for (size_t j = 0; j < StructList.size(); j++)
 					{
 						if (StructList[j].Name == pType->Name)
@@ -2470,7 +2487,7 @@ void CCallInterfaceMakerDlg::AddUnique(vector<STRUCT_DEFINE_INFO*>& StructList, 
 void CCallInterfaceMakerDlg::SortDefinesForExport(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& SrcList,
 	vector<CONST_DEFINE_LIST*>& ConstList, vector<ENUM_DEFINE_LIST*>& EnumList, vector<STRUCT_DEFINE_LIST2*>& StructList)
 {
-	//ÁĞ±í¼äÅÅĞò
+	//åˆ—è¡¨é—´æ’åº
 	for (BASE_DATA_STRUCT_DEFINE_LIST* pDefineList : SrcList)
 	{
 		if (pDefineList->ListType == DATA_STRUCT_CONST)
@@ -2502,7 +2519,7 @@ void CCallInterfaceMakerDlg::SortDefinesForExport(vector<BASE_DATA_STRUCT_DEFINE
 			AddUnique(TempList, pDefineList);
 		}
 	}
-	//¶ÔÁĞ±íÄÚ²¿ÅÅĞò
+	//å¯¹åˆ—è¡¨å†…éƒ¨æ’åº
 	for (STRUCT_DEFINE_LIST* pDefineList : TempList)
 	{
 		if (pDefineList->ListType == DATA_STRUCT_STRUCT)
@@ -2519,7 +2536,7 @@ void CCallInterfaceMakerDlg::GetDefineDepends(const vector<BASE_DATA_STRUCT_DEFI
 {
 	if (Depth > 32)
 	{
-		//AfxMessageBox("Êı¾İ¶¨ÒåÒÀÀµËÑË÷²ãÊı¹ı¶à£¬¿ÉÄÜÓĞÑ­»·ÒÀÀµ");
+		//AfxMessageBox("æ•°æ®å®šä¹‰ä¾èµ–æœç´¢å±‚æ•°è¿‡å¤šï¼Œå¯èƒ½æœ‰å¾ªç¯ä¾èµ–");
 		return;
 	}
 
@@ -2713,7 +2730,7 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 {
 	if (Depth > 32)
 	{
-		//AfxMessageBox("Êı¾İ¶¨ÒåÒÀÀµËÑË÷²ãÊı¹ı¶à£¬¿ÉÄÜÓĞÑ­»·ÒÀÀµ");
+		//AfxMessageBox("æ•°æ®å®šä¹‰ä¾èµ–æœç´¢å±‚æ•°è¿‡å¤šï¼Œå¯èƒ½æœ‰å¾ªç¯ä¾èµ–");
 		return;
 	}
 	vector<CString> DefineDependList;
@@ -2853,7 +2870,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 				{
 					MethodInfo.Type = INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT;
 					CString Msg;
-					Msg.Format("ÎŞ·¨ÕÒµ½½Ó¿Ú%s·½·¨%s¶ÔÓ¦µÄ»Øµ÷·½·¨", OldInterfaceInfo.Name, OldMethodInfo.Name);
+					Msg.Format("æ— æ³•æ‰¾åˆ°æ¥å£%sæ–¹æ³•%så¯¹åº”çš„å›è°ƒæ–¹æ³•", OldInterfaceInfo.Name, OldMethodInfo.Name);
 					PrintImportantLog("ConvertWarnning", "%s", Msg);
 					WarningCount++;
 				}
@@ -2892,7 +2909,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 						if (pCallMethod == NULL)
 						{
 							CString Msg;
-							Msg.Format("ÎŞ·¨ÕÒµ½½Ó¿Ú%s»Øµ÷·½·¨%s¶ÔÓ¦µÄµ÷ÓÃ·½·¨", OldInterfaceInfo.Name, OldMethodInfo.Name);
+							Msg.Format("æ— æ³•æ‰¾åˆ°æ¥å£%så›è°ƒæ–¹æ³•%så¯¹åº”çš„è°ƒç”¨æ–¹æ³•", OldInterfaceInfo.Name, OldMethodInfo.Name);
 							PrintImportantLog("ConvertError", "%s", Msg);
 							ErrorCount++;
 						}
@@ -2902,7 +2919,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 			else
 			{
 				CString Msg;
-				Msg.Format("ÎŞ·¨ÕÒµ½½Ó¿Ú%s¶ÔÓ¦µÄ»Øµ÷½Ó¿Ú", OldInterfaceInfo.Name);
+				Msg.Format("æ— æ³•æ‰¾åˆ°æ¥å£%så¯¹åº”çš„å›è°ƒæ¥å£", OldInterfaceInfo.Name);
 				PrintImportantLog("ConvertError", "%s", Msg);
 				ErrorCount++;
 			}
@@ -2952,7 +2969,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 		default:
 			{
 				CString Msg;
-				Msg.Format("Êı¾İ½á¹¹[%s]µÄÀàĞÍ[%d]´íÎó", pBaseDefine->ListName, pBaseDefine->ListType);
+				Msg.Format("æ•°æ®ç»“æ„[%s]çš„ç±»å‹[%d]é”™è¯¯", pBaseDefine->ListName, pBaseDefine->ListType);
 				PrintImportantLog("ConvertError", "%s", Msg);
 				ErrorCount++;
 			}
@@ -2961,7 +2978,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 	if (WarningCount || ErrorCount)
 	{
 		CString Msg;
-		Msg.Format("´Ó¾É°æ×ª»»¹ı³ÌÖĞ·¢ÏÖ%d¸ö¾¯¸æ,%d´íÎó", WarningCount, ErrorCount);
+		Msg.Format("ä»æ—§ç‰ˆè½¬æ¢è¿‡ç¨‹ä¸­å‘ç°%dä¸ªè­¦å‘Š,%dé”™è¯¯", WarningCount, ErrorCount);
 		AfxMessageBox(Msg);
 	}
 
@@ -3025,7 +3042,7 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 	SortDefinesForExport(m_AllDataStructList, ConstList, EnumList, StructList);
 	if (ConstList.size() + EnumList.size() + StructList.size() != m_AllDataStructList.size())
 	{
-		AfxMessageBox("Êı¾İ¶¨ÒåÅÅĞò´íÎó");
+		AfxMessageBox("æ•°æ®å®šä¹‰æ’åºé”™è¯¯");
 		return false;
 	}
 
@@ -3045,13 +3062,16 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 		ExportDataStructDefineHeader(ConstList, EnumList, StructList, ExportDir, FileName, m_MainModule.Name);
 
 	}
-	CString Temp;
 
-	Temp.Format("%sSystemEnums.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.EnumExportConfig.ExportExt);
-	ExportSystemEnums(ExportDir, Temp, m_AllModuleList);
+	if(m_InterfaceConfig.EnumExportConfig.IsExport)
+	{
+		CString Temp;
+		Temp.Format("%sSystemEnums.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.EnumExportConfig.ExportExt);
+		ExportSystemEnums(ExportDir, Temp, m_AllModuleList);
+	}
 
-	ExportDataStructDefines(ConstList, EnumList, StructList, ExportDir, m_MainModule.Name);
-	ExportDataObject(StructList, ExportDir, m_MainModule.Name);
+	ExportDataStructDefines(ConstList, EnumList, StructList, ExportDir, m_MainModule.Name);	
+	ExportDataObject(StructList, ExportDir, m_MainModule.Name);	
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_CALL, m_MainModule.Name);
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_ACK, m_MainModule.Name);
 
@@ -3064,7 +3084,7 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 
 	if (m_InterfaceConfig.OneFileExportConfig.IsExport)
 	{
-		//µ¥Ò»ÎÄ¼şµ¼³ö±£´æ
+		//å•ä¸€æ–‡ä»¶å¯¼å‡ºä¿å­˜
 		CString Source = m_AllDefinesTemplate;
 		CString LineSpace = GetLineSpace(Source, "<AllDefines>");
 		Source.Replace("<SpaceName>", m_MainModule.Name);
@@ -3081,7 +3101,7 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 		if (!OutputFile.SaveToFile(Source, OutputFileName))
 		{
 			CString Msg;
-			Msg.Format("ÎŞ·¨´ò¿ªÎÄ¼ş%s", OutputFileName);
+			Msg.Format("æ— æ³•æ‰“å¼€æ–‡ä»¶%s", OutputFileName);
 			MessageBox(Msg);
 		}
 	}
@@ -3117,51 +3137,60 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 		Include.Replace("<ImportFileName>", ImportFileName);
 		Includes += Include;
 	}
-	for (CONST_DEFINE_LIST* pList : ConstList)
-	{
-		if (pList->IgnoreOnExport)
-			continue;
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		Include = m_ImportDeclareTemplate;
-		ImportFileName.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
-		Include.Replace("<ImportFileName>", ImportFileName);
-		Includes += Include;
-	}
-	for (ENUM_DEFINE_LIST* pList : EnumList)
-	{
-		if (pList->IgnoreOnExport)
-			continue;
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		Include = m_ImportDeclareTemplate;
-		ImportFileName.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
-		Include.Replace("<ImportFileName>", ImportFileName);
-		Includes += Include;
-	}
 
-	
-
-	for (STRUCT_DEFINE_LIST2* pList : StructList)
+	if(m_InterfaceConfig.ConstExportConfig.IsExport)
 	{
-		if (pList->IgnoreOnExport)
-			continue;
-
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		
-		Include = m_ImportDeclareTemplate;
-		ImportFileName.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
-		Include.Replace("<ImportFileName>", ImportFileName);
-		Includes += Include;
-		
-		for (STRUCT_DEFINE_INFO* pInfo : pList->StructList)
+		for (CONST_DEFINE_LIST* pList : ConstList)
 		{
-			if (pInfo->Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+			CString ModuleName = GetModuleName(pList->ModuleID);
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+		}
+	}
+
+	if(m_InterfaceConfig.EnumExportConfig.IsExport)
+	{
+		for (ENUM_DEFINE_LIST* pList : EnumList)
+		{
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+			CString ModuleName = GetModuleName(pList->ModuleID);
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+		}
+	}	
+
+	if(m_InterfaceConfig.StructExportConfig.IsExport)
+	{
+		for (STRUCT_DEFINE_LIST2* pList : StructList)
+		{
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+
+			CString ModuleName = GetModuleName(pList->ModuleID);
+
+			Include = m_ImportDeclareTemplate;
+			ImportFileName.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
+			Include.Replace("<ImportFileName>", ImportFileName);
+			Includes += Include;
+
+			for (STRUCT_DEFINE_INFO* pInfo : pList->StructList)
 			{
-				Include = m_ImportDeclareTemplate;
-				ImportFileName.Format("%s.%s", ClassNameToFileName(pInfo->Name),
-					m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport ?
-					m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt : m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
-				Include.Replace("<ImportFileName>", ImportFileName);
-				Includes += Include;
+				if (pInfo->Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+				{
+					Include = m_ImportDeclareTemplate;
+					ImportFileName.Format("%s.%s", ClassNameToFileName(pInfo->Name),
+						m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport ?
+						m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt : m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
+					Include.Replace("<ImportFileName>", ImportFileName);
+					Includes += Include;
+				}
 			}
 		}
 	}
@@ -3403,29 +3432,38 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>&
 	LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
 	CString Temp;
-	for (CONST_DEFINE_LIST* pList : ConstList)
+	if(m_InterfaceConfig.ConstExportConfig.IsExport)
 	{
-		if (pList->IgnoreOnExport)
-			continue;
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		Temp.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
-		ExportConsts(ExportDir, Temp, pList->ConstList, SpaceName, pList->ListName);
+		for (CONST_DEFINE_LIST* pList : ConstList)
+		{
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+			CString ModuleName = GetModuleName(pList->ModuleID);
+			Temp.Format("%s%sConsts.%s", ModuleName, pList->ListName, m_InterfaceConfig.ConstExportConfig.ExportExt);
+			ExportConsts(ExportDir, Temp, pList->ConstList, SpaceName, pList->ListName);
+		}
 	}
-	for (ENUM_DEFINE_LIST* pList : EnumList)
+	if(m_InterfaceConfig.EnumExportConfig.IsExport)
 	{
-		if (pList->IgnoreOnExport)
-			continue;
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		Temp.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
-		ExportEnums(ExportDir, Temp, pList->EnumList, SpaceName, pList->ListName, false);
+		for (ENUM_DEFINE_LIST* pList : EnumList)
+		{
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+			CString ModuleName = GetModuleName(pList->ModuleID);
+			Temp.Format("%s%sEnums.%s", ModuleName, pList->ListName, m_InterfaceConfig.EnumExportConfig.ExportExt);
+			ExportEnums(ExportDir, Temp, pList->EnumList, SpaceName, pList->ListName, false);
+		}
 	}
-	for (STRUCT_DEFINE_LIST2* pList : StructList)
+	if(m_InterfaceConfig.StructExportConfig.IsExport)
 	{
-		if (pList->IgnoreOnExport)
-			continue;
-		CString ModuleName = GetModuleName(pList->ModuleID);
-		Temp.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
-		ExportStructs(ExportDir, Temp, SpaceName, pList->StructList);
+		for (STRUCT_DEFINE_LIST2* pList : StructList)
+		{
+			if (pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
+				continue;
+			CString ModuleName = GetModuleName(pList->ModuleID);
+			Temp.Format("%s%sStructs.%s", ModuleName, pList->ListName, m_InterfaceConfig.StructExportConfig.ExportExt);
+			ExportStructs(ExportDir, Temp, SpaceName, pList->StructList);
+		}
 	}
 	return true;
 }
@@ -3617,7 +3655,7 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 	
 	for (STRUCT_DEFINE_LIST2* pList : StructList)
 	{
-		if (!pList->IgnoreOnExport)
+		if (!pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
 		{
 			for (STRUCT_DEFINE_INFO* pInfo : pList->StructList)
 			{
@@ -3700,13 +3738,18 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 							Header.Replace("<LuaProcessSource>", "");
 						}
 
-						LineSpace = GetLineSpace(Header, "<Members>");
-						CString Members = MakeStructMembers(*pInfo, ";", SpaceName, LineSpace);
-						Header.Replace("<Members>", Members);
-
-						LineSpace = GetLineSpace(Header, "<Members,>");
-						Members = MakeStructMembers(*pInfo, ",", SpaceName, LineSpace);
-						Header.Replace("<Members,>", Members);
+						if (Header.Find("<Members>") >= 0)
+						{
+							LineSpace = GetLineSpace(Header, "<Members>");
+							CString Members = MakeStructMembers(*pInfo, ";", true, SpaceName, LineSpace);
+							Header.Replace("<Members>", Members);
+						}
+						if (Header.Find("<Members,>") >= 0)
+						{
+							LineSpace = GetLineSpace(Header, "<Members,>");
+							CString Members = MakeStructMembers(*pInfo, ",", false, SpaceName, LineSpace);
+							Header.Replace("<Members,>", Members);
+						}
 
 						LineSpace = GetLineSpace(Header, "<SSTIDEnumDefine>");
 						CString SSTIDEnum = MakeStructSSTIDEnumDefines(*pInfo, SpaceName, LineSpace);
@@ -3737,6 +3780,7 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 
 						WriteStringToFile(HeaderFileName, Header);
 					}
+					if (m_InterfaceConfig.DataObjectSourceExportConfig.IsExport)
 					{
 						SourceFileName.Format("%s\\%s.%s", ExportDir, ClassNameToFileName(pInfo->Name),
 							m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
@@ -3822,14 +3866,19 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 						FullModifyFlag.Format("DOMF_%s_FULL", ClassNameToUpper(pInfo->Name));
 						Source.Replace("<FULL_MODIFY_FLAG>", FullModifyFlag);
 
+						if (Source.Find("<Members>") >= 0)
+						{
+							LineSpace = GetLineSpace(Source, "<Members>");
+							CString Members = MakeStructMembers(*pInfo, ";", true, SpaceName, LineSpace);
+							Source.Replace("<Members>", Members);
+						}
 
-						LineSpace = GetLineSpace(Source, "<Members>");
-						CString Members = MakeStructMembers(*pInfo, ";", SpaceName, LineSpace);
-						Source.Replace("<Members>", Members);
-
-						LineSpace = GetLineSpace(Source, "<Members,>");
-						Members = MakeStructMembers(*pInfo, ",", SpaceName, LineSpace);
-						Source.Replace("<Members,>", Members);
+						if (Source.Find("<Members,>") >= 0)
+						{
+							LineSpace = GetLineSpace(Source, "<Members,>");
+							CString Members = MakeStructMembers(*pInfo, ",", false, SpaceName, LineSpace);
+							Source.Replace("<Members,>", Members);
+						}
 
 						LineSpace = GetLineSpace(Source, "<SSTIDEnumDefine>");
 						CString SSTIDEnum = MakeStructSSTIDEnumDefines(*pInfo, SpaceName, LineSpace);
@@ -4105,7 +4154,7 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 		if (StructInfo.ObjectID == 0)
 		{
 			CString Msg;
-			Msg.Format("½á¹¹%sÓĞ»ùÀà£¬µ«Ã»ÓĞÉèÖÃObjectID£¬»áµ¼ÖÂ´ò½â°üÒì³£", StructInfo.Name);
+			Msg.Format("ç»“æ„%sæœ‰åŸºç±»ï¼Œä½†æ²¡æœ‰è®¾ç½®ObjectIDï¼Œä¼šå¯¼è‡´æ‰“è§£åŒ…å¼‚å¸¸", StructInfo.Name);
 			AfxMessageBox(Msg);
 		}
 		else 
@@ -4115,7 +4164,7 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 			if (!CheckBaseStructObjectID(ObjectIDList, StructInfo.BaseStruct))
 			{
 				CString Msg;
-				Msg.Format("½á¹¹%sÓĞ»ùÀàÖĞObjectIDÓĞÖØ¸´£¬»áµ¼ÖÂ´ò½â°üÒì³£", StructInfo.Name);
+				Msg.Format("ç»“æ„%sæœ‰åŸºç±»ä¸­ObjectIDæœ‰é‡å¤ï¼Œä¼šå¯¼è‡´æ‰“è§£åŒ…å¼‚å¸¸", StructInfo.Name);
 				AfxMessageBox(Msg);
 			}
 		}
@@ -5950,23 +5999,14 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 
 
 		//CString VarName=Name;
+		SelectBlock(Operation, "IsArray", IsArray);
 		if (IsArray)
 		{
-			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-			Operation.Replace("<IfArray>", "");
-			Operation.Replace("</IfArray>", "");
-
 			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
 			Operation = ProcessArrayOperation(Operation, pTypeInfo);
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-			Operation.Replace("<IfNotArray>", "");
-			Operation.Replace("</IfNotArray>", "");
-		}
+		}		
 		
 		if (IsInDataObject)
 			Operation.Replace("<Variable>", CString("m_") + Name);
@@ -6060,21 +6100,11 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
 		SST_ID.MakeUpper();
 
-
+		SelectBlock(Operation, "IsArray", IsArray);
 		if (IsArray)
 		{
-			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-			Operation.Replace("<IfArray>", "");
-			Operation.Replace("</IfArray>", "");
-
 			Operation.Replace("<Variable>", "ArrayElement");
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-			Operation.Replace("<IfNotArray>", "");
-			Operation.Replace("</IfNotArray>", "");
-		}
+		}		
 		
 		if (IsInDataObject)
 			Operation.Replace("<Variable>", CString("m_") + Name);
@@ -6176,23 +6206,14 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 
 
 		//CString VarName=Name;
+		SelectBlock(Operation, "IsArray", IsArray);
 		if (IsArray)
 		{
-			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-			Operation.Replace("<IfArray>", "");
-			Operation.Replace("</IfArray>", "");
-
 			CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
 			Operation = ProcessArrayOperation(Operation, pTypeInfo);
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-			Operation.Replace("<IfNotArray>", "");
-			Operation.Replace("</IfNotArray>", "");
-		}
+		}		
 
 		CString VarName = Name;
 		if (IsInDataObject)
@@ -6286,21 +6307,11 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 		SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(Name));
 		SST_ID.MakeUpper();
 
-
+		SelectBlock(Operation, "IsArray", IsArray);
 		if (IsArray)
 		{
-			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-			Operation.Replace("<IfArray>", "");
-			Operation.Replace("</IfArray>", "");
-
 			Operation.Replace("<Variable>", "ArrayElement");
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-			Operation.Replace("<IfNotArray>", "");
-			Operation.Replace("</IfNotArray>", "");
-		}
+		}		
 
 		CString VarName = Name;
 		if (IsInDataObject)
@@ -6789,18 +6800,7 @@ CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperation(LPCTSTR Type, LPCTSTR
 	{
 		Operation = pTypeInfo->GenerateOperations.DBFieldDefineOperation;
 
-		if (IsArray)
-		{
-			RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-			Operation.Replace("<IfArray>", "");
-			Operation.Replace("</IfArray>", "");
-		}
-		else
-		{
-			RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-			Operation.Replace("<IfNotArray>", "");
-			Operation.Replace("</IfNotArray>", "");
-		}
+		SelectBlock(Operation, "IsArray", IsArray);		
 
 		Operation.Replace("<FieldName>", Name);		
 		Operation.Replace("<DBLength>", DBLength);
@@ -7148,22 +7148,13 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 
 
 	//CString VarName=Name;
+	SelectBlock(Operation, "IsArray", IsArray);
 	if (IsArray)
 	{
-		RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-		Operation.Replace("<IfArray>", "");
-		Operation.Replace("</IfArray>", "");
-
 		CString ArrayVar = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 		ArrayVar.Replace("<Index>", "i");
 		Operation.Replace("<Variable>", ArrayVar);
 		Operation = ProcessArrayOperation(Operation, pTypeInfo);
-	}
-	else
-	{
-		RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-		Operation.Replace("<IfNotArray>", "");
-		Operation.Replace("</IfNotArray>", "");
 	}	
 
 	CString VarName = Name;
@@ -7380,20 +7371,12 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperation(TYPE_DEFINE* pTypeInfo
 
 
 	//CString VarName=Name;
+	SelectBlock(Operation, "IsArray", IsArray);
 	if (IsArray)
 	{
-		RemoveBlock(Operation, "<IfNotArray>", "</IfNotArray>");
-		Operation.Replace("<IfArray>", "");
-		Operation.Replace("</IfArray>", "");
-
 		Operation.Replace("<Variable>", "ArrayElement");
 	}
-	else
-	{
-		RemoveBlock(Operation, "<IfArray>", "</IfArray>");
-		Operation.Replace("<IfNotArray>", "");
-		Operation.Replace("</IfNotArray>", "");
-	}
+	
 	CString VarName = Name;
 	if (IsInDataObject)
 		VarName = "m_" + VarName;
@@ -7632,6 +7615,7 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo,
 CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& StructDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString StructDefines;
+	UINT StructCount = 0;
 	for (size_t i = 0; i < StructDefineList.size(); i++)
 	{
 		STRUCT_DEFINE_INFO& StructDefine = *(StructDefineList[i]);
@@ -7640,6 +7624,7 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 			CString Struct = m_StructDefineTemplate;
 
 			Struct.Replace("<SpaceName>", SpaceName);
+
 
 			CString LineSpace;
 			bool NeedVTable = false;
@@ -7770,10 +7755,12 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 				Struct.Replace("<BaseClass>", StructDefine.BaseStruct);
 			}
 
-			LineSpace = GetLineSpace(Struct, "<StructDescription>");
+			LineSpace = GetLineSpace(Struct, "<Description>");
 			CString StructDescription = ToComment(StructDefine.Description, LineSpace);
-			Struct.Replace("<StructDescription>", StructDescription);
+			Struct.Replace("<Description>", StructDescription);
+			Struct.Replace("<OrginDescription>", StructDefine.Description);
 			Struct.Replace("<StructName>", StructDefine.Name);
+			Struct.Replace("<ShowName>", StructDefine.ShowName);
 			CString BaseStruct;
 			if (!StructDefine.BaseStruct.IsEmpty())
 			{
@@ -7781,13 +7768,19 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 			}
 			Struct.Replace("<BaseStruct>", BaseStruct);
 
-			LineSpace = GetLineSpace(Struct, "<Members>");
-			CString Members = MakeStructMembers(StructDefine, ";", SpaceName, LineSpace);
-			Struct.Replace("<Members>", Members);
+			if (Struct.Find("<Members>") >= 0)
+			{
+				LineSpace = GetLineSpace(Struct, "<Members>");
+				CString Members = MakeStructMembers(StructDefine, ";", true, SpaceName, LineSpace);
+				Struct.Replace("<Members>", Members);
+			}
 
-			LineSpace = GetLineSpace(Struct, "<Members,>");
-			Members = MakeStructMembers(StructDefine, ",", SpaceName, LineSpace);
-			Struct.Replace("<Members,>", Members);
+			if (Struct.Find("<Members,>") >= 0)
+			{
+				LineSpace = GetLineSpace(Struct, "<Members,>");
+				CString Members = MakeStructMembers(StructDefine, ",", false, SpaceName, LineSpace);
+				Struct.Replace("<Members,>", Members);
+			}
 
 			LineSpace = GetLineSpace(Struct, "<SSTIDEnumDefine>");
 			CString SSTIDEnum = MakeStructSSTIDEnumDefines(StructDefine, SpaceName, LineSpace);
@@ -7830,6 +7823,9 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 			//CloneOperations = MakeCloneOperations(StructDefine, LineSpace, "CloneObject.", m_InterfaceConfig.MemberVariablePrefix, SpaceName);
 			//Struct.Replace("<CloneToOperations>", CloneOperations);
 
+			SelectBlock(Struct, "IsFirst", StructCount == 0);
+			StructCount++;
+
 			StructDefines += Struct + "\r\n\r\n";
 		}
 	}
@@ -7839,7 +7835,7 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 	return StructDefines;
 }
 
-CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, bool AllMemberAddSplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Members;
 	int MaxLen=0;
@@ -7863,50 +7859,64 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 	MaxLen+=HeadLen;
 	int SpaceLen=(((int)ceil(MaxLen/4.0f))+1)*4-HeadLen;
 	
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
 		CString Member = MemberTemplate;
-		
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-		CString Space;
-		if(pTypeInfo)
-		{
-			CString VariableDefine=pTypeInfo->GenerateOperations.VariableDefine;
+		STRUCT_MEMBER_INFO& MemberInfo = StructInfo.MemberList[i];
 
-			if(StructInfo.MemberList[i].IsArray)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		CString Space;
+		if (pTypeInfo)
+		{
+			CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+
+			if (MemberInfo.IsArray)
 			{
 				VariableDefine = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.VariableDefine, pTypeInfo);
 			}
 
-			VariableDefine.Replace("<Type>",pTypeInfo->CType);
-			int CurSpaceCount=(int)ceil((SpaceLen-pTypeInfo->CType.GetLength())/4.0f);
-			while(CurSpaceCount)
+			VariableDefine.Replace("<Type>", pTypeInfo->CType);
+			int CurSpaceCount = (int)ceil((SpaceLen - pTypeInfo->CType.GetLength()) / 4.0f);
+			while (CurSpaceCount)
 			{
-				Space+="	";
+				Space += "	";
 				CurSpaceCount--;
 			}
-			VariableDefine.Replace("<Space>",Space);
+			VariableDefine.Replace("<Space>", Space);
 			VariableDefine.Replace("<SpaceName>", SpaceName);
 			CString VarName;
-			
-				
-			VarName=StructInfo.MemberList[i].Name;
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+
+
+			VarName = MemberInfo.Name;
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
-				VarName="m_"+VarName;
+				VarName = "m_" + VarName;
 			}
-			VariableDefine.Replace("<Variable>",VarName);
-			VariableDefine = VariableDefine + SplitChar;
-			Member.Replace("<VariableDefine>",VariableDefine);
+			VariableDefine.Replace("<Variable>", VarName);
+			if (AllMemberAddSplitChar || i < StructInfo.MemberList.size() - 1)
+				VariableDefine = VariableDefine + SplitChar;
+			Member.Replace("<VariableDefine>", VariableDefine);		
 		}
-		CString Description=StructInfo.MemberList[i].Description;
-		if(!Description.IsEmpty())
+		Member.Replace("<MemberName>", MemberInfo.Name);
+		Member.Replace("<OrginType>", MemberInfo.Type);
+		Member.Replace("<ExtendType>", MemberInfo.ExtendType);
+		Member.Replace("<ShowName>", MemberInfo.ShowName);
+		Member.Replace("<BindData>", MemberInfo.BindData);
+		CString Description = MemberInfo.Description;
+		if (!Description.IsEmpty())
 		{
 			Description = m_InterfaceConfig.CommentPrefix + Description;
-			Description.Replace("\r","");
-			Description.Replace("\n","");
-		}		
-		Member.Replace("<Description>",Description);
+			Description.Replace("\r", "");
+			Description.Replace("\n", "");
+		}
+		Member.Replace("<Description>", Description);
+		Member.Replace("<OrginDescription>", MemberInfo.Description);
+		SelectBlock(Member, "IsArray", MemberInfo.IsArray);
+		SelectBlock(Member, "HideInEditorList", MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_EDITOR_LIST);
+		SelectBlock(Member, "HideInPropertyGrid", MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID);
+		SelectBlock(Member, "HideInXls", MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_XLS);
+		SelectBlock(Member, "IsKey", MemberInfo.Flag & STRUCT_MEMBER_FLAG_IS_KEY);
+		SelectBlock(Member, "IsLast", i == (StructInfo.MemberList.size() - 1));
 
 		Members += Member + "\r\n";
 	}
@@ -8277,7 +8287,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INF
 					PackFlag.Format("DOMF_%s_FULL", ClassNameToUpper(pTypeInfo->Name));
 				CString LineSpace = GetLineSpace(Method, "<CloneOperation>");
 				CString CloneOperation = MakeCloneOperation(MemberInfo.Name, pTypeInfo, true, true, false,
-					(MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0, PackFlag, "", "Value", StructInfo.Name, SpaceName, LineSpace);
+					(MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0, PackFlag, "", "Value.", StructInfo.Name, SpaceName, LineSpace);
 				Method.Replace("<CloneOperation>", CloneOperation);
 			}
 
@@ -8521,7 +8531,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsSource(vector<BASE_DATA
 		if (DataObjectModifyFlags[i].ModifyFlag.size() != ModifyFlagDefineSize)
 		{
 			CString Msg;
-			Msg.Format("[%s]µÄ´óĞ¡²»ÕıÈ·,", DataObjectModifyFlags[i].Name);
+			Msg.Format("[%s]çš„å¤§å°ä¸æ­£ç¡®,", DataObjectModifyFlags[i].Name);
 			AfxMessageBox(Msg);
 		}
 		
@@ -8607,12 +8617,14 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 	else
 		Source = m_EnumDefineTemplate;
 	Source.Replace("<EnumName>",EnumInfo.Name);
+	Source.Replace("<ShowName>", EnumInfo.ShowName);
 	Source.Replace("<SpaceName>", SpaceName);
 	
 	if (EnumInfo.Description.IsEmpty())
 		Source.Replace("<Description>", "");
 	else
 		Source.Replace("<Description>", m_InterfaceConfig.CommentPrefix + EnumInfo.Description);
+	Source.Replace("<OrginDescription>", EnumInfo.Description);
 	
 	if (EnumInfo.MemberList.size())
 	{
@@ -8636,15 +8648,14 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 	
 
 	CString Space=GetLineSpace(Source,"<EnumMembers>");	
-
 	CString EnumMembers;
 
 	int Value = 0;
-	for(size_t i=0;i<EnumInfo.MemberList.size();i++)
+	for (size_t i = 0; i < EnumInfo.MemberList.size(); i++)
 	{
-		
+		ENUM_MEMBER_INFO& MemberInfo = EnumInfo.MemberList[i];
 		CString Member;
-		if (EnumInfo.MemberList[i].Flag & ENUM_MEMBER_FLAG_IS_BIT_MASK)
+		if (MemberInfo.Flag & ENUM_MEMBER_FLAG_IS_BIT_MASK)
 		{
 			if (EnumInfo.Flag & ENUM_DEFINE_FLAG_IS_64BIT)
 				Member = m_EnumBitMaskMemberDefine64Template;
@@ -8659,57 +8670,60 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 				Member = m_EnumMemberDefineTemplate;
 		}
 
-		Member.Replace("<Name>",EnumInfo.MemberList[i].Name);
+		Member.Replace("<Name>", MemberInfo.Name);
 		Member.Replace("<SpaceName>", SpaceName);
 		Member.Replace("<EnumName>", EnumInfo.Name);
+		Member.Replace("<BindType>", MemberInfo.BindDataType);
 
-
-		CString EnumValue = EnumInfo.MemberList[i].Value;
+		CString EnumValue = MemberInfo.Value;
 
 		if (!EnumValue.IsEmpty())
 			Value = atoi(EnumValue);
-		
-		
+
+		if (MemberInfo.StrValue.IsEmpty())
+			Member.Replace("<EnumStrValue>", MakeStringConst(MemberInfo.Name));
+		else
+			Member.Replace("<EnumStrValue>", MakeStringConst(MemberInfo.StrValue));
 
 		if (EnumValue.IsEmpty())
 		{
 			RemoveBlock(EnumValue, "<IfHaveValue>", "</IfHaveValue>");
-		}			
+		}
 		else
 		{
 			EnumValue.Replace("<IfHaveValue>", "");
 			EnumValue.Replace("</IfHaveValue>", "");
-		}			
+		}
 
 		//Member.Replace("<Value>", EnumValue);
 
 		if (EnumValue.IsEmpty())
 		{
 			EnumValue.Format("%d", Value);
-			Member.Replace("<Value>", EnumValue);
-		}			
-		else
-		{
-			Member.Replace("<Value>", EnumValue);
-		}			
+		}
+		Member.Replace("<Value>", EnumValue);
+		if (Member.Find("<ParseredValue>") >= 0)
+			Member.Replace("<ParseredValue>", ParserEnumValue(EnumValue, MemberInfo.Flag & ENUM_MEMBER_FLAG_IS_BIT_MASK));
 		Value++;
 
-		CString Desc = EnumInfo.MemberList[i].Description;
-		if (!EnumInfo.MemberList[i].BindDataType.IsEmpty())
-			Desc += "£¬²Î¿¼" + EnumInfo.MemberList[i].BindDataType;
+		CString Desc = MemberInfo.Description;
+		if (!MemberInfo.BindDataType.IsEmpty())
+			Desc += "ï¼Œå‚è€ƒ" + MemberInfo.BindDataType;
 
 
 		if (Desc.IsEmpty())
 			Member.Replace("<Description>", "");
 		else
 			Member.Replace("<Description>", m_InterfaceConfig.CommentPrefix + Desc);
-			
+		Member.Replace("<OrginDescription>", MemberInfo.Description);
 
-		if(i)
-			EnumMembers+=Space;
-		EnumMembers+=Member+"\r\n";		
-	}	
-
+		SelectBlock(Member, "IsLast", i == (EnumInfo.MemberList.size() - 1));
+		SelectBlock(Member, "HideInPropertyGrid", MemberInfo.Flag & ENUM_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID);
+		
+		EnumMembers += Member + "\r\n";
+	}
+	CString LineSpace = GetLineSpace(Source, "<EnumMembers>");
+	EnumMembers.Replace("\r\n", "\r\n" + LineSpace);
 	Source.Replace("<EnumMembers>",EnumMembers);
 
 	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST)
@@ -9058,6 +9072,8 @@ CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDe
 	for (size_t i = 0; i < EnumDefineList.size(); i++)
 	{
 		CString Enum = MakeEnumDefine(EnumDefineList[i], SpaceName, "");
+
+		SelectBlock(Enum, "IsLast", i == (EnumDefineList.size() - 1));
 
 		EnumDefines += Enum + "\r\n\r\n";
 
@@ -10086,7 +10102,7 @@ bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LP
 	Depth--;
 	if (Depth <= 0)
 	{
-		//AfxMessageBox("½á¹¹µİ¹é¹ı¶à£¬¿ÉÄÜÓĞÑ­»·Ç¶Ì×");
+		//AfxMessageBox("ç»“æ„é€’å½’è¿‡å¤šï¼Œå¯èƒ½æœ‰å¾ªç¯åµŒå¥—");
 		return false;
 	}
 
@@ -10180,7 +10196,7 @@ LPCTSTR CCallInterfaceMakerDlg::GetModuleName(UINT ModuleID)
 	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 		return pModuleInfo->Name;
-	return "Î´Öª";
+	return "æœªçŸ¥";
 }
 
 CALLER_INTERFACE * CCallInterfaceMakerDlg::AddInterfaceInfo(CALLER_INTERFACE& InterfaceInfo)
@@ -10390,7 +10406,7 @@ bool CCallInterfaceMakerDlg::AddModule(LPCTSTR szFileName)
 {
 	if (stricmp(m_MainModule.ModuleDefineFileName, szFileName) == 0)
 	{
-		AfxMessageBox("ÎŞ·¨Ìí¼ÓÖ÷Ä£¿é×÷ÎªÒıÓÃÄ£¿é");
+		AfxMessageBox("æ— æ³•æ·»åŠ ä¸»æ¨¡å—ä½œä¸ºå¼•ç”¨æ¨¡å—");
 		return false;
 	}
 	MODULE_DEFINE_INFO * pModuleIndo = LoadModule(szFileName);
@@ -10429,14 +10445,14 @@ bool CCallInterfaceMakerDlg::DeleteModule(UINT ModuleID)
 void CCallInterfaceMakerDlg::OnNMDblclkInterfaceList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	//LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<NMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	*pResult = 0;
 	OnBnClickedButtonEditInterface();
 }
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonConfig()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDlgConfig Dlg;
 	Dlg.m_Config=m_InterfaceConfig;
 	if(Dlg.DoModal()==IDOK)
@@ -10526,7 +10542,7 @@ bool CCallInterfaceMakerDlg::IsBigChar(TCHAR c)
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonSelectAllInterface()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 
 	for(int i=0;i<m_lvInterfaceList.GetItemCount();i++)
 	{
@@ -10545,7 +10561,7 @@ bool CCallInterfaceMakerDlg::RemoveBlock(CString& Template, LPCTSTR szBlockStart
 	bool Removed = false;
 	while (StartPos >= 0)
 	{
-		//Èç¹ûÓĞÇ¶Ì×£¬ÏÈ´¦Àí×îÄÚ²ã
+		//å¦‚æœæœ‰åµŒå¥—ï¼Œå…ˆå¤„ç†æœ€å†…å±‚
 		int Next = Template.Find(szBlockStart, StartPos + StartBlockLen);
 		while (Next >= 0)
 		{
@@ -10556,7 +10572,7 @@ bool CCallInterfaceMakerDlg::RemoveBlock(CString& Template, LPCTSTR szBlockStart
 		if (EndPos < 0)
 			return Removed;
 		EndPos += EndBlockLen;
-		//ÅĞ¶ÏÊÇ·ñÒªÈ¥³ıÕûĞĞ
+		//åˆ¤æ–­æ˜¯å¦è¦å»é™¤æ•´è¡Œ
 		int Prefix = IsEmptyPrefix(Template, StartPos);
 		int Suffix = IsEmptySuffix(Template, EndPos);
 		int CutStart, CutEnd;
@@ -10883,7 +10899,7 @@ bool CCallInterfaceMakerDlg::MoveDataStruct(int Type, LPCTSTR SourcePacket, LPCT
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonDataStructDef()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDlgDataStructDefine Dlg;
 
 	Dlg.m_DataStructDefineList = m_AllDataStructList;
@@ -10899,8 +10915,8 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonDataStructDef()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonArrangeIds()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	if(AfxMessageBox("ÊÇ·ñÒªÖØÅÅËùÓĞµÄID£¬Õâ½«Ê¹½Ó¿ÚºÍ¾É°æ±¾²»¼æÈİ£¿",MB_YESNO)==IDYES)
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	if(AfxMessageBox("æ˜¯å¦è¦é‡æ’æ‰€æœ‰çš„IDï¼Œè¿™å°†ä½¿æ¥å£å’Œæ—§ç‰ˆæœ¬ä¸å…¼å®¹ï¼Ÿ",MB_YESNO)==IDYES)
 	{
 		for (size_t i = 0; i < m_AllModuleList.size(); i++)
 		{
@@ -10949,7 +10965,7 @@ int CCallInterfaceMakerDlg::ConstComp(LPCVOID p1, LPCVOID p2)
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonSort()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	SaveInterfaceSelections();
 
 	qsort(m_MainModule.InterfaceList.begin()._Ptr, m_MainModule.InterfaceList.size(), sizeof(CALLER_INTERFACE), InterfaceInfoComp);
@@ -10963,7 +10979,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSort()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonSortAll()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	SaveInterfaceSelections();
 	qsort(m_MainModule.InterfaceList.begin()._Ptr, m_MainModule.InterfaceList.size(), sizeof(CALLER_INTERFACE), InterfaceInfoComp);
 	for (size_t i = 0; i < m_ImportModuleList.size(); i++)
@@ -11009,7 +11025,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSortAll()
 
 void CCallInterfaceMakerDlg::OnBnClickedButtonImportEdit()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDlgImportEditor Dlg;
 
 	Dlg.DoModal();
@@ -11235,4 +11251,36 @@ STRUCT_MEMBER_INFO* CCallInterfaceMakerDlg::GetStructKeyMember(LPCTSTR StructNam
 		}
 	}
 	return NULL;
+}
+CString CCallInterfaceMakerDlg::ParserEnumValue(CString Value, bool IsBitMask)
+{
+	Value.Trim();
+	Value.Remove('(');
+	Value.Remove(')');
+	if (Value[0] == '0' && (Value[1] == 'x' || Value[1] == 'X'))
+	{
+		UINT64 NumValue = _tcstoi64((LPCTSTR)Value + 2, NULL, 16);
+		CString Result;
+		Result.Format("%llu", NumValue);
+		return Result;
+	}
+	int Pos = Value.Find("<<");
+	if (Pos >= 0)
+	{
+		UINT64 NumValue = _tcstoi64(Value.Left(Pos), NULL, 10);
+		UINT64 Shift = _tcstoi64(Value.Right(Value.GetLength() - Pos - 2), NULL, 10);
+		NumValue = NumValue << Shift;
+		CString Result;
+		Result.Format("%llu", NumValue);
+		return Result;
+	}
+	if (IsBitMask)
+	{
+		UINT64 NumValue = _tcstoi64(Value, NULL, 10);
+		NumValue = 1 << NumValue;
+		CString Result;
+		Result.Format("%llu", NumValue);
+		return Result;
+	}
+	return Value;
 }
