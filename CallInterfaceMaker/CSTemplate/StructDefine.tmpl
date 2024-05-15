@@ -48,12 +48,12 @@ public class <StructName><IfHaveBaseClass>:</IfHaveBaseClass><BaseStruct>
 	}
 	public <IfHaveBaseClass>new </IfHaveBaseClass>uint GetSmartStructSize()
 	{
-		uint Size=0;
+		uint _PackSize = 0;
 		<IfHaveBaseClass>
-		Size += base.GetSmartStructSize();
+		_PackSize += base.GetSmartStructSize();
 		</IfHaveBaseClass>
 		<PacketSizes>
-		return Size;
+		return _PackSize;
 	}
 	public void CloneFrom(<StructName> Value)
 	{

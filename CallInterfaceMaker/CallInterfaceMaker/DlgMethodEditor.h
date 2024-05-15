@@ -25,12 +25,12 @@ protected:
 	CTabCtrl					m_tabParamList;
 	int							m_CurTabType;
 
-	INTERFACE_METHOD			m_MethodInfo;	
+	INTERFACE_METHOD			m_MethodInfo;
 public:
 	CDlgMethodEditor(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CDlgMethodEditor();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_DIALOG_METHOD_EDITOR };
 
 protected:
@@ -40,33 +40,33 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 protected:
-	void AddListItem(METHOD_PARAM& ParamInfo,UINT Index);
-	void EditListItem(int Item,METHOD_PARAM& ParamInfo);
-	void FillListItem();
+	void AddListItem(METHOD_PARAM& ParamInfo, UINT Index);
+	void FillList();
+	void FillListItem(int Item, METHOD_PARAM& ParamInfo);
 	void SelectItemByName(LPCTSTR szName);
 	void InitTab();
 	virtual void OnOK();
 	virtual void OnCancel();
-	
+
 	afx_msg void OnBnClickedButtonAddParam();
 	afx_msg void OnBnClickedButtonEditParam();
 	afx_msg void OnBnClickedButtonDelParam();
 	afx_msg void OnBnClickedButtonParamUp();
 	afx_msg void OnBnClickedButtonParamDown();
-	afx_msg void OnNMDblclkListParam(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMDblclkListParam(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnCbnSelchangeComboMethodType();
 public:
 	void SetData(INTERFACE_METHOD& MethodInfo);
 	void SetID(UINT ID);
 	void GetData(INTERFACE_METHOD& MethodInfo);
-	
-	
-	
-	
-	
-	
-	
-	afx_msg void OnTcnSelchangeTabParamList(NMHDR *pNMHDR, LRESULT *pResult);
+
+
+
+
+
+
+
+	afx_msg void OnTcnSelchangeTabParamList(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
 inline void CDlgMethodEditor::SetData(INTERFACE_METHOD& MethodInfo)
@@ -80,4 +80,4 @@ inline void CDlgMethodEditor::SetID(UINT ID)
 inline void CDlgMethodEditor::GetData(INTERFACE_METHOD& MethodInfo)
 {
 	MethodInfo = m_MethodInfo;
-}	
+}

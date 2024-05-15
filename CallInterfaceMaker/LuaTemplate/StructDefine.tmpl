@@ -61,12 +61,12 @@ function <SpaceName>.<StructName>:ParsePacket(Packet)
 end
 
 function <SpaceName>.<StructName>:GetSmartStructSize()
-	local Size = 0;
+	local _PackSize = 0;
 	<IfHaveBaseClass>
-	Size = Size + <SpaceName>.<BaseClass>.GetSmartStructSize(self);
+	_PackSize = _PackSize + <SpaceName>.<BaseClass>.GetSmartStructSize(self);
 	</IfHaveBaseClass>
 	<PacketSizes>
-	return Size;
+	return _PackSize;
 end
 
 function <SpaceName>.<StructName>:CloneFrom(Value)

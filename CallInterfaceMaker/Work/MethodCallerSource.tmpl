@@ -5,14 +5,14 @@
 		return COMMON_RESULT_FAILED;
 	}
 
-	UINT MsgDataSize=CSmartStruct::GetEmptyStructSize()
-		<PacketSizes>;
+	UINT _PackSize=CSmartStruct::GetEmptyStructSize();
+	<PacketSizes>
 
 	WORD MsgFlag=0;
 	<IfMsgCanCache>MsgFlag|=DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
 	<IfMsgNoCompress>MsgFlag|=DOS_MESSAGE_FLAG_NO_COMPRESS;</IfMsgNoCompress>
 		
-	CDOSMessagePacket * pMsgPacket=m_pOperator->NewMessagePacket(MsgDataSize,(UINT)m_TargetIDs.GetCount());
+	CDOSMessagePacket * pMsgPacket=m_pOperator->NewMessagePacket(_PackSize,(UINT)m_TargetIDs.GetCount());
 	if(pMsgPacket==NULL)
 	{
 		return COMMON_RESULT_MSG_ALLOC_ERROR;
@@ -20,7 +20,7 @@
 
 	pMsgPacket->GetMessage().SetMsgID(MAKE_MSG_ID(<ModuleID>,<InterfaceID>,I<@InterfaceName>::<MethodID>,<IsAckMsg>));
 	pMsgPacket->GetMessage().SetSenderID(m_SenderID);
-	pMsgPacket->GetMessage().SetDataLength(MsgDataSize);
+	pMsgPacket->GetMessage().SetDataLength(_PackSize);
 	pMsgPacket->GetMessage().SetMsgFlag(MsgFlag);
 
 	UINT FailCount=0;

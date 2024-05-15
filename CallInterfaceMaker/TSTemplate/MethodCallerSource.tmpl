@@ -5,19 +5,19 @@ public <MethodName>(<Params>): number
 		return DOSSystem.COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
 	}
 
-	let MsgDataSize=CSmartStruct.GetEmptyStructSize()
-		<PacketSizes>;
+	let _PackSize = CSmartStruct.GetEmptyStructSize();
+	<PacketSizes>;
 
 	let MsgFlag=0;
 	<IfMsgCanCache>MsgFlag|=DOSSystem.DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
 		
-	let MsgBuffer=this.m_Operator.AllocMsgBuffer(MsgDataSize);
+	let MsgBuffer=this.m_Operator.AllocMsgBuffer(_PackSize);
 	
 	
     let MsgID = DOSSystem.MakeMsgID(MODULE_IDS.<ModuleID>,<InterfaceIDEnumName>.<InterfaceID>,<MethodIDEnumName>.<MethodID>,<IsAckMsg>);		
 
 	
-	let Packet = new CSmartStruct(MsgBuffer,0,MsgDataSize,true);
+	let Packet = new CSmartStruct(MsgBuffer,0,_PackSize,true);
 	
 	if(this.PackMsg<MethodName>(Packet<,Params>))
 	{	

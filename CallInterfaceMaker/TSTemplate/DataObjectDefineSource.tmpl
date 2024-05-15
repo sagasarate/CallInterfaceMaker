@@ -165,15 +165,15 @@ export class <ClassName><IfHaveBaseClass> extends <BaseClass></IfHaveBaseClass>
 	public GetSmartStructSize(MemberFlags: Long[]): number
 	{
 //<GenerateArea13Start>
-		let Size=0;
+		let _PackSize = 0;
 		let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
 		<PacketSizes>
 			
 		<IfHaveBaseClass>
-		Size+=super.GetSmartStructSize(MemberFlags);
+		_PackSize += super.GetSmartStructSize(MemberFlags);
 		</IfHaveBaseClass>
 //<GenerateArea13End>	
-		return Size;
+		return _PackSize;
 	}
 	public Clone(): any
 	{

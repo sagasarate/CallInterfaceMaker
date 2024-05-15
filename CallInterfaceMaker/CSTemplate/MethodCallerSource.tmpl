@@ -5,19 +5,19 @@ public int <MethodName>(<Params>)
 		return (int)COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
 	}
 
-	uint MsgDataSize=CSmartStruct.GetEmptyStructSize()
-		<PacketSizes>;
+	uint _PackSize = CSmartStruct.GetEmptyStructSize();
+	<PacketSizes>;
 
 	ushort MsgFlag=0;
 	<IfMsgCanCache>MsgFlag|=(ushort)DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
 		
-	byte[] MsgBuffer=new byte[MsgDataSize];
+	byte[] MsgBuffer=new byte[_PackSize];
 	
 	
     uint MsgID = CBaseMsgHandler.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>);		
 
 	
-	CSmartStruct Packet=new CSmartStruct(MsgBuffer,0,MsgDataSize,true);
+	CSmartStruct Packet=new CSmartStruct(MsgBuffer,0,_PackSize,true);
 	
 	if(PackMsg<MethodName>(Packet<,Params>))
 	{	

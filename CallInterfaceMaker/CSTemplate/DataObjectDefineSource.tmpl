@@ -174,15 +174,15 @@ namespace <SpaceName>
 		public <IfHaveBaseClass>override</IfHaveBaseClass><IfNotHaveBaseClass>virtual</IfNotHaveBaseClass> uint GetSmartStructSize(ulong[] MemberFlags)
 		{
 	//<GenerateArea13Start>
-			uint Size=0;
-			ulong Flag=MemberFlags[(int)DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+			uint _PackSize = 0;
+			ulong Flag = MemberFlags[(int)DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
 			<PacketSizes>
 			
 			<IfHaveBaseClass>
-			Size+=base.GetSmartStructSize(MemberFlags);
+			_PackSize += base.GetSmartStructSize(MemberFlags);
 			</IfHaveBaseClass>
 	//<GenerateArea13End>	
-			return Size;
+			return _PackSize;
 		}
 		public <IfHaveBaseClass>override</IfHaveBaseClass><IfNotHaveBaseClass>virtual</IfNotHaveBaseClass> object Clone()
 		{

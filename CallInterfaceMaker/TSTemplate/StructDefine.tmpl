@@ -51,12 +51,12 @@ export class <StructName><IfHaveBaseClass> extends </IfHaveBaseClass><BaseStruct
 	}
 	public GetSmartStructSize(): number
 	{
-		let Size=0;
+		let _PackSize = 0;
 		<IfHaveBaseClass>
-		Size += super.GetSmartStructSize();
+		_PackSize += super.GetSmartStructSize();
 		</IfHaveBaseClass>
 		<PacketSizes>
-		return Size;
+		return _PackSize;
 	}
 	public CloneFrom(Value: <StructName>): void
 	{

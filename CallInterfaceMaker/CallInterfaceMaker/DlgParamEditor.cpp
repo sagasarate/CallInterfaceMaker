@@ -49,6 +49,7 @@ void CDlgParamEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DEFAULT_VALUE, m_DefaultValue);
 	DDX_Check(pDX, IDC_CHECK_CAN_NULL, m_CanNull);
 	DDX_Check(pDX, IDC_CHECK_IS_REFERENCE, m_IsReference);
+	DDX_Check(pDX, IDC_CHECK_IS_ARRAY, m_IsArray);
 	DDX_Text(pDX, IDC_EDIT_PARAM_ID, m_ID);
 	DDX_Text(pDX, IDC_EDIT_PACK_FLAG, m_PackFlag);
 }
@@ -66,12 +67,12 @@ BOOL CDlgParamEditor::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-	int Sel=-1;
-	for(UINT i=0;i<GetMainDlg()->GetVarTypeCount();i++)
+	int Sel = -1;
+	for (UINT i = 0;i < GetMainDlg()->GetVarTypeCount();i++)
 	{
-		m_cbType.InsertString(i,GetMainDlg()->GetVarType(i)->Name);
-		if(m_Type==GetMainDlg()->GetVarType(i)->Name)
-			Sel=i;
+		m_cbType.InsertString(i, GetMainDlg()->GetVarType(i)->Name);
+		if (m_Type == GetMainDlg()->GetVarType(i)->Name)
+			Sel = i;
 	}
 	m_cbType.SetCurSel(Sel);
 

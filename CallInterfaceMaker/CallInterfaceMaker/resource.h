@@ -80,6 +80,7 @@
 #define IDC_BUTTON_SELECT_ALL_INTERFACE 1019
 #define IDC_LIST_TYPES                  1020
 #define IDC_BUTTON_ARRANGE_IDS          1020
+#define IDC_CHECK_IS_REFERENCE2         1020
 #define IDC_BUTTON_SORT                 1021
 #define IDC_BUTTON_SORT_ALL             1022
 #define IDC_BUTTON_IMPORT_EDIT          1023

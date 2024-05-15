@@ -29,10 +29,10 @@ class CAboutDlg : public CDialog
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_ABOUTBOX };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 // 实现
@@ -63,8 +63,8 @@ CCallInterfaceMakerDlg::CCallInterfaceMakerDlg(CWnd* pParent /*=NULL*/)
 	, m_UTF8Export(TRUE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_SelectAll=true;
-	m_MainModule.IDSeed=1;
+	m_SelectAll = true;
+	m_MainModule.IDSeed = 1;
 	m_IsLoaded = false;
 }
 
@@ -105,14 +105,14 @@ BEGIN_MESSAGE_MAP(CCallInterfaceMakerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_CONFIG, &CCallInterfaceMakerDlg::OnBnClickedButtonConfig)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_ALL_INTERFACE, &CCallInterfaceMakerDlg::OnBnClickedButtonSelectAllInterface)
 	ON_BN_CLICKED(IDC_BUTTON_DATA_STRUCT_DEF, &CCallInterfaceMakerDlg::OnBnClickedButtonDataStructDef)
-//	ON_NOTIFY(LVN_ITEMCHANGED, IDC_INTERFACE_LIST, &CCallInterfaceMakerDlg::OnLvnItemchangedInterfaceList)
-//ON_NOTIFY(HDN_ITEMCLICK, 0, &CCallInterfaceMakerDlg::OnHdnItemclickInterfaceList)
-//ON_NOTIFY(NM_CLICK, IDC_INTERFACE_LIST, &CCallInterfaceMakerDlg::OnNMClickInterfaceList)
-ON_BN_CLICKED(IDC_BUTTON_ARRANGE_IDS, &CCallInterfaceMakerDlg::OnBnClickedButtonArrangeIds)
-ON_BN_CLICKED(IDC_BUTTON_SORT, &CCallInterfaceMakerDlg::OnBnClickedButtonSort)
-ON_BN_CLICKED(IDC_BUTTON_SORT_ALL, &CCallInterfaceMakerDlg::OnBnClickedButtonSortAll)
-ON_BN_CLICKED(IDC_BUTTON_IMPORT_EDIT, &CCallInterfaceMakerDlg::OnBnClickedButtonImportEdit)
-ON_BN_CLICKED(IDC_BUTTON_MOVE_INTERFACE, &CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface)
+	//	ON_NOTIFY(LVN_ITEMCHANGED, IDC_INTERFACE_LIST, &CCallInterfaceMakerDlg::OnLvnItemchangedInterfaceList)
+	//ON_NOTIFY(HDN_ITEMCLICK, 0, &CCallInterfaceMakerDlg::OnHdnItemclickInterfaceList)
+	//ON_NOTIFY(NM_CLICK, IDC_INTERFACE_LIST, &CCallInterfaceMakerDlg::OnNMClickInterfaceList)
+	ON_BN_CLICKED(IDC_BUTTON_ARRANGE_IDS, &CCallInterfaceMakerDlg::OnBnClickedButtonArrangeIds)
+	ON_BN_CLICKED(IDC_BUTTON_SORT, &CCallInterfaceMakerDlg::OnBnClickedButtonSort)
+	ON_BN_CLICKED(IDC_BUTTON_SORT_ALL, &CCallInterfaceMakerDlg::OnBnClickedButtonSortAll)
+	ON_BN_CLICKED(IDC_BUTTON_IMPORT_EDIT, &CCallInterfaceMakerDlg::OnBnClickedButtonImportEdit)
+	ON_BN_CLICKED(IDC_BUTTON_MOVE_INTERFACE, &CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface)
 END_MESSAGE_MAP()
 
 
@@ -147,8 +147,8 @@ BOOL CCallInterfaceMakerDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	m_TypeDefFileName=CFileTools::MakeModuleFullPath(NULL,TYPE_DEF_FILE_NAME);
-	
+	m_TypeDefFileName = CFileTools::MakeModuleFullPath(NULL, TYPE_DEF_FILE_NAME);
+
 	LoadTypeDef();
 	LoadTemples();
 	LoadConfig();
@@ -156,14 +156,14 @@ BOOL CCallInterfaceMakerDlg::OnInitDialog()
 
 	MakeCurVarType(true);
 
-	m_lvInterfaceList.SetExtendedStyle(LVS_EX_CHECKBOXES|LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
+	m_lvInterfaceList.SetExtendedStyle(LVS_EX_CHECKBOXES | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 
-	m_lvInterfaceList.InsertColumn(0,"名称",LVCFMT_LEFT,200);
+	m_lvInterfaceList.InsertColumn(0, "名称", LVCFMT_LEFT, 200);
 	m_lvInterfaceList.InsertColumn(1, "模块", LVCFMT_LEFT, 100);
-	m_lvInterfaceList.InsertColumn(2,"方法数量",LVCFMT_LEFT,60);
-	m_lvInterfaceList.InsertColumn(3,"ID",LVCFMT_LEFT,60);
-	m_lvInterfaceList.InsertColumn(4,"描述",LVCFMT_LEFT,200);
+	m_lvInterfaceList.InsertColumn(2, "方法数量", LVCFMT_LEFT, 60);
+	m_lvInterfaceList.InsertColumn(3, "ID", LVCFMT_LEFT, 60);
+	m_lvInterfaceList.InsertColumn(4, "描述", LVCFMT_LEFT, 200);
 
 
 
@@ -226,8 +226,8 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonAddInterface()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDlgInterfaceEdtor Dlg;
-		
-	if(Dlg.DoModal()==IDOK)
+
+	if (Dlg.DoModal() == IDOK)
 	{
 		CALLER_INTERFACE InterfaceInfo;
 		Dlg.GetData(InterfaceInfo);
@@ -239,20 +239,20 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonAddInterface()
 void CCallInterfaceMakerDlg::OnBnClickedButtonEditInterface()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvInterfaceList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvInterfaceList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvInterfaceList.GetNextSelectedItem(Pos);
-		UINT Param=(UINT)m_lvInterfaceList.GetItemData(Item);
+		int Item = m_lvInterfaceList.GetNextSelectedItem(Pos);
+		UINT Param = (UINT)m_lvInterfaceList.GetItemData(Item);
 		UINT ModuleID = (Param >> 8) & 0x7F;
 		UINT InterfaceID = Param & 0xFF;
-		CALLER_INTERFACE * pInterfaceInfo = GetInterfaceInfoByID(ModuleID, InterfaceID);
+		CALLER_INTERFACE* pInterfaceInfo = GetInterfaceInfoByID(ModuleID, InterfaceID);
 		if (pInterfaceInfo)
 		{
 			CDlgInterfaceEdtor Dlg;
 			Dlg.SetData(*pInterfaceInfo);
 
-			if(Dlg.DoModal()==IDOK)
+			if (Dlg.DoModal() == IDOK)
 			{
 				Dlg.GetData(*pInterfaceInfo);
 				EditListItem(Item, *pInterfaceInfo);
@@ -268,26 +268,26 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonEditInterface()
 void CCallInterfaceMakerDlg::OnBnClickedButtonDelInterface()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvInterfaceList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvInterfaceList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvInterfaceList.GetNextSelectedItem(Pos);
+		int Item = m_lvInterfaceList.GetNextSelectedItem(Pos);
 		UINT Param = (UINT)m_lvInterfaceList.GetItemData(Item);
 		UINT ModuleID = (Param >> 8) & 0x7F;
 		UINT InterfaceID = Param & 0xFF;
-		CALLER_INTERFACE * pInterfaceInfo = GetInterfaceInfoByID(ModuleID, InterfaceID);
+		CALLER_INTERFACE* pInterfaceInfo = GetInterfaceInfoByID(ModuleID, InterfaceID);
 		if (pInterfaceInfo)
 		{
 			CString Msg;
-			Msg.Format("是否要删除接口[%s]",pInterfaceInfo->Name);
-			if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
+			Msg.Format("是否要删除接口[%s]", pInterfaceInfo->Name);
+			if (AfxMessageBox(Msg, MB_YESNO) == IDYES)
 			{
 				if (DeleteInterfaceInfoByID(ModuleID, InterfaceID))
 				{
 					m_lvInterfaceList.DeleteItem(Item);
 				}
 			}
-			
+
 		}
 	}
 }
@@ -299,7 +299,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 	if (Dlg.DoModal() == IDOK)
 	{
 		SaveInterfaceSelections();
-		MODULE_DEFINE_INFO * pNewModule = GetModuleInfo(Dlg.m_SelectedModuleID);
+		MODULE_DEFINE_INFO* pNewModule = GetModuleInfo(Dlg.m_SelectedModuleID);
 		if (pNewModule)
 		{
 			POSITION Pos = m_lvInterfaceList.GetFirstSelectedItemPosition();
@@ -309,7 +309,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 				UINT Param = (UINT)m_lvInterfaceList.GetItemData(Item);
 				UINT ModuleID = (Param >> 8) & 0x7F;
 				UINT InterfaceID = Param & 0xFF;
-				MODULE_DEFINE_INFO * pOldModule = GetModuleInfo(ModuleID);
+				MODULE_DEFINE_INFO* pOldModule = GetModuleInfo(ModuleID);
 				if (pOldModule)
 				{
 					for (size_t i = 0; i < pOldModule->InterfaceList.size(); i++)
@@ -361,31 +361,31 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonMoveInterface()
 void CCallInterfaceMakerDlg::AddListItem(CALLER_INTERFACE& InterfaceInfo)
 {
 	CString Temp;
-	int Item=m_lvInterfaceList.InsertItem(m_lvInterfaceList.GetItemCount(),InterfaceInfo.Name);
+	int Item = m_lvInterfaceList.InsertItem(m_lvInterfaceList.GetItemCount(), InterfaceInfo.Name);
 	m_lvInterfaceList.SetItemData(Item, (INT_PTR)(((InterfaceInfo.ModuleID & 0x7F) << 8) | (InterfaceInfo.ID & 0xFF)));
-	Temp.Format("%d",InterfaceInfo.MethodList.size());
+	Temp.Format("%d", InterfaceInfo.MethodList.size());
 	m_lvInterfaceList.SetItemText(Item, 1, GetModuleName(InterfaceInfo.ModuleID));
-	m_lvInterfaceList.SetItemText(Item,2,Temp);
-	Temp.Format("%d",InterfaceInfo.ID);
-	m_lvInterfaceList.SetItemText(Item,3,Temp);
-	m_lvInterfaceList.SetItemText(Item,4,InterfaceInfo.Description);
+	m_lvInterfaceList.SetItemText(Item, 2, Temp);
+	Temp.Format("%d", InterfaceInfo.ID);
+	m_lvInterfaceList.SetItemText(Item, 3, Temp);
+	m_lvInterfaceList.SetItemText(Item, 4, InterfaceInfo.Description);
 }
-void CCallInterfaceMakerDlg::EditListItem(int Item,CALLER_INTERFACE& InterfaceInfo)
+void CCallInterfaceMakerDlg::EditListItem(int Item, CALLER_INTERFACE& InterfaceInfo)
 {
 	CString Temp;
-	m_lvInterfaceList.SetItemText(Item,0,InterfaceInfo.Name);
-	Temp.Format("%d",InterfaceInfo.MethodList.size());
+	m_lvInterfaceList.SetItemText(Item, 0, InterfaceInfo.Name);
+	Temp.Format("%d", InterfaceInfo.MethodList.size());
 	m_lvInterfaceList.SetItemText(Item, 1, GetModuleName(InterfaceInfo.ModuleID));
-	m_lvInterfaceList.SetItemText(Item,2,Temp);		
-	Temp.Format("%d",InterfaceInfo.ID);
-	m_lvInterfaceList.SetItemText(Item,3,Temp);
-	m_lvInterfaceList.SetItemText(Item,4,InterfaceInfo.Description);
+	m_lvInterfaceList.SetItemText(Item, 2, Temp);
+	Temp.Format("%d", InterfaceInfo.ID);
+	m_lvInterfaceList.SetItemText(Item, 3, Temp);
+	m_lvInterfaceList.SetItemText(Item, 4, InterfaceInfo.Description);
 }
 bool CCallInterfaceMakerDlg::IsListItemChecked(UINT ModuleID, UINT InterfaceID)
 {
-	for(int i=0;i<m_lvInterfaceList.GetItemCount();i++)
+	for (int i = 0;i < m_lvInterfaceList.GetItemCount();i++)
 	{
-		if(m_lvInterfaceList.GetCheck(i))
+		if (m_lvInterfaceList.GetCheck(i))
 		{
 			INT_PTR ItemData = (INT_PTR)(((ModuleID & 0x7F) << 8) | (InterfaceID & 0xFF));
 			if ((UINT)m_lvInterfaceList.GetItemData(i) == ItemData)
@@ -397,7 +397,7 @@ bool CCallInterfaceMakerDlg::IsListItemChecked(UINT ModuleID, UINT InterfaceID)
 void CCallInterfaceMakerDlg::FillListItem()
 {
 	m_lvInterfaceList.DeleteAllItems();
-	for (UINT i = 0; i<m_AllInterfaceList.size(); i++)
+	for (UINT i = 0; i < m_AllInterfaceList.size(); i++)
 	{
 		AddListItem(*m_AllInterfaceList[i]);
 	}
@@ -407,21 +407,21 @@ bool CCallInterfaceMakerDlg::LoadTypeDef()
 {
 	xml_parser Parser;
 
-	if(Parser.parse_file(m_TypeDefFileName,pug::parse_trim_attribute))
+	if (Parser.parse_file(m_TypeDefFileName, pug::parse_trim_attribute))
 	{
-		xml_node TypeDef=Parser.document();
-		if(TypeDef.moveto_child("TypeDef"))
+		xml_node TypeDef = Parser.document();
+		if (TypeDef.moveto_child("TypeDef"))
 		{
-			for(UINT i=0;i<TypeDef.children();i++)
+			for (UINT i = 0;i < TypeDef.children();i++)
 			{
-				xml_node Type=TypeDef.child(i);
-				if(_stricmp(Type.name(),"Type")==0)
+				xml_node Type = TypeDef.child(i);
+				if (_stricmp(Type.name(), "Type") == 0)
 				{
 					TYPE_DEFINE TypeInfo;
-					TypeInfo.Name=((LPCTSTR)Type.attribute("Name").getvalue());
+					TypeInfo.Name = ((LPCTSTR)Type.attribute("Name").getvalue());
 					TypeInfo.CType = ((LPCTSTR)Type.attribute("CType").getvalue());
 					TypeInfo.Flag = Type.attribute("Flag");
-					LoadGenerateOperations(Type,TypeInfo.GenerateOperations);
+					LoadGenerateOperations(Type, TypeInfo.GenerateOperations);
 					m_BaseTypeList.push_back(TypeInfo);
 				}
 			}
@@ -554,7 +554,7 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 	LoadTemple(DATA_OBJECT_IS_MODIFIED_DEFINE_TEMPLE_FILE_NAME, m_DataObjectIsModifiedDefineTemplate);
 	LoadTemple(STRUCT_EDITOR_PROCESS_TEMPLE_FILE_NAME, m_StructEditorProcessTemplate);
 	LoadTemple(CREATE_LIST_HEADER_UNIT_TEMPLE_FILE_NAME, m_CreateListHeaderUnitTemplate);
-	LoadTemple(FILL_LIST_ITEM_UNIT_TEMPLE_FILE_NAME, m_FillListItemUnitTemplate);	
+	LoadTemple(FILL_LIST_ITEM_UNIT_TEMPLE_FILE_NAME, m_FillListItemUnitTemplate);
 	//LoadTemple(PROPERTY_GRID_FETCH_UNIT_TEMPLE_FILE_NAME, m_PropertyGridFetchUnitTemplate);
 	//LoadTemple(PROPERTY_GRID_ADD_ITEM_UNIT_TEMPLE_FILE_NAME, m_PropertyGridAddItemUnitTemplate);
 	//LoadTemple(PROPERTY_GRID_DEL_ITEM_UNIT_TEMPLE_FILE_NAME, m_PropertyGridDelItemUnitTemplate);
@@ -566,8 +566,8 @@ bool CCallInterfaceMakerDlg::LoadTemples()
 	LoadTemple(TO_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME, m_ToLuaTableOperationUnitTemplate);
 	LoadTemple(FROM_LUA_TABLE_OPERATION_UNIT_TEMPLE_FILE_NAME, m_FromLuaTableOperationUnitTemplate);
 	LoadTemple(STRUCT_XLS_PROCESS_TEMPLE_FILE_NAME, m_StructXLSProcessTemplate);
-	
-	
+
+
 
 	return true;
 }
@@ -576,14 +576,14 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 {
 	xml_parser Parser;
 
-	CString FileName=CFileTools::MakeModuleFullPath(NULL,CONFIG_FILE_NAME);
+	CString FileName = CFileTools::MakeModuleFullPath(NULL, CONFIG_FILE_NAME);
 
-	if(Parser.parse_file(FileName,0))
+	if (Parser.parse_file(FileName, 0))
 	{
 
-		xml_node Config=Parser.document();
-			
-		if(Config.moveto_child("Config"))
+		xml_node Config = Parser.document();
+
+		if (Config.moveto_child("Config"))
 		{
 			{
 				xml_node OneFileExport = Config;
@@ -594,106 +594,106 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 				}
 			}
 			{
-				xml_node InterfaceHeaderExport=Config;
-				if(InterfaceHeaderExport.moveto_child("InterfaceHeaderExport"))
+				xml_node InterfaceHeaderExport = Config;
+				if (InterfaceHeaderExport.moveto_child("InterfaceHeaderExport"))
 				{
-					m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport=(bool)InterfaceHeaderExport.attribute("IsExport");
+					m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport = (bool)InterfaceHeaderExport.attribute("IsExport");
 					m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt = (LPCTSTR)InterfaceHeaderExport.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node StructExport=Config;
-				if(StructExport.moveto_child("StructExport"))
+				xml_node StructExport = Config;
+				if (StructExport.moveto_child("StructExport"))
 				{
-					m_InterfaceConfig.StructExportConfig.IsExport=(bool)StructExport.attribute("IsExport");
+					m_InterfaceConfig.StructExportConfig.IsExport = (bool)StructExport.attribute("IsExport");
 					m_InterfaceConfig.StructExportConfig.ExportExt = (LPCTSTR)StructExport.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node EnumExport=Config;
-				if(EnumExport.moveto_child("EnumExport"))
+				xml_node EnumExport = Config;
+				if (EnumExport.moveto_child("EnumExport"))
 				{
-					m_InterfaceConfig.EnumExportConfig.IsExport=(bool)EnumExport.attribute("IsExport");
+					m_InterfaceConfig.EnumExportConfig.IsExport = (bool)EnumExport.attribute("IsExport");
 					m_InterfaceConfig.EnumExportConfig.ExportExt = (LPCTSTR)EnumExport.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node ConstExport=Config;
-				if(ConstExport.moveto_child("ConstExport"))
+				xml_node ConstExport = Config;
+				if (ConstExport.moveto_child("ConstExport"))
 				{
-					m_InterfaceConfig.ConstExportConfig.IsExport=(bool)ConstExport.attribute("IsExport");
+					m_InterfaceConfig.ConstExportConfig.IsExport = (bool)ConstExport.attribute("IsExport");
 					m_InterfaceConfig.ConstExportConfig.ExportExt = (LPCTSTR)ConstExport.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node DOHeaderExport=Config;
-				if(DOHeaderExport.moveto_child("DataStructHeaderExport"))
+				xml_node DOHeaderExport = Config;
+				if (DOHeaderExport.moveto_child("DataStructHeaderExport"))
 				{
-					m_InterfaceConfig.DataStructHeaderExportConfig.IsExport=(bool)DOHeaderExport.attribute("IsExport");
+					m_InterfaceConfig.DataStructHeaderExportConfig.IsExport = (bool)DOHeaderExport.attribute("IsExport");
 					m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt = (LPCTSTR)DOHeaderExport.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node InterfaceExportConfig=Config;
-				if(InterfaceExportConfig.moveto_child("InterfaceExport"))
+				xml_node InterfaceExportConfig = Config;
+				if (InterfaceExportConfig.moveto_child("InterfaceExport"))
 				{
-					m_InterfaceConfig.InterfaceExportConfig.IsExport=(bool)InterfaceExportConfig.attribute("IsExport");
+					m_InterfaceConfig.InterfaceExportConfig.IsExport = (bool)InterfaceExportConfig.attribute("IsExport");
 					m_InterfaceConfig.InterfaceExportConfig.ExportExt = (LPCTSTR)InterfaceExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node CallHeaderExportConfig=Config;
-				if(CallHeaderExportConfig.moveto_child("CallHeaderExport"))
+				xml_node CallHeaderExportConfig = Config;
+				if (CallHeaderExportConfig.moveto_child("CallHeaderExport"))
 				{
-					m_InterfaceConfig.CallHeaderExportConfig.IsExport=(bool)CallHeaderExportConfig.attribute("IsExport");
+					m_InterfaceConfig.CallHeaderExportConfig.IsExport = (bool)CallHeaderExportConfig.attribute("IsExport");
 					m_InterfaceConfig.CallHeaderExportConfig.ExportExt = (LPCTSTR)CallHeaderExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node CallSourceExportConfig=Config;
-				if(CallSourceExportConfig.moveto_child("CallSourceExport"))
+				xml_node CallSourceExportConfig = Config;
+				if (CallSourceExportConfig.moveto_child("CallSourceExport"))
 				{
-					m_InterfaceConfig.CallSourceExportConfig.IsExport=(bool)CallSourceExportConfig.attribute("IsExport");
+					m_InterfaceConfig.CallSourceExportConfig.IsExport = (bool)CallSourceExportConfig.attribute("IsExport");
 					m_InterfaceConfig.CallSourceExportConfig.ExportExt = (LPCTSTR)CallSourceExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node HandlerHeaderExportConfig=Config;
-				if(HandlerHeaderExportConfig.moveto_child("HandlerHeaderExport"))
+				xml_node HandlerHeaderExportConfig = Config;
+				if (HandlerHeaderExportConfig.moveto_child("HandlerHeaderExport"))
 				{
-					m_InterfaceConfig.HandlerHeaderExportConfig.IsExport=(bool)HandlerHeaderExportConfig.attribute("IsExport");
+					m_InterfaceConfig.HandlerHeaderExportConfig.IsExport = (bool)HandlerHeaderExportConfig.attribute("IsExport");
 					m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt = (LPCTSTR)HandlerHeaderExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node HandlerSourceExportConfig=Config;
-				if(HandlerSourceExportConfig.moveto_child("HandlerSourceExport"))
+				xml_node HandlerSourceExportConfig = Config;
+				if (HandlerSourceExportConfig.moveto_child("HandlerSourceExport"))
 				{
-					m_InterfaceConfig.HandlerSourceExportConfig.IsExport=(bool)HandlerSourceExportConfig.attribute("IsExport");
+					m_InterfaceConfig.HandlerSourceExportConfig.IsExport = (bool)HandlerSourceExportConfig.attribute("IsExport");
 					m_InterfaceConfig.HandlerSourceExportConfig.ExportExt = (LPCTSTR)HandlerSourceExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node DataObjectHeaderExportConfig=Config;
-				if(DataObjectHeaderExportConfig.moveto_child("DataObjectHeaderExport"))
+				xml_node DataObjectHeaderExportConfig = Config;
+				if (DataObjectHeaderExportConfig.moveto_child("DataObjectHeaderExport"))
 				{
-					m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport=(bool)DataObjectHeaderExportConfig.attribute("IsExport");
+					m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport = (bool)DataObjectHeaderExportConfig.attribute("IsExport");
 					m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt = (LPCTSTR)DataObjectHeaderExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node DataObjectSourceExportExportConfig=Config;
-				if(DataObjectSourceExportExportConfig.moveto_child("DataObjectSourceExport"))
+				xml_node DataObjectSourceExportExportConfig = Config;
+				if (DataObjectSourceExportExportConfig.moveto_child("DataObjectSourceExport"))
 				{
-					m_InterfaceConfig.DataObjectSourceExportConfig.IsExport=(bool)DataObjectSourceExportExportConfig.attribute("IsExport");
+					m_InterfaceConfig.DataObjectSourceExportConfig.IsExport = (bool)DataObjectSourceExportExportConfig.attribute("IsExport");
 					m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt = (LPCTSTR)DataObjectSourceExportExportConfig.attribute("FileExt").getvalue();
 				}
 			}
 			{
-				xml_node DataObjectModifyFlagsExportConfig=Config;
-				if(DataObjectModifyFlagsExportConfig.moveto_child("DataObjectModifyFlagsHeaderExport"))
+				xml_node DataObjectModifyFlagsExportConfig = Config;
+				if (DataObjectModifyFlagsExportConfig.moveto_child("DataObjectModifyFlagsHeaderExport"))
 				{
-					m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport=(bool)DataObjectModifyFlagsExportConfig.attribute("IsExport");
+					m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport = (bool)DataObjectModifyFlagsExportConfig.attribute("IsExport");
 					m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt = (LPCTSTR)DataObjectModifyFlagsExportConfig.attribute("FileExt").getvalue();
 				}
 			}
@@ -706,10 +706,10 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 				}
 			}
 			{
-				xml_node DefaultStructGenerateOperations=Config;
-				if(DefaultStructGenerateOperations.moveto_child("DefaultStructGenerateOperations"))
+				xml_node DefaultStructGenerateOperations = Config;
+				if (DefaultStructGenerateOperations.moveto_child("DefaultStructGenerateOperations"))
 				{
-					LoadGenerateOperations(DefaultStructGenerateOperations,m_InterfaceConfig.DefaultStructGenerateOperations);
+					LoadGenerateOperations(DefaultStructGenerateOperations, m_InterfaceConfig.DefaultStructGenerateOperations);
 				}
 			}
 			{
@@ -727,10 +727,10 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 				}
 			}
 			{
-				xml_node ArrayDefineConfig=Config;
-				if(ArrayDefineConfig.moveto_child("ArrayDefineConfig"))
+				xml_node ArrayDefineConfig = Config;
+				if (ArrayDefineConfig.moveto_child("ArrayDefineConfig"))
 				{
-					LoadGenerateOperations(ArrayDefineConfig,m_InterfaceConfig.ArrayDefineConfig);
+					LoadGenerateOperations(ArrayDefineConfig, m_InterfaceConfig.ArrayDefineConfig);
 				}
 			}
 			{
@@ -760,12 +760,12 @@ bool CCallInterfaceMakerDlg::LoadConfig()
 				}
 			}
 		}
-			
+
 	}
 	else
 	{
 		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
+		Msg.Format("无法打开文件%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -966,49 +966,49 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 {
 	xml_parser Parser;
 
-	CString FileName=CFileTools::MakeModuleFullPath(NULL,ENV_FILE_NAME);
-	if(Parser.parse_file(FileName,pug::parse_trim_attribute))
+	CString FileName = CFileTools::MakeModuleFullPath(NULL, ENV_FILE_NAME);
+	if (Parser.parse_file(FileName, pug::parse_trim_attribute))
 	{
 
-		xml_node RunEnvironment=Parser.document();
-			
-		if(RunEnvironment.moveto_child("RunEnvironment"))
+		xml_node RunEnvironment = Parser.document();
+
+		if (RunEnvironment.moveto_child("RunEnvironment"))
 		{
 			if (RunEnvironment.has_attribute("UTF8Export"))
 				m_UTF8Export = ((bool)RunEnvironment.attribute("UTF8Export")) ? TRUE : FALSE;
 
 			{
-				xml_node ExportEnv=RunEnvironment;
-				if(ExportEnv.moveto_child("ExportEnv"))
+				xml_node ExportEnv = RunEnvironment;
+				if (ExportEnv.moveto_child("ExportEnv"))
 				{
 					m_RunEnvInfo.RecentExportDir = ((LPCTSTR)ExportEnv.attribute("RecentExportDir").getvalue());
 				}
 
-				xml_node DataEnv=RunEnvironment;
-				if(DataEnv.moveto_child("DataEnv"))
+				xml_node DataEnv = RunEnvironment;
+				if (DataEnv.moveto_child("DataEnv"))
 				{
 					m_RunEnvInfo.RecentDataDir = ((LPCTSTR)DataEnv.attribute("RecentDataDir").getvalue());
 				}
 			}
 
-			xml_node SelectedInterfaces=RunEnvironment;
-			if(RunEnvironment.moveto_child("SelectedInterfaces"))
+			xml_node SelectedInterfaces = RunEnvironment;
+			if (RunEnvironment.moveto_child("SelectedInterfaces"))
 			{
 				m_RunEnvInfo.SelectedInterfaces.clear();
-				for(UINT i=0;i<RunEnvironment.children();i++)
+				for (UINT i = 0;i < RunEnvironment.children();i++)
 				{
-					CString InterfaceName=RunEnvironment.child(i).name();
-					m_RunEnvInfo.SelectedInterfaces.push_back(InterfaceName);					
+					CString InterfaceName = RunEnvironment.child(i).name();
+					m_RunEnvInfo.SelectedInterfaces.push_back(InterfaceName);
 				}
 			}
 		}
-			
-		
+
+
 	}
 	else
 	{
 		CString Msg;
-		Msg.Format("无法打开文件%s",FileName);
+		Msg.Format("无法打开文件%s", FileName);
 		MessageBox(Msg);
 		return false;
 	}
@@ -1016,7 +1016,7 @@ bool CCallInterfaceMakerDlg::LoadEnv()
 }
 bool CCallInterfaceMakerDlg::SaveEnv()
 {
-	
+
 	pug::xml_parser Xml;
 
 	Xml.create();
@@ -1110,29 +1110,29 @@ void CCallInterfaceMakerDlg::FetchDataStructToCache(MODULE_DEFINE_INFO& Interfac
 	}
 }
 
-void CCallInterfaceMakerDlg::GetDataObjectListSorted(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, vector<STRUCT_DEFINE_INFO *>& DataObjectList)
+void CCallInterfaceMakerDlg::GetDataObjectListSorted(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DataStructList, vector<STRUCT_DEFINE_INFO*>& DataObjectList)
 {
 	for (size_t i = 0; i < DataStructList.size(); i++)
 	{
 		if (DataStructList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)DataStructList[i];
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)DataStructList[i];
 			for (size_t j = 0; j < pStructList->StructList.size(); j++)
 			{
-				if (pStructList->StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				if (pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				{
-					DataObjectList.push_back(&pStructList->StructList[j]);					
+					DataObjectList.push_back(&pStructList->StructList[j]);
 				}
 			}
 		}
 	}
-	qsort(DataObjectList.begin()._Ptr, DataObjectList.size(), sizeof(STRUCT_DEFINE_INFO *), DataObjectComp);
+	qsort(DataObjectList.begin()._Ptr, DataObjectList.size(), sizeof(STRUCT_DEFINE_INFO*), DataObjectComp);
 }
 
 int CCallInterfaceMakerDlg::DataObjectComp(LPCVOID p1, LPCVOID p2)
 {
-	const STRUCT_DEFINE_INFO * pDataObject1 = *((const STRUCT_DEFINE_INFO **)p1);
-	const STRUCT_DEFINE_INFO * pDataObject2 = *((const STRUCT_DEFINE_INFO **)p2);
+	const STRUCT_DEFINE_INFO* pDataObject1 = *((const STRUCT_DEFINE_INFO**)p1);
+	const STRUCT_DEFINE_INFO* pDataObject2 = *((const STRUCT_DEFINE_INFO**)p2);
 	if (pDataObject1->ObjectID < pDataObject2->ObjectID)
 		return -1;
 	else if (pDataObject1->ObjectID > pDataObject2->ObjectID)
@@ -1148,40 +1148,40 @@ int CCallInterfaceMakerDlg::ModifyFlagComp(LPCVOID p1, LPCVOID p2)
 	return strcmp(pInfo1->Name, pInfo2->Name);
 }
 
-static int TypeDefineCompare(const void * p1, const void * p2)
+static int TypeDefineCompare(const void* p1, const void* p2)
 {
-	TYPE_DEFINE * Type1 = (TYPE_DEFINE *)p1;
-	TYPE_DEFINE * Type2 = (TYPE_DEFINE *)p2;
+	TYPE_DEFINE* Type1 = (TYPE_DEFINE*)p1;
+	TYPE_DEFINE* Type2 = (TYPE_DEFINE*)p2;
 	return strcmp(Type1->Name, Type2->Name);
 }
 void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 {
-	m_CurVarTypeList=m_BaseTypeList;	
-	for (size_t i = 0; i<m_AllDataStructList.size(); i++)
+	m_CurVarTypeList = m_BaseTypeList;
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
 	{
 		if (m_AllDataStructList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)m_AllDataStructList[i];
-			for(size_t j=0;j<pStructList->StructList.size();j++)
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)m_AllDataStructList[i];
+			for (size_t j = 0;j < pStructList->StructList.size();j++)
 			{
 				//if (pStructList->IgnoreOnExport)
 				//	continue;
-				if ((pStructList->StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)==0 || IncludeDataObject)
+				if ((pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT) == 0 || IncludeDataObject)
 				{
 					TYPE_DEFINE Type;
-					Type.Name=pStructList->StructList[j].Name;
-					Type.CType=pStructList->StructList[j].Name;
-					Type.Flag=TYPE_DEFINE_FLAG_STRUCT;
-					if (pStructList->StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)
-						Type.Flag|=TYPE_DEFINE_FLAG_DATA_OBJECT;
-					Type.GenerateOperations=pStructList->StructList[j].GenerateOperations;			
+					Type.Name = pStructList->StructList[j].Name;
+					Type.CType = pStructList->StructList[j].Name;
+					Type.Flag = TYPE_DEFINE_FLAG_STRUCT;
+					if (pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+						Type.Flag |= TYPE_DEFINE_FLAG_DATA_OBJECT;
+					Type.GenerateOperations = pStructList->StructList[j].GenerateOperations;
 
-					if(Type.GenerateOperations.PackOperation.IsEmpty())
-						Type.GenerateOperations.PackOperation=m_InterfaceConfig.DefaultStructGenerateOperations.PackOperation;
-					if(Type.GenerateOperations.UnpackOperation.IsEmpty())
-						Type.GenerateOperations.UnpackOperation=m_InterfaceConfig.DefaultStructGenerateOperations.UnpackOperation;
-					if(Type.GenerateOperations.SizeCaculateOperation.IsEmpty())
-						Type.GenerateOperations.SizeCaculateOperation=m_InterfaceConfig.DefaultStructGenerateOperations.SizeCaculateOperation;
+					if (Type.GenerateOperations.PackOperation.IsEmpty())
+						Type.GenerateOperations.PackOperation = m_InterfaceConfig.DefaultStructGenerateOperations.PackOperation;
+					if (Type.GenerateOperations.UnpackOperation.IsEmpty())
+						Type.GenerateOperations.UnpackOperation = m_InterfaceConfig.DefaultStructGenerateOperations.UnpackOperation;
+					if (Type.GenerateOperations.SizeCaculateOperation.IsEmpty())
+						Type.GenerateOperations.SizeCaculateOperation = m_InterfaceConfig.DefaultStructGenerateOperations.SizeCaculateOperation;
 					if (Type.GenerateOperations.ToXMLOperation.IsEmpty())
 						Type.GenerateOperations.ToXMLOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToXMLOperation;
 					if (Type.GenerateOperations.FromXMLOperation.IsEmpty())
@@ -1190,24 +1190,24 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 						Type.GenerateOperations.ToJsonOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToJsonOperation;
 					if (Type.GenerateOperations.FromJsonOperation.IsEmpty())
 						Type.GenerateOperations.FromJsonOperation = m_InterfaceConfig.DefaultStructGenerateOperations.FromJsonOperation;
-					if(Type.GenerateOperations.ReferenceDefine.IsEmpty())
-						Type.GenerateOperations.ReferenceDefine=m_InterfaceConfig.DefaultStructGenerateOperations.ReferenceDefine;
-					if(Type.GenerateOperations.ReferenceUse.IsEmpty())
-						Type.GenerateOperations.ReferenceUse=m_InterfaceConfig.DefaultStructGenerateOperations.ReferenceUse;
-					if(Type.GenerateOperations.VariableDefine.IsEmpty())
-						Type.GenerateOperations.VariableDefine=m_InterfaceConfig.DefaultStructGenerateOperations.VariableDefine;
-					if(Type.GenerateOperations.InitOperation.IsEmpty())
-						Type.GenerateOperations.InitOperation=m_InterfaceConfig.DefaultStructGenerateOperations.InitOperation;
-					if(Type.GenerateOperations.CloneOperation.IsEmpty())
-						Type.GenerateOperations.CloneOperation=m_InterfaceConfig.DefaultStructGenerateOperations.CloneOperation;
-					if(Type.GenerateOperations.GetMethodDeclare.IsEmpty())
-						Type.GenerateOperations.GetMethodDeclare=m_InterfaceConfig.DefaultStructGenerateOperations.GetMethodDeclare;
-					if(Type.GenerateOperations.GetMethodDefine.IsEmpty())
-						Type.GenerateOperations.GetMethodDefine=m_InterfaceConfig.DefaultStructGenerateOperations.GetMethodDefine;
-					if(Type.GenerateOperations.SetMethodDeclare.IsEmpty())
-						Type.GenerateOperations.SetMethodDeclare=m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDeclare;
-					if(Type.GenerateOperations.SetMethodDefine.IsEmpty())
-						Type.GenerateOperations.SetMethodDefine=m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDefine;
+					if (Type.GenerateOperations.ReferenceDefine.IsEmpty())
+						Type.GenerateOperations.ReferenceDefine = m_InterfaceConfig.DefaultStructGenerateOperations.ReferenceDefine;
+					if (Type.GenerateOperations.ReferenceUse.IsEmpty())
+						Type.GenerateOperations.ReferenceUse = m_InterfaceConfig.DefaultStructGenerateOperations.ReferenceUse;
+					if (Type.GenerateOperations.VariableDefine.IsEmpty())
+						Type.GenerateOperations.VariableDefine = m_InterfaceConfig.DefaultStructGenerateOperations.VariableDefine;
+					if (Type.GenerateOperations.InitOperation.IsEmpty())
+						Type.GenerateOperations.InitOperation = m_InterfaceConfig.DefaultStructGenerateOperations.InitOperation;
+					if (Type.GenerateOperations.CloneOperation.IsEmpty())
+						Type.GenerateOperations.CloneOperation = m_InterfaceConfig.DefaultStructGenerateOperations.CloneOperation;
+					if (Type.GenerateOperations.GetMethodDeclare.IsEmpty())
+						Type.GenerateOperations.GetMethodDeclare = m_InterfaceConfig.DefaultStructGenerateOperations.GetMethodDeclare;
+					if (Type.GenerateOperations.GetMethodDefine.IsEmpty())
+						Type.GenerateOperations.GetMethodDefine = m_InterfaceConfig.DefaultStructGenerateOperations.GetMethodDefine;
+					if (Type.GenerateOperations.SetMethodDeclare.IsEmpty())
+						Type.GenerateOperations.SetMethodDeclare = m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDeclare;
+					if (Type.GenerateOperations.SetMethodDefine.IsEmpty())
+						Type.GenerateOperations.SetMethodDefine = m_InterfaceConfig.DefaultStructGenerateOperations.SetMethodDefine;
 					if (Type.GenerateOperations.ToStringOperation.IsEmpty())
 						Type.GenerateOperations.ToStringOperation = m_InterfaceConfig.DefaultStructGenerateOperations.ToStringOperation;
 					if (Type.GenerateOperations.DBFieldDefineOperation.IsEmpty())
@@ -1243,8 +1243,8 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 		}
 		else if (m_AllDataStructList[i]->ListType == DATA_STRUCT_ENUM)
 		{
-			ENUM_DEFINE_LIST * pEnumList = (ENUM_DEFINE_LIST *)m_AllDataStructList[i];
-			for (size_t j = 0; j<pEnumList->EnumList.size(); j++)
+			ENUM_DEFINE_LIST* pEnumList = (ENUM_DEFINE_LIST*)m_AllDataStructList[i];
+			for (size_t j = 0; j < pEnumList->EnumList.size(); j++)
 			{
 				//if (pEnumList->IgnoreOnExport)
 				//	continue;
@@ -1269,7 +1269,7 @@ void CCallInterfaceMakerDlg::MakeCurVarType(bool IncludeDataObject)
 			}
 		}
 	}
-	if (m_CurVarTypeList.size()>m_BaseTypeList.size())
+	if (m_CurVarTypeList.size() > m_BaseTypeList.size())
 	{
 		qsort(&(m_CurVarTypeList[m_BaseTypeList.size()]), m_CurVarTypeList.size() - m_BaseTypeList.size(),
 			sizeof(TYPE_DEFINE), TypeDefineCompare);
@@ -1282,14 +1282,14 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonLoad()
 	// TODO: 在此添加控件通知处理程序代码	
 	CFileDialog Dlg(true, "*.xml", "*.xml", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
 
-	if(!m_RunEnvInfo.RecentDataDir.IsEmpty())
+	if (!m_RunEnvInfo.RecentDataDir.IsEmpty())
 	{
-		Dlg.m_ofn.lpstrInitialDir=m_RunEnvInfo.RecentDataDir;
+		Dlg.m_ofn.lpstrInitialDir = m_RunEnvInfo.RecentDataDir;
 	}
 
-	if(Dlg.DoModal()==IDOK)
+	if (Dlg.DoModal() == IDOK)
 	{
-		if (LoadOverVersion(Dlg.GetPathName(), m_MainModule))
+		if (Load(Dlg.GetPathName(), m_MainModule))
 		{
 			m_MainModule.ModuleDefineFileName = Dlg.GetPathName();
 			for (size_t i = 0; i < m_MainModule.ImportList.size(); i++)
@@ -1333,9 +1333,9 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSave()
 void CCallInterfaceMakerDlg::OnBnClickedButtonSaveAs()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CFileDialog Dlg(false,"*.xml","*.xml",OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,"XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
+	CFileDialog Dlg(false, "*.xml", "*.xml", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
 
-	if(Dlg.DoModal()==IDOK)
+	if (Dlg.DoModal() == IDOK)
 	{
 		UpdateData(true);
 		m_MainModule.ModuleDefineFileName = Dlg.GetPathName();
@@ -1345,18 +1345,18 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveAs()
 			Save(m_ImportModuleList[i]);
 		}
 
-		m_RunEnvInfo.RecentDataDir=Dlg.GetFolderPath();
+		m_RunEnvInfo.RecentDataDir = Dlg.GetFolderPath();
 	}
 }
-int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg,LPARAM lParam,LPARAM lpData)
+int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
-	if(uMsg == BFFM_INITIALIZED)
+	if (uMsg == BFFM_INITIALIZED)
 	{
-		CString DefaultFolder=GetMainDlg()->GetRunEnv().RecentExportDir;
-		if(!DefaultFolder.IsEmpty())
+		CString DefaultFolder = GetMainDlg()->GetRunEnv().RecentExportDir;
+		if (!DefaultFolder.IsEmpty())
 		{
 			SendMessage(hwnd, BFFM_SETSELECTION,
-				TRUE,(LPARAM)((LPCTSTR)DefaultFolder));
+				TRUE, (LPARAM)((LPCTSTR)DefaultFolder));
 		}
 	}
 	return 0;
@@ -1372,35 +1372,35 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSaveExport()
 	char FilePath[MAX_PATH];
 	LPITEMIDLIST pidl;
 
-	ZeroMemory(&bi,sizeof(bi));
+	ZeroMemory(&bi, sizeof(bi));
 
 	//bi.pszDisplayName=FilePath;
-	bi.lpszTitle="请选择输出目录";
-	bi.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_SHAREABLE;
-	bi.lpfn=BrowseCallbackProc;
-	pidl=::SHBrowseForFolder(&bi);
-	if(pidl!=NULL)
+	bi.lpszTitle = "请选择输出目录";
+	bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI | BIF_SHAREABLE;
+	bi.lpfn = BrowseCallbackProc;
+	pidl = ::SHBrowseForFolder(&bi);
+	if (pidl != NULL)
 	{
-		::SHGetPathFromIDList(pidl,FilePath);
-		IMalloc *pMalloc=NULL;
+		::SHGetPathFromIDList(pidl, FilePath);
+		IMalloc* pMalloc = NULL;
 		::SHGetMalloc(&pMalloc);
 		pMalloc->Free(pidl);
 		pMalloc->Release();
-		pMalloc=NULL;
-		
-		m_RunEnvInfo.RecentExportDir=FilePath;
+		pMalloc = NULL;
+
+		m_RunEnvInfo.RecentExportDir = FilePath;
 
 		OnBnClickedButtonSave();
 		SaveInterfaceSelections();
-		SaveEnv();		
+		SaveEnv();
 		MakeCurVarType(true);
-		Export(FilePath);		
-		AfxMessageBox("导出完毕");	
+		Export(FilePath);
+		AfxMessageBox("导出完毕");
 
-	}	
+	}
 
 
-	
+
 }
 
 void CCallInterfaceMakerDlg::OnCancel()
@@ -1437,7 +1437,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 	Interfaces.append_attribute("Version", "2.0.0.0");
 	Interfaces.append_attribute("Name", (LPCTSTR)ModuleInfo.Name);
 	Interfaces.append_attribute("ModuleID", (UINT)ModuleInfo.ModuleID);
-	Interfaces.append_attribute("IDSeed", (UINT)ModuleInfo.IDSeed);	
+	Interfaces.append_attribute("IDSeed", (UINT)ModuleInfo.IDSeed);
 
 	xml_node Imports = Interfaces.append_child(node_element, "Imports");
 	for (size_t i = 0; i < ModuleInfo.ImportList.size(); i++)
@@ -1453,7 +1453,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 		{
 		case DATA_STRUCT_CONST:
 		{
-			CONST_DEFINE_LIST * pConstList = (CONST_DEFINE_LIST *)ModuleInfo.DataStructDefineList[i];
+			CONST_DEFINE_LIST* pConstList = (CONST_DEFINE_LIST*)ModuleInfo.DataStructDefineList[i];
 			xml_node Consts = GlobalDefine.append_child(node_element, "Consts");
 			Consts.append_attribute("Name", pConstList->ListName);
 			Consts.append_attribute("IgnoreOnExport", pConstList->IgnoreOnExport);
@@ -1462,7 +1462,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 		break;
 		case DATA_STRUCT_ENUM:
 		{
-			ENUM_DEFINE_LIST * pEnumList = (ENUM_DEFINE_LIST *)ModuleInfo.DataStructDefineList[i];
+			ENUM_DEFINE_LIST* pEnumList = (ENUM_DEFINE_LIST*)ModuleInfo.DataStructDefineList[i];
 			xml_node Enums = GlobalDefine.append_child(node_element, "Enums");
 			Enums.append_attribute("Name", pEnumList->ListName);
 			Enums.append_attribute("IgnoreOnExport", pEnumList->IgnoreOnExport);
@@ -1471,7 +1471,7 @@ bool CCallInterfaceMakerDlg::Save(MODULE_DEFINE_INFO& ModuleInfo)
 		break;
 		case DATA_STRUCT_STRUCT:
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)ModuleInfo.DataStructDefineList[i];
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)ModuleInfo.DataStructDefineList[i];
 			xml_node Structs = GlobalDefine.append_child(node_element, "Structs");
 			Structs.append_attribute("Name", pStructList->ListName);
 			Structs.append_attribute("IgnoreOnExport", pStructList->IgnoreOnExport);
@@ -1501,13 +1501,13 @@ bool CCallInterfaceMakerDlg::Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleIn
 {
 	xml_parser Parser;
 
-	if(Parser.parse_file(FileName,pug::parse_trim_attribute))
+	if (Parser.parse_file(FileName, pug::parse_trim_attribute))
 	{
 		ModuleInfo.Clear();
 		ModuleInfo.ModuleDefineFileName = FileName;
 
-		xml_node Interfaces=Parser.document();
-		if(Interfaces.moveto_child("Interfaces"))
+		xml_node Interfaces = Parser.document();
+		if (Interfaces.moveto_child("Interfaces"))
 		{
 
 			ModuleInfo.Name = (LPCTSTR)Interfaces.attribute("Name").getvalue();
@@ -1537,7 +1537,7 @@ bool CCallInterfaceMakerDlg::Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleIn
 				{
 					if (stricmp(GlobalDefine.child(i).get_name(), "Consts") == 0)
 					{
-						CONST_DEFINE_LIST * pConstList = new CONST_DEFINE_LIST;
+						CONST_DEFINE_LIST* pConstList = new CONST_DEFINE_LIST;
 						pConstList->ListType = DATA_STRUCT_CONST;
 						pConstList->ModuleID = ModuleInfo.ModuleID;
 						pConstList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
@@ -1547,7 +1547,7 @@ bool CCallInterfaceMakerDlg::Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleIn
 					}
 					else if (stricmp(GlobalDefine.child(i).get_name(), "Enums") == 0)
 					{
-						ENUM_DEFINE_LIST * pEnumList = new ENUM_DEFINE_LIST;
+						ENUM_DEFINE_LIST* pEnumList = new ENUM_DEFINE_LIST;
 						pEnumList->ListType = DATA_STRUCT_ENUM;
 						pEnumList->ModuleID = ModuleInfo.ModuleID;
 						pEnumList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
@@ -1557,7 +1557,7 @@ bool CCallInterfaceMakerDlg::Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleIn
 					}
 					else if (stricmp(GlobalDefine.child(i).get_name(), "Structs") == 0)
 					{
-						STRUCT_DEFINE_LIST * pStructList = new STRUCT_DEFINE_LIST;
+						STRUCT_DEFINE_LIST* pStructList = new STRUCT_DEFINE_LIST;
 						pStructList->ListType = DATA_STRUCT_STRUCT;
 						pStructList->ModuleID = ModuleInfo.ModuleID;
 						pStructList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
@@ -1572,81 +1572,6 @@ bool CCallInterfaceMakerDlg::Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleIn
 				}
 			}
 			LoadInterfaces(Interfaces, ModuleInfo.InterfaceList, ModuleInfo.ModuleID);
-			
-			xml_node Prefix=Interfaces;
-			if(Prefix.moveto_child("Prefix"))
-			{
-				ModuleInfo.InterfacePrefix = ((LPCTSTR)Prefix.attribute("Content").getvalue());
-			}
-			xml_node Postfix=Interfaces;
-			if(Postfix.moveto_child("Postfix"))
-			{
-				ModuleInfo.InterfacePostFix = ((LPCTSTR)Postfix.attribute("Content").getvalue());
-			}		
-
-			//LoadEnv();
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-bool CCallInterfaceMakerDlg::LoadOld(LPCTSTR FileName, INTERFANCE_DEFINES_OLD& ModuleInfo)
-{
-	xml_parser Parser;
-
-	if (Parser.parse_file(FileName, pug::parse_trim_attribute))
-	{
-		ModuleInfo.Clear();
-
-		xml_node Interfaces = Parser.document();
-		if (Interfaces.moveto_child("Interfaces"))
-		{
-
-			ModuleInfo.Name = (LPCTSTR)Interfaces.attribute("Name").getvalue();
-			ModuleInfo.Name.Trim();
-			ModuleInfo.InterfaceIDSeed = (UINT)Interfaces.attribute("IDSeed");
-
-			xml_node GlobalDefine = Interfaces;
-			if (GlobalDefine.moveto_child("GlobalDefine"))
-			{
-				for (UINT i = 0; i < GlobalDefine.children(); i++)
-				{
-					if (stricmp(GlobalDefine.child(i).get_name(), "Consts") == 0)
-					{
-						CONST_DEFINE_LIST * pConstList = new CONST_DEFINE_LIST;
-						pConstList->ListType = DATA_STRUCT_CONST;
-						pConstList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
-						pConstList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
-						LoadConstDefine(GlobalDefine.child(i), pConstList->ConstList);
-						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pConstList);
-					}
-					else if (stricmp(GlobalDefine.child(i).get_name(), "Enums") == 0)
-					{
-						ENUM_DEFINE_LIST * pEnumList = new ENUM_DEFINE_LIST;
-						pEnumList->ListType = DATA_STRUCT_ENUM;
-						pEnumList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
-						pEnumList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
-						LoadEnumDefine(GlobalDefine.child(i), pEnumList->EnumList);
-						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pEnumList);
-					}
-					else if (stricmp(GlobalDefine.child(i).get_name(), "Structs") == 0)
-					{
-						STRUCT_DEFINE_LIST_OLD * pStructList = new STRUCT_DEFINE_LIST_OLD;
-						pStructList->ListType = DATA_STRUCT_STRUCT;
-						pStructList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
-						pStructList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
-						LoadStructDefineOld(GlobalDefine.child(i), pStructList->StructList);
-						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pStructList);
-					}
-					else if (stricmp(GlobalDefine.child(i).get_name(), "DataObjectModifyFlags") == 0)
-					{
-						LoadDataObjectModifyFlag(GlobalDefine.child(i), ModuleInfo.DataStructDefines.DataObjectModifyFlags);
-					}
-				}
-			}
-			LoadInterfacesOld(Interfaces, ModuleInfo.InterfaceList);
 
 			xml_node Prefix = Interfaces;
 			if (Prefix.moveto_child("Prefix"))
@@ -1667,53 +1592,128 @@ bool CCallInterfaceMakerDlg::LoadOld(LPCTSTR FileName, INTERFANCE_DEFINES_OLD& M
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo)
-{
-	UINT Version = GetFileVersion(FileName);
-	if (Version == 0)
-	{
-		INTERFANCE_DEFINES_OLD OldInterfaceDefines;
-		if (LoadOld(FileName, OldInterfaceDefines))
-		{
-			if (ConvertOldInterfaceDefines(OldInterfaceDefines, ModuleInfo))
-			{
-				ModuleInfo.ModuleDefineFileName = FileName;
-				OldInterfaceDefines.Clear();
-				return true;
-			}
-			else
-			{
-				OldInterfaceDefines.Clear();
-				ModuleInfo.Clear();
-				AfxMessageBox("转换旧版本文件失败");
-				return false;
-			}
-		}
-		else
-		{
-			OldInterfaceDefines.Clear();
-			CString Msg;
-			Msg.Format("加载失败%s", FileName);
-			AfxMessageBox(Msg);
-			return false;
-		}
-	}
-	else
-	{
-		if (Load(FileName, ModuleInfo))
-		{
-			return true;
-		}
-		else
-		{
-			ModuleInfo.Clear();
-			CString Msg;
-			Msg.Format("加载失败%s", FileName);
-			AfxMessageBox(Msg);
-			return false;
-		}
-	}
-}
+//bool CCallInterfaceMakerDlg::LoadOld(LPCTSTR FileName, INTERFANCE_DEFINES_OLD& ModuleInfo)
+//{
+//	xml_parser Parser;
+//
+//	if (Parser.parse_file(FileName, pug::parse_trim_attribute))
+//	{
+//		ModuleInfo.Clear();
+//
+//		xml_node Interfaces = Parser.document();
+//		if (Interfaces.moveto_child("Interfaces"))
+//		{
+//
+//			ModuleInfo.Name = (LPCTSTR)Interfaces.attribute("Name").getvalue();
+//			ModuleInfo.Name.Trim();
+//			ModuleInfo.InterfaceIDSeed = (UINT)Interfaces.attribute("IDSeed");
+//
+//			xml_node GlobalDefine = Interfaces;
+//			if (GlobalDefine.moveto_child("GlobalDefine"))
+//			{
+//				for (UINT i = 0; i < GlobalDefine.children(); i++)
+//				{
+//					if (stricmp(GlobalDefine.child(i).get_name(), "Consts") == 0)
+//					{
+//						CONST_DEFINE_LIST* pConstList = new CONST_DEFINE_LIST;
+//						pConstList->ListType = DATA_STRUCT_CONST;
+//						pConstList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
+//						pConstList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
+//						LoadConstDefine(GlobalDefine.child(i), pConstList->ConstList);
+//						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pConstList);
+//					}
+//					else if (stricmp(GlobalDefine.child(i).get_name(), "Enums") == 0)
+//					{
+//						ENUM_DEFINE_LIST* pEnumList = new ENUM_DEFINE_LIST;
+//						pEnumList->ListType = DATA_STRUCT_ENUM;
+//						pEnumList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
+//						pEnumList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
+//						LoadEnumDefine(GlobalDefine.child(i), pEnumList->EnumList);
+//						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pEnumList);
+//					}
+//					else if (stricmp(GlobalDefine.child(i).get_name(), "Structs") == 0)
+//					{
+//						STRUCT_DEFINE_LIST_OLD* pStructList = new STRUCT_DEFINE_LIST_OLD;
+//						pStructList->ListType = DATA_STRUCT_STRUCT;
+//						pStructList->ListName = (LPCTSTR)GlobalDefine.child(i).attribute("Name").getvalue();
+//						pStructList->IgnoreOnExport = GlobalDefine.child(i).attribute("IgnoreOnExport");
+//						LoadStructDefineOld(GlobalDefine.child(i), pStructList->StructList);
+//						ModuleInfo.DataStructDefines.DataStructDefineList.push_back(pStructList);
+//					}
+//					else if (stricmp(GlobalDefine.child(i).get_name(), "DataObjectModifyFlags") == 0)
+//					{
+//						LoadDataObjectModifyFlag(GlobalDefine.child(i), ModuleInfo.DataStructDefines.DataObjectModifyFlags);
+//					}
+//				}
+//			}
+//			LoadInterfacesOld(Interfaces, ModuleInfo.InterfaceList);
+//
+//			xml_node Prefix = Interfaces;
+//			if (Prefix.moveto_child("Prefix"))
+//			{
+//				ModuleInfo.InterfacePrefix = ((LPCTSTR)Prefix.attribute("Content").getvalue());
+//			}
+//			xml_node Postfix = Interfaces;
+//			if (Postfix.moveto_child("Postfix"))
+//			{
+//				ModuleInfo.InterfacePostFix = ((LPCTSTR)Postfix.attribute("Content").getvalue());
+//			}
+//
+//			//LoadEnv();
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
+
+//bool CCallInterfaceMakerDlg::LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo)
+//{
+//	UINT Version = GetFileVersion(FileName);
+//	if (Version == 0)
+//	{
+//		INTERFANCE_DEFINES_OLD OldInterfaceDefines;
+//		if (LoadOld(FileName, OldInterfaceDefines))
+//		{
+//			if (ConvertOldInterfaceDefines(OldInterfaceDefines, ModuleInfo))
+//			{
+//				ModuleInfo.ModuleDefineFileName = FileName;
+//				OldInterfaceDefines.Clear();
+//				return true;
+//			}
+//			else
+//			{
+//				OldInterfaceDefines.Clear();
+//				ModuleInfo.Clear();
+//				AfxMessageBox("转换旧版本文件失败");
+//				return false;
+//			}
+//		}
+//		else
+//		{
+//			OldInterfaceDefines.Clear();
+//			CString Msg;
+//			Msg.Format("加载失败%s", FileName);
+//			AfxMessageBox(Msg);
+//			return false;
+//		}
+//	}
+//	else
+//	{
+//		if (Load(FileName, ModuleInfo))
+//		{
+//			return true;
+//		}
+//		else
+//		{
+//			ModuleInfo.Clear();
+//			CString Msg;
+//			Msg.Format("加载失败%s", FileName);
+//			AfxMessageBox(Msg);
+//			return false;
+//		}
+//	}
+//}
 
 UINT CCallInterfaceMakerDlg::GetFileVersion(LPCTSTR FileName)
 {
@@ -1734,18 +1734,18 @@ UINT CCallInterfaceMakerDlg::GetFileVersion(LPCTSTR FileName)
 	return 0;
 }
 
-MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::LoadModule(LPCTSTR szFileName)
-{	
+MODULE_DEFINE_INFO* CCallInterfaceMakerDlg::LoadModule(LPCTSTR szFileName)
+{
 	for (size_t i = 0; i < m_ImportModuleList.size(); i++)
 	{
 		if (stricmp(m_ImportModuleList[i].ModuleDefineFileName, szFileName) == 0)
 			return NULL;
 	}
 	MODULE_DEFINE_INFO ModuleDefine;
-	if (LoadOverVersion(szFileName, ModuleDefine))
+	if (Load(szFileName, ModuleDefine))
 	{
 		m_ImportModuleList.push_back(ModuleDefine);
-		MODULE_DEFINE_INFO * pModuleIndo = m_ImportModuleList.end()._Ptr;
+		MODULE_DEFINE_INFO* pModuleIndo = m_ImportModuleList.end()._Ptr;
 		for (size_t i = 0; i < ModuleDefine.ImportList.size(); i++)
 		{
 			CEasyString FileName = CFileTools::MakeFullPath(CFileTools::GetPathDirectory(ModuleDefine.ModuleDefineFileName) + DIR_SLASH + (LPCTSTR)ModuleDefine.ImportList[i]);
@@ -1796,7 +1796,8 @@ bool CCallInterfaceMakerDlg::SaveInterfaces(xml_node& Interfaces, vector<CALLER_
 				Param.append_attribute("Length", (UINT)ParamInfo.Length);
 				Param.append_attribute("CanNull", ParamInfo.CanNull);
 				Param.append_attribute("IsReference", ParamInfo.IsReference);
-				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);				
+				Param.append_attribute("IsArray", ParamInfo.IsArray);
+				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);
 				Param.append_attribute("Description", (LPCTSTR)ParamInfo.Description);
 				Param.append_attribute("PackFlag", (LPCTSTR)ParamInfo.PackFlag);
 
@@ -1815,6 +1816,7 @@ bool CCallInterfaceMakerDlg::SaveInterfaces(xml_node& Interfaces, vector<CALLER_
 				Param.append_attribute("Length", (UINT)ParamInfo.Length);
 				Param.append_attribute("CanNull", ParamInfo.CanNull);
 				Param.append_attribute("IsReference", ParamInfo.IsReference);
+				Param.append_attribute("IsArray", ParamInfo.IsArray);
 				Param.append_attribute("DefaultValue", (LPCTSTR)ParamInfo.DefaultValue);
 				Param.append_attribute("Description", (LPCTSTR)ParamInfo.Description);
 				Param.append_attribute("PackFlag", (LPCTSTR)ParamInfo.PackFlag);
@@ -1871,6 +1873,7 @@ bool CCallInterfaceMakerDlg::LoadInterfaces(xml_node& Interfaces, vector<CALLER_
 							ParamInfo.Length = (UINT)Param.attribute("Length");
 							ParamInfo.CanNull = Param.attribute("CanNull");
 							ParamInfo.IsReference = Param.attribute("IsReference");
+							ParamInfo.IsArray = Param.attribute("IsArray");
 							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
 							ParamInfo.DefaultValue.Trim();
 							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
@@ -1892,6 +1895,7 @@ bool CCallInterfaceMakerDlg::LoadInterfaces(xml_node& Interfaces, vector<CALLER_
 							ParamInfo.Length = (UINT)Param.attribute("Length");
 							ParamInfo.CanNull = Param.attribute("CanNull");
 							ParamInfo.IsReference = Param.attribute("IsReference");
+							ParamInfo.IsArray = Param.attribute("IsArray");
 							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
 							ParamInfo.DefaultValue.Trim();
 							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
@@ -1909,121 +1913,121 @@ bool CCallInterfaceMakerDlg::LoadInterfaces(xml_node& Interfaces, vector<CALLER_
 	}
 	return true;
 }
-bool CCallInterfaceMakerDlg::LoadInterfacesOld(xml_node& Interfaces, vector<CALLER_INTERFACE_OLD>& InterfaceList)
+//bool CCallInterfaceMakerDlg::LoadInterfacesOld(xml_node& Interfaces, vector<CALLER_INTERFACE_OLD>& InterfaceList)
+//{
+//	for (UINT i = 0; i < Interfaces.children(); i++)
+//	{
+//		xml_node Interface = Interfaces.child(i);
+//		if (_stricmp(Interface.name(), "Interface") == 0)
+//		{
+//			CALLER_INTERFACE_OLD InterfaceInfo;
+//
+//			InterfaceInfo.Name = (LPCTSTR)Interface.attribute("Name").getvalue();
+//			InterfaceInfo.Name.Trim();
+//			InterfaceInfo.Type = Interface.attribute("Type");
+//			InterfaceInfo.ID = (UINT)Interface.attribute("ID");
+//			InterfaceInfo.IDSeed = (UINT)Interface.attribute("IDSeed");
+//			InterfaceInfo.Description = ((LPCTSTR)Interface.attribute("Description").getvalue());
+//
+//
+//
+//			for (UINT j = 0; j < Interface.children(); j++)
+//			{
+//				xml_node Method = Interface.child(j);
+//				if (_stricmp(Method.name(), "Method") == 0)
+//				{
+//					INTERFACE_METHOD_OLD MethodInfo;
+//					MethodInfo.Name = (LPCTSTR)Method.attribute("Name").getvalue();
+//					MethodInfo.Name.Trim();
+//					MethodInfo.ID = (UINT)Method.attribute("ID");
+//					MethodInfo.Flag = (UINT)Method.attribute("Flag");
+//					MethodInfo.ParamIDSeed = (UINT)Method.attribute("ParamIDSeed");
+//					MethodInfo.Description = ((LPCTSTR)Method.attribute("Description").getvalue());
+//
+//					for (UINT k = 0; k < Method.children(); k++)
+//					{
+//						xml_node Param = Method.child(k);
+//						if (_stricmp(Param.name(), "Param") == 0)
+//						{
+//
+//							METHOD_PARAM ParamInfo;
+//
+//							ParamInfo.Name = (LPCTSTR)Param.attribute("Name").getvalue();
+//							ParamInfo.Name.Trim();
+//
+//							ParamInfo.Type = ((LPCTSTR)Param.attribute("Type").getvalue());
+//							ParamInfo.ID = (UINT)Param.attribute("ID");
+//							ParamInfo.Length = (UINT)Param.attribute("Length");
+//							ParamInfo.CanNull = Param.attribute("CanNull");
+//							ParamInfo.IsReference = Param.attribute("IsReference");
+//
+//							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
+//							ParamInfo.DefaultValue.Trim();
+//
+//
+//							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
+//
+//
+//							MethodInfo.ParamList.push_back(ParamInfo);
+//						}
+//
+//					}
+//					InterfaceInfo.MethodList.push_back(MethodInfo);
+//				}
+//			}
+//			InterfaceList.push_back(InterfaceInfo);
+//		}
+//	}
+//	return true;
+//}
+
+bool CCallInterfaceMakerDlg::SaveStructDefine(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList)
 {
-	for (UINT i = 0; i < Interfaces.children(); i++)
+	for (size_t i = 0;i < StructDefineList.size();i++)
 	{
-		xml_node Interface = Interfaces.child(i);
-		if (_stricmp(Interface.name(), "Interface") == 0)
-		{
-			CALLER_INTERFACE_OLD InterfaceInfo;
-
-			InterfaceInfo.Name = (LPCTSTR)Interface.attribute("Name").getvalue();
-			InterfaceInfo.Name.Trim();
-			InterfaceInfo.Type = Interface.attribute("Type");
-			InterfaceInfo.ID = (UINT)Interface.attribute("ID");
-			InterfaceInfo.IDSeed = (UINT)Interface.attribute("IDSeed");
-			InterfaceInfo.Description = ((LPCTSTR)Interface.attribute("Description").getvalue());
-
-
-
-			for (UINT j = 0; j < Interface.children(); j++)
-			{
-				xml_node Method = Interface.child(j);
-				if (_stricmp(Method.name(), "Method") == 0)
-				{
-					INTERFACE_METHOD_OLD MethodInfo;
-					MethodInfo.Name = (LPCTSTR)Method.attribute("Name").getvalue();
-					MethodInfo.Name.Trim();
-					MethodInfo.ID = (UINT)Method.attribute("ID");
-					MethodInfo.Flag = (UINT)Method.attribute("Flag");
-					MethodInfo.ParamIDSeed = (UINT)Method.attribute("ParamIDSeed");
-					MethodInfo.Description = ((LPCTSTR)Method.attribute("Description").getvalue());
-
-					for (UINT k = 0; k < Method.children(); k++)
-					{
-						xml_node Param = Method.child(k);
-						if (_stricmp(Param.name(), "Param") == 0)
-						{
-
-							METHOD_PARAM ParamInfo;
-
-							ParamInfo.Name = (LPCTSTR)Param.attribute("Name").getvalue();
-							ParamInfo.Name.Trim();
-
-							ParamInfo.Type = ((LPCTSTR)Param.attribute("Type").getvalue());
-							ParamInfo.ID = (UINT)Param.attribute("ID");
-							ParamInfo.Length = (UINT)Param.attribute("Length");
-							ParamInfo.CanNull = Param.attribute("CanNull");
-							ParamInfo.IsReference = Param.attribute("IsReference");
-
-							ParamInfo.DefaultValue = ((LPCTSTR)Param.attribute("DefaultValue").getvalue());
-							ParamInfo.DefaultValue.Trim();
-
-
-							ParamInfo.Description = ((LPCTSTR)Param.attribute("Description").getvalue());
-
-
-							MethodInfo.ParamList.push_back(ParamInfo);
-						}
-
-					}
-					InterfaceInfo.MethodList.push_back(MethodInfo);
-				}
-			}
-			InterfaceList.push_back(InterfaceInfo);
-		}
-	}
-	return true;
-}
-
-bool CCallInterfaceMakerDlg::SaveStructDefine(xml_node& Structs,vector<STRUCT_DEFINE_INFO>& StructDefineList)
-{
-	for(size_t i=0;i<StructDefineList.size();i++)
-	{
-		xml_node Struct=Structs.append_child(node_element,"Struct");
-		Struct.append_attribute("Name",(LPCTSTR)StructDefineList[i].Name);
-		Struct.append_attribute("ShortName",(LPCTSTR)StructDefineList[i].ShortName);
+		xml_node Struct = Structs.append_child(node_element, "Struct");
+		Struct.append_attribute("Name", (LPCTSTR)StructDefineList[i].Name);
+		Struct.append_attribute("ShortName", (LPCTSTR)StructDefineList[i].ShortName);
 		Struct.append_attribute("ShowName", (LPCTSTR)StructDefineList[i].ShowName);
-		Struct.append_attribute("BaseStruct",(LPCTSTR)StructDefineList[i].BaseStruct);		
-		Struct.append_attribute("Description",(LPCTSTR)StructDefineList[i].Description);
-		Struct.append_attribute("IDSeed",(UINT)StructDefineList[i].IDSeed);		
+		Struct.append_attribute("BaseStruct", (LPCTSTR)StructDefineList[i].BaseStruct);
+		Struct.append_attribute("Description", (LPCTSTR)StructDefineList[i].Description);
+		Struct.append_attribute("IDSeed", (UINT)StructDefineList[i].IDSeed);
 		Struct.append_attribute("Flag", (UINT)StructDefineList[i].Flag);
-		Struct.append_attribute("ObjectID",(UINT)StructDefineList[i].ObjectID);
+		Struct.append_attribute("ObjectID", (UINT)StructDefineList[i].ObjectID);
 
-		xml_node GenerateOperations=Struct.append_child(node_element,"GenerateOperations");
-		SaveGenerateOperations(GenerateOperations,StructDefineList[i].GenerateOperations);
-		
-		for(size_t j=0;j<StructDefineList[i].MemberList.size();j++)
+		xml_node GenerateOperations = Struct.append_child(node_element, "GenerateOperations");
+		SaveGenerateOperations(GenerateOperations, StructDefineList[i].GenerateOperations);
+
+		for (size_t j = 0;j < StructDefineList[i].MemberList.size();j++)
 		{
-			xml_node Member=Struct.append_child(node_element,"Member");
-			Member.append_attribute("Name",(LPCTSTR)StructDefineList[i].MemberList[j].Name);
-			Member.append_attribute("Type",(LPCTSTR)StructDefineList[i].MemberList[j].Type);
+			xml_node Member = Struct.append_child(node_element, "Member");
+			Member.append_attribute("Name", (LPCTSTR)StructDefineList[i].MemberList[j].Name);
+			Member.append_attribute("Type", (LPCTSTR)StructDefineList[i].MemberList[j].Type);
 			Member.append_attribute("DBIndexType", StructDefineList[i].MemberList[j].DBIndexType);
-			Member.append_attribute("Flag",(UINT)StructDefineList[i].MemberList[j].Flag);
-			Member.append_attribute("IsArray",(bool)StructDefineList[i].MemberList[j].IsArray);
-			Member.append_attribute("ArrayStartLength",(UINT)StructDefineList[i].MemberList[j].ArrayStartLength);
-			Member.append_attribute("ArrayGrowLength",(UINT)StructDefineList[i].MemberList[j].ArrayGrowLength);
+			Member.append_attribute("Flag", (UINT)StructDefineList[i].MemberList[j].Flag);
+			Member.append_attribute("IsArray", (bool)StructDefineList[i].MemberList[j].IsArray);
+			Member.append_attribute("ArrayStartLength", (UINT)StructDefineList[i].MemberList[j].ArrayStartLength);
+			Member.append_attribute("ArrayGrowLength", (UINT)StructDefineList[i].MemberList[j].ArrayGrowLength);
 			Member.append_attribute("DBLength", (LPCTSTR)StructDefineList[i].MemberList[j].DBLength);
 			Member.append_attribute("ShowName", (LPCTSTR)StructDefineList[i].MemberList[j].ShowName);
-			Member.append_attribute("Description",(LPCTSTR)StructDefineList[i].MemberList[j].Description);
+			Member.append_attribute("Description", (LPCTSTR)StructDefineList[i].MemberList[j].Description);
 			Member.append_attribute("PackFlag", (LPCTSTR)StructDefineList[i].MemberList[j].PackFlag);
-			Member.append_attribute("ID",(UINT)StructDefineList[i].MemberList[j].ID);			
+			Member.append_attribute("ID", (UINT)StructDefineList[i].MemberList[j].ID);
 			Member.append_attribute("BindData", (LPCTSTR)StructDefineList[i].MemberList[j].BindData);
 			Member.append_attribute("ExtendType", (LPCTSTR)StructDefineList[i].MemberList[j].ExtendType);
 		}
 	}
-	
+
 
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs,vector<STRUCT_DEFINE_INFO>& StructDefineList)
+bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList)
 {
-	for(UINT i=0;i<Structs.children();i++)
+	for (UINT i = 0;i < Structs.children();i++)
 	{
-		xml_node Struct=Structs.child(i);
-		if(_stricmp(Struct.name(),"Struct")==0)
+		xml_node Struct = Structs.child(i);
+		if (_stricmp(Struct.name(), "Struct") == 0)
 		{
 			STRUCT_DEFINE_INFO StructDefine;
 			StructDefine.Name = (LPCTSTR)Struct.attribute("Name").getvalue();
@@ -2031,15 +2035,15 @@ bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs,vector<STRUCT_DE
 			StructDefine.ShowName = (LPCTSTR)Struct.attribute("ShowName").getvalue();
 			StructDefine.BaseStruct = (LPCTSTR)Struct.attribute("BaseStruct").getvalue();
 			StructDefine.Description = ((LPCTSTR)Struct.attribute("Description").getvalue());
-			StructDefine.IDSeed=(UINT)Struct.attribute("IDSeed");
+			StructDefine.IDSeed = (UINT)Struct.attribute("IDSeed");
 			StructDefine.Flag = (UINT)Struct.attribute("Flag");
-			StructDefine.ObjectID=(UINT)Struct.attribute("ObjectID");
+			StructDefine.ObjectID = (UINT)Struct.attribute("ObjectID");
 
-			
 
-			for(UINT j=0;j<Struct.children();j++)
+
+			for (UINT j = 0;j < Struct.children();j++)
 			{
-				xml_node Member=Struct.child(j);
+				xml_node Member = Struct.child(j);
 				if (_stricmp(Member.name(), "Member") == 0)
 				{
 					STRUCT_MEMBER_INFO MemberInfo;
@@ -2059,13 +2063,13 @@ bool CCallInterfaceMakerDlg::LoadStructDefine(xml_node& Structs,vector<STRUCT_DE
 					MemberInfo.ExtendType = ((LPCTSTR)Member.attribute("ExtendType").getvalue());
 					StructDefine.MemberList.push_back(MemberInfo);
 				}
-				else if(_stricmp(Member.name(),"GenerateOperations")==0)
+				else if (_stricmp(Member.name(), "GenerateOperations") == 0)
 				{
-					LoadGenerateOperations(Member,StructDefine.GenerateOperations);
+					LoadGenerateOperations(Member, StructDefine.GenerateOperations);
 				}
 			}
 			StructDefineList.push_back(StructDefine);
-		}		
+		}
 	}
 	return true;
 }
@@ -2116,55 +2120,55 @@ bool CCallInterfaceMakerDlg::LoadStructDefineOld(xml_node& Structs, vector<STRUC
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::SaveEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_INFO>& EnumDefineList)
+bool CCallInterfaceMakerDlg::SaveEnumDefine(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList)
 {
-	for(size_t i=0;i<EnumDefineList.size();i++)
+	for (size_t i = 0;i < EnumDefineList.size();i++)
 	{
-		xml_node Enum=Enums.append_child(node_element,"Enum");
-		Enum.append_attribute("Name",(LPCTSTR)EnumDefineList[i].Name);
-		Enum.append_attribute("ShortName",(LPCTSTR)EnumDefineList[i].ShortName);
+		xml_node Enum = Enums.append_child(node_element, "Enum");
+		Enum.append_attribute("Name", (LPCTSTR)EnumDefineList[i].Name);
+		Enum.append_attribute("ShortName", (LPCTSTR)EnumDefineList[i].ShortName);
 		Enum.append_attribute("ShowName", (LPCTSTR)EnumDefineList[i].ShowName);
-		Enum.append_attribute("Flag",(UINT)EnumDefineList[i].Flag);
-		Enum.append_attribute("Description",(LPCTSTR)EnumDefineList[i].Description);
-				
+		Enum.append_attribute("Flag", (UINT)EnumDefineList[i].Flag);
+		Enum.append_attribute("Description", (LPCTSTR)EnumDefineList[i].Description);
 
-		for(size_t j=0;j<EnumDefineList[i].MemberList.size();j++)
+
+		for (size_t j = 0;j < EnumDefineList[i].MemberList.size();j++)
 		{
-			xml_node Member=Enum.append_child(node_element,"Member");
-			Member.append_attribute("Name",(LPCTSTR)EnumDefineList[i].MemberList[j].Name);
-			Member.append_attribute("Value",(LPCTSTR)EnumDefineList[i].MemberList[j].Value);
+			xml_node Member = Enum.append_child(node_element, "Member");
+			Member.append_attribute("Name", (LPCTSTR)EnumDefineList[i].MemberList[j].Name);
+			Member.append_attribute("Value", (LPCTSTR)EnumDefineList[i].MemberList[j].Value);
 			Member.append_attribute("Flag", EnumDefineList[i].MemberList[j].Flag);
-			Member.append_attribute("StrValue",(LPCTSTR)EnumDefineList[i].MemberList[j].StrValue);
-			Member.append_attribute("Description",(LPCTSTR)EnumDefineList[i].MemberList[j].Description);
+			Member.append_attribute("StrValue", (LPCTSTR)EnumDefineList[i].MemberList[j].StrValue);
+			Member.append_attribute("Description", (LPCTSTR)EnumDefineList[i].MemberList[j].Description);
 			Member.append_attribute("BindDataType", (LPCTSTR)EnumDefineList[i].MemberList[j].BindDataType);
-			
+
 		}
 	}
 
 
 	return true;
 }
-bool CCallInterfaceMakerDlg::LoadEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_INFO>& EnumDefineList)
+bool CCallInterfaceMakerDlg::LoadEnumDefine(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList)
 {
-	for(UINT i=0;i<Enums.children();i++)
+	for (UINT i = 0;i < Enums.children();i++)
 	{
-		xml_node Enum=Enums.child(i);
-		if(_stricmp(Enum.name(),"Enum")==0)
+		xml_node Enum = Enums.child(i);
+		if (_stricmp(Enum.name(), "Enum") == 0)
 		{
 			ENUM_DEFINE_INFO EnumDefine;
 			EnumDefine.Name = (LPCTSTR)Enum.attribute("Name").getvalue();
 			EnumDefine.ShortName = (LPCTSTR)Enum.attribute("ShortName").getvalue();
 			EnumDefine.ShowName = (LPCTSTR)Enum.attribute("ShowName").getvalue();
-			EnumDefine.Flag=(UINT)Enum.attribute("Flag");
+			EnumDefine.Flag = (UINT)Enum.attribute("Flag");
 			EnumDefine.Description = ((LPCTSTR)Enum.attribute("Description").getvalue());
-			
 
 
 
-			for(UINT j=0;j<Enum.children();j++)
+
+			for (UINT j = 0;j < Enum.children();j++)
 			{
-				xml_node Member=Enum.child(j);
-				if(_stricmp(Member.name(),"Member")==0)
+				xml_node Member = Enum.child(j);
+				if (_stricmp(Member.name(), "Member") == 0)
 				{
 					ENUM_MEMBER_INFO MemberInfo;
 					MemberInfo.Name = (LPCTSTR)Member.attribute("Name").getvalue();
@@ -2173,37 +2177,37 @@ bool CCallInterfaceMakerDlg::LoadEnumDefine(xml_node& Enums,vector<ENUM_DEFINE_I
 					MemberInfo.StrValue = ((LPCTSTR)Member.attribute("StrValue").getvalue());
 					MemberInfo.Description = ((LPCTSTR)Member.attribute("Description").getvalue());
 					MemberInfo.BindDataType = ((LPCTSTR)Member.attribute("BindDataType").getvalue());
-					
+
 					EnumDefine.MemberList.push_back(MemberInfo);
 				}
-				
+
 			}
 			EnumDefineList.push_back(EnumDefine);
-		}		
+		}
 	}
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::SaveConstDefine(xml_node& Consts,vector<CONST_DEFINE_INFO>& ConstDefineList)
+bool CCallInterfaceMakerDlg::SaveConstDefine(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList)
 {
-	for(size_t i=0;i<ConstDefineList.size();i++)
+	for (size_t i = 0;i < ConstDefineList.size();i++)
 	{
-		xml_node Const=Consts.append_child(node_element,"Const");
-		Const.append_attribute("Name",(LPCTSTR)ConstDefineList[i].Name);
-		Const.append_attribute("Type",(LPCTSTR)ConstDefineList[i].Type);
-		Const.append_attribute("Value",(LPCTSTR)ConstDefineList[i].Value);
-		Const.append_attribute("Description",(LPCTSTR)ConstDefineList[i].Description);
+		xml_node Const = Consts.append_child(node_element, "Const");
+		Const.append_attribute("Name", (LPCTSTR)ConstDefineList[i].Name);
+		Const.append_attribute("Type", (LPCTSTR)ConstDefineList[i].Type);
+		Const.append_attribute("Value", (LPCTSTR)ConstDefineList[i].Value);
+		Const.append_attribute("Description", (LPCTSTR)ConstDefineList[i].Description);
 	}
 
 
 	return true;
 }
-bool CCallInterfaceMakerDlg::LoadConstDefine(xml_node& Consts,vector<CONST_DEFINE_INFO>& ConstDefineList)
+bool CCallInterfaceMakerDlg::LoadConstDefine(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList)
 {
-	for(UINT i=0;i<Consts.children();i++)
+	for (UINT i = 0;i < Consts.children();i++)
 	{
-		xml_node Enum=Consts.child(i);
-		if(_stricmp(Enum.name(),"Const")==0)
+		xml_node Enum = Consts.child(i);
+		if (_stricmp(Enum.name(), "Const") == 0)
 		{
 			CONST_DEFINE_INFO ConstDefine;
 			ConstDefine.Name = (LPCTSTR)Enum.attribute("Name").getvalue();
@@ -2212,51 +2216,51 @@ bool CCallInterfaceMakerDlg::LoadConstDefine(xml_node& Consts,vector<CONST_DEFIN
 			ConstDefine.Description = ((LPCTSTR)Enum.attribute("Description").getvalue());
 
 			ConstDefineList.push_back(ConstDefine);
-		}		
+		}
 	}
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::SaveDataObjectModifyFlag(xml_node& ModifyFlags,vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags)
+bool CCallInterfaceMakerDlg::SaveDataObjectModifyFlag(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags)
 {
-	for(size_t i=0;i<DataObjectModifyFlags.size();i++)
+	for (size_t i = 0;i < DataObjectModifyFlags.size();i++)
 	{
-		xml_node ModifyFlag=ModifyFlags.append_child(node_element,"ModifyFlag");
-		ModifyFlag.append_attribute("Name",(LPCTSTR)DataObjectModifyFlags[i].Name);
-		for(size_t j=0;j<DataObjectModifyFlags[i].ModifyFlag.size();j++)
+		xml_node ModifyFlag = ModifyFlags.append_child(node_element, "ModifyFlag");
+		ModifyFlag.append_attribute("Name", (LPCTSTR)DataObjectModifyFlags[i].Name);
+		for (size_t j = 0;j < DataObjectModifyFlags[i].ModifyFlag.size();j++)
 		{
-			xml_node Unit=ModifyFlag.append_child(node_element,"Unit");
-			Unit.append_attribute("ClassName",(LPCTSTR)DataObjectModifyFlags[i].ModifyFlag[j].ClassName);
-			for(size_t k=0;k<DataObjectModifyFlags[i].ModifyFlag[j].Members.size();k++)
+			xml_node Unit = ModifyFlag.append_child(node_element, "Unit");
+			Unit.append_attribute("ClassName", (LPCTSTR)DataObjectModifyFlags[i].ModifyFlag[j].ClassName);
+			for (size_t k = 0;k < DataObjectModifyFlags[i].ModifyFlag[j].Members.size();k++)
 			{
-				xml_node Flag=Unit.append_child(node_element,"Flag");
-				Flag.append_attribute("Name",(LPCTSTR)DataObjectModifyFlags[i].ModifyFlag[j].Members[k]);
+				xml_node Flag = Unit.append_child(node_element, "Flag");
+				Flag.append_attribute("Name", (LPCTSTR)DataObjectModifyFlags[i].ModifyFlag[j].Members[k]);
 			}
 		}
 	}
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::LoadDataObjectModifyFlag(xml_node& ModifyFlags,vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags)
+bool CCallInterfaceMakerDlg::LoadDataObjectModifyFlag(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags)
 {
-	for(UINT i=0;i<ModifyFlags.children();i++)
+	for (UINT i = 0;i < ModifyFlags.children();i++)
 	{
-		xml_node ModifyFlag=ModifyFlags.child(i);
-		if(_stricmp(ModifyFlag.name(),"ModifyFlag")==0)
+		xml_node ModifyFlag = ModifyFlags.child(i);
+		if (_stricmp(ModifyFlag.name(), "ModifyFlag") == 0)
 		{
 			DATA_OBJECT_MODIFY_FLAG MF;
 			MF.Name = (LPCTSTR)ModifyFlag.attribute("Name").getvalue();
-			for(UINT j=0;j<ModifyFlag.children();j++)
+			for (UINT j = 0;j < ModifyFlag.children();j++)
 			{
-				xml_node Unit=ModifyFlag.child(j);
-				if(_stricmp(Unit.name(),"Unit")==0)
+				xml_node Unit = ModifyFlag.child(j);
+				if (_stricmp(Unit.name(), "Unit") == 0)
 				{
 					MODIFY_FLAG_UNIT MFU;
 					MFU.ClassName = (LPCTSTR)Unit.attribute("ClassName").getvalue();
-					for(UINT k=0;k<Unit.children();k++)
+					for (UINT k = 0;k < Unit.children();k++)
 					{
-						xml_node Flag=Unit.child(k);
-						if(_stricmp(Flag.name(),"Flag")==0)
+						xml_node Flag = Unit.child(k);
+						if (_stricmp(Flag.name(), "Flag") == 0)
 						{
 							MFU.Members.push_back((LPCTSTR)Flag.attribute("Name").getvalue());
 						}
@@ -2270,26 +2274,26 @@ bool CCallInterfaceMakerDlg::LoadDataObjectModifyFlag(xml_node& ModifyFlags,vect
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::SaveGenerateOperations(xml_node& XmlNode,GENERATE_OPERATIONS_INFO& GenerateOperations)
+bool CCallInterfaceMakerDlg::SaveGenerateOperations(xml_node& XmlNode, GENERATE_OPERATIONS_INFO& GenerateOperations)
 {
-	XmlNode.append_attribute("PackOperation",(LPCTSTR)GenerateOperations.PackOperation);
-	XmlNode.append_attribute("UnpackOperation",(LPCTSTR)GenerateOperations.UnpackOperation);	
-	XmlNode.append_attribute("SizeCaculateOperation",(LPCTSTR)GenerateOperations.SizeCaculateOperation);
+	XmlNode.append_attribute("PackOperation", (LPCTSTR)GenerateOperations.PackOperation);
+	XmlNode.append_attribute("UnpackOperation", (LPCTSTR)GenerateOperations.UnpackOperation);
+	XmlNode.append_attribute("SizeCaculateOperation", (LPCTSTR)GenerateOperations.SizeCaculateOperation);
 	XmlNode.append_attribute("ToXMLOperation", (LPCTSTR)GenerateOperations.ToXMLOperation);
 	XmlNode.append_attribute("FromXMLOperation", (LPCTSTR)GenerateOperations.FromXMLOperation);
 	XmlNode.append_attribute("ToJsonOperation", (LPCTSTR)GenerateOperations.ToJsonOperation);
 	XmlNode.append_attribute("FromJsonOperation", (LPCTSTR)GenerateOperations.FromJsonOperation);
-	XmlNode.append_attribute("ReferenceDefine",(LPCTSTR)GenerateOperations.ReferenceDefine);
-	XmlNode.append_attribute("ReferenceUse",(LPCTSTR)GenerateOperations.ReferenceUse);
-	XmlNode.append_attribute("VariableDefine",(LPCTSTR)GenerateOperations.VariableDefine);
-	XmlNode.append_attribute("InitOperation",(LPCTSTR)GenerateOperations.InitOperation);
-	XmlNode.append_attribute("CloneOperation",(LPCTSTR)GenerateOperations.CloneOperation);
-	XmlNode.append_attribute("GetMethodDeclare",(LPCTSTR)GenerateOperations.GetMethodDeclare);
-	XmlNode.append_attribute("GetMethodDefine",(LPCTSTR)GenerateOperations.GetMethodDefine);
-	XmlNode.append_attribute("SetMethodDeclare",(LPCTSTR)GenerateOperations.SetMethodDeclare);
-	XmlNode.append_attribute("SetMethodDefine",(LPCTSTR)GenerateOperations.SetMethodDefine);
-	XmlNode.append_attribute("IndexOperation",(LPCTSTR)GenerateOperations.IndexOperation);
-	XmlNode.append_attribute("ConstIndexOperation",(LPCTSTR)GenerateOperations.ConstIndexOperation);
+	XmlNode.append_attribute("ReferenceDefine", (LPCTSTR)GenerateOperations.ReferenceDefine);
+	XmlNode.append_attribute("ReferenceUse", (LPCTSTR)GenerateOperations.ReferenceUse);
+	XmlNode.append_attribute("VariableDefine", (LPCTSTR)GenerateOperations.VariableDefine);
+	XmlNode.append_attribute("InitOperation", (LPCTSTR)GenerateOperations.InitOperation);
+	XmlNode.append_attribute("CloneOperation", (LPCTSTR)GenerateOperations.CloneOperation);
+	XmlNode.append_attribute("GetMethodDeclare", (LPCTSTR)GenerateOperations.GetMethodDeclare);
+	XmlNode.append_attribute("GetMethodDefine", (LPCTSTR)GenerateOperations.GetMethodDefine);
+	XmlNode.append_attribute("SetMethodDeclare", (LPCTSTR)GenerateOperations.SetMethodDeclare);
+	XmlNode.append_attribute("SetMethodDefine", (LPCTSTR)GenerateOperations.SetMethodDefine);
+	XmlNode.append_attribute("IndexOperation", (LPCTSTR)GenerateOperations.IndexOperation);
+	XmlNode.append_attribute("ConstIndexOperation", (LPCTSTR)GenerateOperations.ConstIndexOperation);
 	XmlNode.append_attribute("ToStringOperation", (LPCTSTR)GenerateOperations.ToStringOperation);
 	XmlNode.append_attribute("DBFieldDefineOperation", (LPCTSTR)GenerateOperations.DBFieldDefineOperation);
 	XmlNode.append_attribute("DBInsertFormatOperation", (LPCTSTR)GenerateOperations.DBInsertFormatOperation);
@@ -2308,7 +2312,7 @@ bool CCallInterfaceMakerDlg::SaveGenerateOperations(xml_node& XmlNode,GENERATE_O
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::LoadGenerateOperations(xml_node& XmlNode,GENERATE_OPERATIONS_INFO& GenerateOperations)
+bool CCallInterfaceMakerDlg::LoadGenerateOperations(xml_node& XmlNode, GENERATE_OPERATIONS_INFO& GenerateOperations)
 {
 	GenerateOperations.PackOperation = ((LPCTSTR)XmlNode.attribute("PackOperation").getvalue());
 	GenerateOperations.UnpackOperation = ((LPCTSTR)XmlNode.attribute("UnpackOperation").getvalue());
@@ -2404,7 +2408,7 @@ void CCallInterfaceMakerDlg::SortStructForExport(vector<STRUCT_DEFINE_INFO>& Src
 {
 	for (size_t s = 0; s < SrcStructList.size(); s++)
 	{
-		vector<CString> DependList;		
+		vector<CString> DependList;
 		GetStructDepends(SrcStructList, SrcStructList[s], DependList, 0);
 		for (int i = (int)DependList.size() - 1; i >= 0; i--)
 		{
@@ -2430,10 +2434,10 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 	}
 	if (!StructInfo.BaseStruct.IsEmpty())
 	{
-		TYPE_DEFINE * pType = FindVarType(StructInfo.BaseStruct);
+		TYPE_DEFINE* pType = FindVarType(StructInfo.BaseStruct);
 		if (pType)
 		{
-			if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
+			if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
 			{
 				AddUnique(DependList, pType->Name);
 				//找到依赖结构的信息
@@ -2450,10 +2454,10 @@ void CCallInterfaceMakerDlg::GetStructDepends(const vector<STRUCT_DEFINE_INFO>& 
 	}
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
-		TYPE_DEFINE * pType = FindVarType(StructInfo.MemberList[i].Type);
+		TYPE_DEFINE* pType = FindVarType(StructInfo.MemberList[i].Type);
 		if (pType)
 		{
-			if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
+			if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
 			{
 				if (pType->Name != StructInfo.Name)
 				{
@@ -2532,7 +2536,7 @@ void CCallInterfaceMakerDlg::SortDefinesForExport(vector<BASE_DATA_STRUCT_DEFINE
 	}
 }
 
-void CCallInterfaceMakerDlg::GetDefineDepends(const vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DefineList, const STRUCT_DEFINE_LIST * pStructDefine, vector<CString>& DependList, int Depth)
+void CCallInterfaceMakerDlg::GetDefineDepends(const vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DefineList, const STRUCT_DEFINE_LIST* pStructDefine, vector<CString>& DependList, int Depth)
 {
 	if (Depth > 32)
 	{
@@ -2547,13 +2551,13 @@ void CCallInterfaceMakerDlg::GetDefineDepends(const vector<BASE_DATA_STRUCT_DEFI
 	{
 		if (DefineList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			const STRUCT_DEFINE_LIST * pDefine = (const STRUCT_DEFINE_LIST *)DefineList[i];
+			const STRUCT_DEFINE_LIST* pDefine = (const STRUCT_DEFINE_LIST*)DefineList[i];
 			if (HaveStructs(pDefine, StructDependList))
 			{
 				AddUnique(DependList, MakeDefineName(pDefine));
 				GetDefineDepends(DefineList, pDefine, DependList, Depth + 1);
-			}				
-		}		
+			}
+		}
 	}
 }
 void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_INFO>& StructList, vector<CString>& DependList)
@@ -2564,10 +2568,10 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 
 		if (!StructInfo.BaseStruct.IsEmpty())
 		{
-			TYPE_DEFINE * pType = FindVarType(StructInfo.BaseStruct);
+			TYPE_DEFINE* pType = FindVarType(StructInfo.BaseStruct);
 			if (pType)
 			{
-				if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
+				if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
 				{
 					bool IsExist = false;
 					for (size_t j = 0; j < StructList.size(); j++)
@@ -2612,10 +2616,10 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 		}
 		for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 		{
-			TYPE_DEFINE * pType = FindVarType(StructInfo.MemberList[i].Type);
+			TYPE_DEFINE* pType = FindVarType(StructInfo.MemberList[i].Type);
 			if (pType)
 			{
-				if (pType->Flag&TYPE_DEFINE_FLAG_STRUCT)
+				if (pType->Flag & TYPE_DEFINE_FLAG_STRUCT)
 				{
 					bool IsExist = false;
 					for (size_t j = 0; j < StructList.size(); j++)
@@ -2627,7 +2631,7 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 						}
 					}
 					if (!IsExist)
-						AddUnique(DependList,pType->Name);
+						AddUnique(DependList, pType->Name);
 				}
 				//else if (pType->Flag & TYPE_DEFINE_FLAG_ENUM)
 				//{
@@ -2659,7 +2663,7 @@ void CCallInterfaceMakerDlg::GetStructForeignDepends(const vector<STRUCT_DEFINE_
 			}
 		}
 	}
-	
+
 }
 
 void CCallInterfaceMakerDlg::AddUnique(vector<CString>& NameList, const CString& Name)
@@ -2681,7 +2685,7 @@ void CCallInterfaceMakerDlg::AddUnique(vector<CString>& NameList, const CString&
 
 
 
-bool CCallInterfaceMakerDlg::HaveStructs(const STRUCT_DEFINE_LIST * pStructDefine, vector<CString>& StructNameList)
+bool CCallInterfaceMakerDlg::HaveStructs(const STRUCT_DEFINE_LIST* pStructDefine, vector<CString>& StructNameList)
 {
 	for (size_t i = 0; i < pStructDefine->StructList.size(); i++)
 	{
@@ -2689,14 +2693,14 @@ bool CCallInterfaceMakerDlg::HaveStructs(const STRUCT_DEFINE_LIST * pStructDefin
 		{
 			if (pStructDefine->StructList[i].Name == StructNameList[j])
 				return true;
-		}		
+		}
 	}
 	return false;
 }
 
-CString CCallInterfaceMakerDlg::MakeDefineName(const STRUCT_DEFINE_LIST * pStructDefine)
+CString CCallInterfaceMakerDlg::MakeDefineName(const STRUCT_DEFINE_LIST* pStructDefine)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(pStructDefine->ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(pStructDefine->ModuleID);
 	if (pModuleInfo)
 	{
 		return pModuleInfo->Name + ":" + pStructDefine->ListName;
@@ -2704,12 +2708,12 @@ CString CCallInterfaceMakerDlg::MakeDefineName(const STRUCT_DEFINE_LIST * pStruc
 	return pStructDefine->ListName;
 }
 
-void CCallInterfaceMakerDlg::SortModuleForExport(const vector<MODULE_DEFINE_INFO *>& SrcList, vector<MODULE_DEFINE_INFO *>& DestList)
+void CCallInterfaceMakerDlg::SortModuleForExport(const vector<MODULE_DEFINE_INFO*>& SrcList, vector<MODULE_DEFINE_INFO*>& DestList)
 {
 	for (size_t i = 0; i < SrcList.size(); i++)
 	{
-		
-		const MODULE_DEFINE_INFO * pModuleInfo = (const MODULE_DEFINE_INFO *)SrcList[i];
+
+		const MODULE_DEFINE_INFO* pModuleInfo = (const MODULE_DEFINE_INFO*)SrcList[i];
 		vector<CString> DependList;
 		GetModuleDepends(SrcList, pModuleInfo, DependList, 0);
 		for (int k = (int)DependList.size() - 1; k >= 0; k--)
@@ -2722,11 +2726,11 @@ void CCallInterfaceMakerDlg::SortModuleForExport(const vector<MODULE_DEFINE_INFO
 					break;
 				}
 			}
-		}		
+		}
 		AddUnique(DestList, SrcList[i]);
 	}
 }
-void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>& ModuleList, const MODULE_DEFINE_INFO * pModuleInfo, vector<CString>& DependList, int Depth)
+void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO*>& ModuleList, const MODULE_DEFINE_INFO* pModuleInfo, vector<CString>& DependList, int Depth)
 {
 	if (Depth > 32)
 	{
@@ -2734,12 +2738,12 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 		return;
 	}
 	vector<CString> DefineDependList;
-	const vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DefineList = pModuleInfo->DataStructDefineList;
+	const vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DefineList = pModuleInfo->DataStructDefineList;
 	for (size_t i = 0; i < DefineList.size(); i++)
 	{
 		if (DefineList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			const STRUCT_DEFINE_LIST * pStructDefine = (const STRUCT_DEFINE_LIST *)DefineList[i];			
+			const STRUCT_DEFINE_LIST* pStructDefine = (const STRUCT_DEFINE_LIST*)DefineList[i];
 			GetDefineDepends(m_AllDataStructList, pStructDefine, DefineDependList, 0);
 		}
 	}
@@ -2748,7 +2752,7 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 	{
 		if (DefineList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			const STRUCT_DEFINE_LIST * pStructDefine = (const STRUCT_DEFINE_LIST *)DefineList[i];
+			const STRUCT_DEFINE_LIST* pStructDefine = (const STRUCT_DEFINE_LIST*)DefineList[i];
 			for (int j = (int)DefineDependList.size() - 1; j >= 0; j--)
 			{
 				if (MakeDefineName(pStructDefine) == DefineDependList[j])
@@ -2758,7 +2762,7 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 			}
 		}
 	}
-	
+
 	for (size_t i = 0; i < ModuleList.size(); i++)
 	{
 		if (HaveDefines(ModuleList[i], DefineDependList))
@@ -2770,7 +2774,7 @@ void CCallInterfaceMakerDlg::GetModuleDepends(const vector<MODULE_DEFINE_INFO *>
 
 }
 
-void CCallInterfaceMakerDlg::AddUnique(vector<MODULE_DEFINE_INFO *>& ModuleList, MODULE_DEFINE_INFO * pModuleInfo)
+void CCallInterfaceMakerDlg::AddUnique(vector<MODULE_DEFINE_INFO*>& ModuleList, MODULE_DEFINE_INFO* pModuleInfo)
 {
 	for (size_t i = 0; i < ModuleList.size(); i++)
 	{
@@ -2780,7 +2784,7 @@ void CCallInterfaceMakerDlg::AddUnique(vector<MODULE_DEFINE_INFO *>& ModuleList,
 	ModuleList.push_back(pModuleInfo);
 }
 
-bool CCallInterfaceMakerDlg::HaveDefines(const MODULE_DEFINE_INFO * pModuleInfo, vector<CString>& DefineNameList)
+bool CCallInterfaceMakerDlg::HaveDefines(const MODULE_DEFINE_INFO* pModuleInfo, vector<CString>& DefineNameList)
 {
 	for (size_t i = 0; i < pModuleInfo->DataStructDefineList.size(); i++)
 	{
@@ -2788,7 +2792,7 @@ bool CCallInterfaceMakerDlg::HaveDefines(const MODULE_DEFINE_INFO * pModuleInfo,
 		{
 			if (pModuleInfo->DataStructDefineList[i]->ListType == DATA_STRUCT_STRUCT)
 			{
-				const STRUCT_DEFINE_LIST * pStructDefine = (const STRUCT_DEFINE_LIST *)pModuleInfo->DataStructDefineList[i];
+				const STRUCT_DEFINE_LIST* pStructDefine = (const STRUCT_DEFINE_LIST*)pModuleInfo->DataStructDefineList[i];
 				if (MakeDefineName(pStructDefine) == DefineNameList[j])
 					return true;
 			}
@@ -2812,7 +2816,7 @@ void CCallInterfaceMakerDlg::SaveInterfaceSelections()
 
 void CCallInterfaceMakerDlg::RestoreInterfaceSelections()
 {
-	
+
 	for (int j = 0; j < m_lvInterfaceList.GetItemCount(); j++)
 	{
 		m_lvInterfaceList.SetCheck(j, FALSE);
@@ -2823,7 +2827,7 @@ void CCallInterfaceMakerDlg::RestoreInterfaceSelections()
 				m_lvInterfaceList.SetCheck(j, TRUE);
 				break;
 			}
-		}		
+		}
 	}
 }
 
@@ -2852,19 +2856,19 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 			{
 				INTERFACE_METHOD_OLD& OldMethodInfo = OldInterfaceInfo.MethodList[j];
 				INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
-				
+
 				MethodInfo.Name = OldMethodInfo.Name;
 				MethodInfo.Type = INTERFACE_METHOD_TYPE_CALL;
-				MethodInfo.CallParamList = OldMethodInfo.ParamList;				
+				MethodInfo.CallParamList = OldMethodInfo.ParamList;
 				MethodInfo.ID = OldMethodInfo.ID;
 				MethodInfo.Flag = OldMethodInfo.Flag;
 				MethodInfo.ParamIDSeed = OldMethodInfo.ParamIDSeed;
 				MethodInfo.Description = OldMethodInfo.Description;
 
-				INTERFACE_METHOD_OLD * pAckMethodInfo = FindInterfaceMethod(OldModuleInfo, OldInterfaceInfo.Name, OldMethodInfo.Name, true);
+				INTERFACE_METHOD_OLD* pAckMethodInfo = FindInterfaceMethod(OldModuleInfo, OldInterfaceInfo.Name, OldMethodInfo.Name, true);
 				if (pAckMethodInfo)
 				{
-					MethodInfo.AckParamList = pAckMethodInfo->ParamList;					
+					MethodInfo.AckParamList = pAckMethodInfo->ParamList;
 				}
 				else
 				{
@@ -2875,10 +2879,10 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 					WarningCount++;
 				}
 
-				
+
 			}
 
-			CALLER_INTERFACE_OLD * pAckInterfaceInfo = FindInterface(OldModuleInfo, OldInterfaceInfo.Name, true);
+			CALLER_INTERFACE_OLD* pAckInterfaceInfo = FindInterface(OldModuleInfo, OldInterfaceInfo.Name, true);
 			if (pAckInterfaceInfo)
 			{
 				for (size_t j = 0; j < pAckInterfaceInfo->MethodList.size(); j++)
@@ -2905,7 +2909,7 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 							MethodName = MethodName.Left(MethodName.GetLength() - 3);
 						}
 
-						INTERFACE_METHOD_OLD * pCallMethod = FindMethod(OldInterfaceInfo.MethodList, MethodName, false);
+						INTERFACE_METHOD_OLD* pCallMethod = FindMethod(OldInterfaceInfo.MethodList, MethodName, false);
 						if (pCallMethod == NULL)
 						{
 							CString Msg;
@@ -2925,13 +2929,13 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 			}
 			ModuleInfo.InterfaceList.push_back(InterfaceInfo);
 		}
-		
+
 	}
 	ModuleInfo.DataObjectModifyFlags = OldModuleInfo.DataStructDefines.DataObjectModifyFlags;
 	ModuleInfo.DataStructDefineList.resize(OldModuleInfo.DataStructDefines.DataStructDefineList.size());
 	for (size_t i = 0; i < OldModuleInfo.DataStructDefines.DataStructDefineList.size(); i++)
 	{
-		BASE_DATA_STRUCT_DEFINE_LIST * pBaseDefine = OldModuleInfo.DataStructDefines.DataStructDefineList[i];
+		BASE_DATA_STRUCT_DEFINE_LIST* pBaseDefine = OldModuleInfo.DataStructDefines.DataStructDefineList[i];
 
 		switch (pBaseDefine->ListType)
 		{
@@ -2941,38 +2945,38 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 			OldModuleInfo.DataStructDefines.DataStructDefineList[i] = NULL;
 			break;
 		case DATA_STRUCT_STRUCT:
+		{
+			STRUCT_DEFINE_LIST_OLD* pOldStructList = (STRUCT_DEFINE_LIST_OLD*)pBaseDefine;
+			STRUCT_DEFINE_LIST* pStructList = new STRUCT_DEFINE_LIST();
+			pStructList->ListType = pOldStructList->ListType;
+			pStructList->ListName = pOldStructList->ListName;
+			pStructList->IgnoreOnExport = pOldStructList->IgnoreOnExport;
+			pStructList->StructList.resize(pOldStructList->StructList.size());
+			for (size_t j = 0; j < pOldStructList->StructList.size(); j++)
 			{
-				STRUCT_DEFINE_LIST_OLD * pOldStructList = (STRUCT_DEFINE_LIST_OLD *)pBaseDefine;
-				STRUCT_DEFINE_LIST * pStructList = new STRUCT_DEFINE_LIST();
-				pStructList->ListType = pOldStructList->ListType;
-				pStructList->ListName = pOldStructList->ListName;
-				pStructList->IgnoreOnExport = pOldStructList->IgnoreOnExport;
-				pStructList->StructList.resize(pOldStructList->StructList.size());
-				for (size_t j = 0; j < pOldStructList->StructList.size(); j++)
-				{
-					STRUCT_DEFINE_INFO_OLD& OldStructInfo = pOldStructList->StructList[j];
-					STRUCT_DEFINE_INFO& StructInfo = pStructList->StructList[j];
-					StructInfo.Name = OldStructInfo.Name;
-					StructInfo.ShortName = OldStructInfo.ShortName;
-					StructInfo.BaseStruct = OldStructInfo.BaseStruct;
-					StructInfo.MemberList = OldStructInfo.MemberList;
-					StructInfo.Description = OldStructInfo.Description;
-					StructInfo.Flag = (OldStructInfo.IsDataObject ? STRUCT_FLAG_IS_DATA_OBJECT : 0) |
-						(OldStructInfo.DeclareLater ? STRUCT_FLAG_DECLARE_LATER : 0);
-					StructInfo.ObjectID = OldStructInfo.ObjectID;
-					StructInfo.IDSeed = OldStructInfo.IDSeed;
-					StructInfo.GenerateOperations = OldStructInfo.GenerateOperations;
-				}
-				ModuleInfo.DataStructDefineList[i] = pStructList;
+				STRUCT_DEFINE_INFO_OLD& OldStructInfo = pOldStructList->StructList[j];
+				STRUCT_DEFINE_INFO& StructInfo = pStructList->StructList[j];
+				StructInfo.Name = OldStructInfo.Name;
+				StructInfo.ShortName = OldStructInfo.ShortName;
+				StructInfo.BaseStruct = OldStructInfo.BaseStruct;
+				StructInfo.MemberList = OldStructInfo.MemberList;
+				StructInfo.Description = OldStructInfo.Description;
+				StructInfo.Flag = (OldStructInfo.IsDataObject ? STRUCT_FLAG_IS_DATA_OBJECT : 0) |
+					(OldStructInfo.DeclareLater ? STRUCT_FLAG_DECLARE_LATER : 0);
+				StructInfo.ObjectID = OldStructInfo.ObjectID;
+				StructInfo.IDSeed = OldStructInfo.IDSeed;
+				StructInfo.GenerateOperations = OldStructInfo.GenerateOperations;
 			}
-			break;
+			ModuleInfo.DataStructDefineList[i] = pStructList;
+		}
+		break;
 		default:
-			{
-				CString Msg;
-				Msg.Format("数据结构[%s]的类型[%d]错误", pBaseDefine->ListName, pBaseDefine->ListType);
-				PrintImportantLog("ConvertError", "%s", Msg);
-				ErrorCount++;
-			}
+		{
+			CString Msg;
+			Msg.Format("数据结构[%s]的类型[%d]错误", pBaseDefine->ListName, pBaseDefine->ListType);
+			PrintImportantLog("ConvertError", "%s", Msg);
+			ErrorCount++;
+		}
 		}
 	}
 	if (WarningCount || ErrorCount)
@@ -2985,26 +2989,26 @@ bool CCallInterfaceMakerDlg::ConvertOldInterfaceDefines(INTERFANCE_DEFINES_OLD& 
 	return true;
 }
 
-INTERFACE_METHOD_OLD * CCallInterfaceMakerDlg::FindInterfaceMethod(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, LPCTSTR MethodName, bool FindAck)
+INTERFACE_METHOD_OLD* CCallInterfaceMakerDlg::FindInterfaceMethod(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, LPCTSTR MethodName, bool FindAck)
 {
 	if (FindAck)
 		InterfaceName += "Ack";
-	
+
 	for (size_t i = 0; i < OldInterfaceDefines.InterfaceList.size(); i++)
 	{
 		CALLER_INTERFACE_OLD& OldInterfaceInfo = OldInterfaceDefines.InterfaceList[i];
 		if (OldInterfaceInfo.Name == InterfaceName)
 		{
-			INTERFACE_METHOD_OLD * pMethodInfo = FindMethod(OldInterfaceInfo.MethodList, MethodName, FindAck);
+			INTERFACE_METHOD_OLD* pMethodInfo = FindMethod(OldInterfaceInfo.MethodList, MethodName, FindAck);
 			if (pMethodInfo)
-				return pMethodInfo;			
+				return pMethodInfo;
 		}
 	}
-	
+
 	return NULL;
 }
 
-CALLER_INTERFACE_OLD * CCallInterfaceMakerDlg::FindInterface(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, bool FindAck)
+CALLER_INTERFACE_OLD* CCallInterfaceMakerDlg::FindInterface(INTERFANCE_DEFINES_OLD& OldInterfaceDefines, CString InterfaceName, bool FindAck)
 {
 	if (FindAck)
 		InterfaceName += "Ack";
@@ -3019,7 +3023,7 @@ CALLER_INTERFACE_OLD * CCallInterfaceMakerDlg::FindInterface(INTERFANCE_DEFINES_
 	return NULL;
 }
 
-INTERFACE_METHOD_OLD * CCallInterfaceMakerDlg::FindMethod(vector<INTERFACE_METHOD_OLD>& OldMethodList, CString MethodName, bool FindAck)
+INTERFACE_METHOD_OLD* CCallInterfaceMakerDlg::FindMethod(vector<INTERFACE_METHOD_OLD>& OldMethodList, CString MethodName, bool FindAck)
 {
 	if (FindAck)
 		MethodName += "Ack";
@@ -3063,15 +3067,15 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 
 	}
 
-	if(m_InterfaceConfig.EnumExportConfig.IsExport)
+	if (m_InterfaceConfig.EnumExportConfig.IsExport)
 	{
 		CString Temp;
 		Temp.Format("%sSystemEnums.%s", (LPCTSTR)m_MainModule.Name, (LPCTSTR)m_InterfaceConfig.EnumExportConfig.ExportExt);
 		ExportSystemEnums(ExportDir, Temp, m_AllModuleList);
 	}
 
-	ExportDataStructDefines(ConstList, EnumList, StructList, ExportDir, m_MainModule.Name);	
-	ExportDataObject(StructList, ExportDir, m_MainModule.Name);	
+	ExportDataStructDefines(ConstList, EnumList, StructList, ExportDir, m_MainModule.Name);
+	ExportDataObject(StructList, ExportDir, m_MainModule.Name);
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_CALL, m_MainModule.Name);
 	ExportInterfaces(m_AllInterfaceList, ExportDir, INTERFACE_METHOD_EXPORT_TYPE_ACK, m_MainModule.Name);
 
@@ -3091,7 +3095,7 @@ bool CCallInterfaceMakerDlg::Export(LPCTSTR ExportDir)
 		CString AllDefines;
 		IncSpace(m_OneFileExportCache.GetStr(), AllDefines, LineSpace);
 		Source.Replace("<AllDefines>", AllDefines);
-		
+
 
 		CStringFile OutputFile;
 		if (m_UTF8Export)
@@ -3114,11 +3118,11 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 {
 	CString OutputFileName;
 
-	OutputFileName=ExportDir;
-	OutputFileName+="\\";
-	OutputFileName+=FileName;
+	OutputFileName = ExportDir;
+	OutputFileName += "\\";
+	OutputFileName += FileName;
 
-	
+
 	CString Source = m_InterfaceHeaderTemplate;
 
 	CString Includes;
@@ -3138,7 +3142,7 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 		Includes += Include;
 	}
 
-	if(m_InterfaceConfig.ConstExportConfig.IsExport)
+	if (m_InterfaceConfig.ConstExportConfig.IsExport)
 	{
 		for (CONST_DEFINE_LIST* pList : ConstList)
 		{
@@ -3152,7 +3156,7 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 		}
 	}
 
-	if(m_InterfaceConfig.EnumExportConfig.IsExport)
+	if (m_InterfaceConfig.EnumExportConfig.IsExport)
 	{
 		for (ENUM_DEFINE_LIST* pList : EnumList)
 		{
@@ -3164,9 +3168,9 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 			Include.Replace("<ImportFileName>", ImportFileName);
 			Includes += Include;
 		}
-	}	
+	}
 
-	if(m_InterfaceConfig.StructExportConfig.IsExport)
+	if (m_InterfaceConfig.StructExportConfig.IsExport)
 	{
 		for (STRUCT_DEFINE_LIST2* pList : StructList)
 		{
@@ -3201,20 +3205,20 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefineHeader(vector<CONST_DEFINE_LI
 
 	Source.Replace("<Includes>", Includes);
 
-	WriteStringToFile(OutputFileName, Source);	
+	WriteStringToFile(OutputFileName, Source);
 
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::ExportInterfaceHeader(vector<CALLER_INTERFACE *>& InterfaceList, LPCTSTR ExportDir, LPCTSTR FileName)
+bool CCallInterfaceMakerDlg::ExportInterfaceHeader(vector<CALLER_INTERFACE*>& InterfaceList, LPCTSTR ExportDir, LPCTSTR FileName)
 {
 	CString OutputFileName;
 
-	OutputFileName=ExportDir;
-	OutputFileName+="\\";
-	OutputFileName+=FileName;
+	OutputFileName = ExportDir;
+	OutputFileName += "\\";
+	OutputFileName += FileName;
 
-	
+
 	CString ProtocolFile = m_InterfaceHeaderTemplate;
 
 	ProtocolFile.Replace("<Prefix>", "");
@@ -3278,7 +3282,7 @@ bool CCallInterfaceMakerDlg::ExportInterfaceHeader(vector<CALLER_INTERFACE *>& I
 	ProtocolFile.Replace("<Includes>", Includes);
 
 	WriteStringToFile(OutputFileName, ProtocolFile);
-	
+
 	return false;
 }
 
@@ -3286,11 +3290,11 @@ bool CCallInterfaceMakerDlg::ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, 
 {
 	CString OutputFileName;
 
-	OutputFileName=ExportDir;
-	OutputFileName+="\\";
-	OutputFileName+=FileName;
+	OutputFileName = ExportDir;
+	OutputFileName += "\\";
+	OutputFileName += FileName;
 
-	
+
 	CString DefineHeader = m_StructDefineHeaderTemplate;
 
 	DefineHeader.Replace("<SpaceName>", SpaceName);
@@ -3301,11 +3305,11 @@ bool CCallInterfaceMakerDlg::ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, 
 	DefineHeader.Replace("<Structs>", Structs);
 
 	WriteStringToFile(OutputFileName, DefineHeader);
-		
+
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileName, vector<MODULE_DEFINE_INFO *>& AllModuleList)
+bool CCallInterfaceMakerDlg::ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileName, vector<MODULE_DEFINE_INFO*>& AllModuleList)
 {
 	vector<ENUM_DEFINE_INFO> SystemEnumList;
 
@@ -3317,21 +3321,21 @@ bool CCallInterfaceMakerDlg::ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileNa
 	{
 		EnumInfo.MemberList[i].Name = "MODULE_ID_" + ClassNameToUpper(AllModuleList[i]->Name);
 		EnumInfo.MemberList[i].Value.Format("%d", AllModuleList[i]->ModuleID);
-	}	
+	}
 	SystemEnumList.push_back(EnumInfo);
-	
 
-	EnumInfo.Name="GET_MODIFY_FLAG_TYPE";	
+
+	EnumInfo.Name = "GET_MODIFY_FLAG_TYPE";
 	EnumInfo.MemberList.resize(3);
-	EnumInfo.MemberList[0].Name="GMFT_COPY";
+	EnumInfo.MemberList[0].Name = "GMFT_COPY";
 	EnumInfo.MemberList[0].Value.Empty();
-	EnumInfo.MemberList[1].Name="GMFT_AND";
+	EnumInfo.MemberList[1].Name = "GMFT_AND";
 	EnumInfo.MemberList[1].Value.Empty();
-	EnumInfo.MemberList[2].Name="GMFT_OR";
+	EnumInfo.MemberList[2].Name = "GMFT_OR";
 	EnumInfo.MemberList[2].Value.Empty();
-	SystemEnumList.push_back(EnumInfo);	
-	
-	
+	SystemEnumList.push_back(EnumInfo);
+
+
 
 	EnumInfo.MemberList.clear();
 	MakeDataObjectSSTIDsEnum(m_AllDataStructList, EnumInfo);
@@ -3354,7 +3358,7 @@ bool CCallInterfaceMakerDlg::ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileNa
 			}
 			SystemEnumList.push_back(EnumInfo);
 		}
-	}	
+	}
 
 	return ExportEnums(ExportDir, FileName, SystemEnumList, m_MainModule.Name, "System", true);
 }
@@ -3363,9 +3367,9 @@ bool CCallInterfaceMakerDlg::ExportEnums(LPCTSTR ExportDir, LPCTSTR FileName, ve
 {
 	CString OutputFileName;
 
-	OutputFileName=ExportDir;
-	OutputFileName+="\\";
-	OutputFileName+=FileName;
+	OutputFileName = ExportDir;
+	OutputFileName += "\\";
+	OutputFileName += FileName;
 
 	CString EnumDefineHeader;
 
@@ -3397,7 +3401,7 @@ bool CCallInterfaceMakerDlg::ExportEnums(LPCTSTR ExportDir, LPCTSTR FileName, ve
 
 
 	WriteStringToFile(OutputFileName, EnumDefineHeader);
-	
+
 	return false;
 }
 
@@ -3405,9 +3409,9 @@ bool CCallInterfaceMakerDlg::ExportConsts(LPCTSTR ExportDir, LPCTSTR FileName, v
 {
 	CString OutputFileName;
 
-	OutputFileName=ExportDir;
-	OutputFileName+="\\";
-	OutputFileName+=FileName;
+	OutputFileName = ExportDir;
+	OutputFileName += "\\";
+	OutputFileName += FileName;
 
 	CString ConstDefineHeader = m_ConstDefineHeaderTemplate;
 
@@ -3424,7 +3428,7 @@ bool CCallInterfaceMakerDlg::ExportConsts(LPCTSTR ExportDir, LPCTSTR FileName, v
 	ConstDefineHeader.Replace("<Consts>", Consts);
 
 	WriteStringToFile(OutputFileName, ConstDefineHeader);
-	
+
 	return false;
 }
 
@@ -3432,7 +3436,7 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>&
 	LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
 	CString Temp;
-	if(m_InterfaceConfig.ConstExportConfig.IsExport)
+	if (m_InterfaceConfig.ConstExportConfig.IsExport)
 	{
 		for (CONST_DEFINE_LIST* pList : ConstList)
 		{
@@ -3443,7 +3447,7 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>&
 			ExportConsts(ExportDir, Temp, pList->ConstList, SpaceName, pList->ListName);
 		}
 	}
-	if(m_InterfaceConfig.EnumExportConfig.IsExport)
+	if (m_InterfaceConfig.EnumExportConfig.IsExport)
 	{
 		for (ENUM_DEFINE_LIST* pList : EnumList)
 		{
@@ -3454,7 +3458,7 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>&
 			ExportEnums(ExportDir, Temp, pList->EnumList, SpaceName, pList->ListName, false);
 		}
 	}
-	if(m_InterfaceConfig.StructExportConfig.IsExport)
+	if (m_InterfaceConfig.StructExportConfig.IsExport)
 	{
 		for (STRUCT_DEFINE_LIST2* pList : StructList)
 		{
@@ -3468,15 +3472,15 @@ bool CCallInterfaceMakerDlg::ExportDataStructDefines(vector<CONST_DEFINE_LIST*>&
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& InterfaceList, LPCTSTR ExportDir, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SpaceName)
+bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE*>& InterfaceList, LPCTSTR ExportDir, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SpaceName)
 {
-	for (size_t i = 0; i<InterfaceList.size(); i++)
+	for (size_t i = 0; i < InterfaceList.size(); i++)
 	{
 		CALLER_INTERFACE& InterfaceInfo = *(InterfaceList[i]);
 
 		if (IsListItemChecked(InterfaceInfo.ModuleID, InterfaceInfo.ID))
 		{
-			if(m_InterfaceConfig.InterfaceExportConfig.IsExport)
+			if (m_InterfaceConfig.InterfaceExportConfig.IsExport)
 			{
 				CString OutputFileName;
 				CString LineSpace;
@@ -3526,7 +3530,7 @@ bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& Interf
 				Interface.Replace("<MethodSSTIDEnumDefine>", SSTIDDefines);
 
 				WriteStringToFile(OutputFileName, Interface);
-					
+
 			}
 			ExportMsgCaller(ExportDir, SpaceName, InterfaceInfo, ExportType);
 			ExportMsgHandler(ExportDir, SpaceName, InterfaceInfo, ExportType);
@@ -3538,7 +3542,7 @@ bool CCallInterfaceMakerDlg::ExportInterfaces(vector<CALLER_INTERFACE *>& Interf
 bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType)
 {
 
-	CString HeaderFileName,SourceFileName;
+	CString HeaderFileName, SourceFileName;
 
 	CString InterfaceName;
 	if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -3547,33 +3551,33 @@ bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceNam
 		InterfaceName = InterfaceInfo.Name;
 
 
-	if(m_InterfaceConfig.CallHeaderExportConfig.IsExport)
+	if (m_InterfaceConfig.CallHeaderExportConfig.IsExport)
 	{
 		HeaderFileName.Format("%s\\%sMsgCaller.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
-		
-		
-		CString Header=m_MsgCallerHeaderTemplate;
+
+
+		CString Header = m_MsgCallerHeaderTemplate;
 
 		Header.Replace("<SpaceName>", SpaceName);
 		Header.Replace("<InterfaceName>", InterfaceName);
 		Header.Replace("<@InterfaceName>", InterfaceInfo.Name);
-		CString LineSpace=GetLineSpace(Header,"<Methods>");
+		CString LineSpace = GetLineSpace(Header, "<Methods>");
 		CString Methods = MakeMethods(InterfaceInfo, SpaceName, ExportType, LineSpace, false);
-		Header.Replace("<Methods>",Methods);
+		Header.Replace("<Methods>", Methods);
 
-		LineSpace=GetLineSpace(Header,"<PackMethods>");
+		LineSpace = GetLineSpace(Header, "<PackMethods>");
 		Methods = MakeMsgPackMethods(InterfaceInfo.MethodList, ExportType, LineSpace);
-		Header.Replace("<PackMethods>",Methods);
+		Header.Replace("<PackMethods>", Methods);
 
 		WriteStringToFile(HeaderFileName, Header);
 	}
 
-	if(m_InterfaceConfig.CallSourceExportConfig.IsExport)
+	if (m_InterfaceConfig.CallSourceExportConfig.IsExport)
 	{
 		SourceFileName.Format("%s\\%sMsgCaller.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.CallSourceExportConfig.ExportExt);
-		
+
 		CString Source = m_MsgCallerSourceTemplate;
 
 		Source.Replace("<SpaceName>", SpaceName);
@@ -3595,16 +3599,16 @@ bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceNam
 
 bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceName, CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType)
 {
-	CString HeaderFileName,SourceFileName;
+	CString HeaderFileName, SourceFileName;
 
-	
+
 	CString InterfaceName;
 	if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
 		InterfaceName = InterfaceInfo.Name + "Ack";
 	else
 		InterfaceName = InterfaceInfo.Name;
 
-	if(m_InterfaceConfig.HandlerHeaderExportConfig.IsExport)
+	if (m_InterfaceConfig.HandlerHeaderExportConfig.IsExport)
 	{
 		HeaderFileName.Format("%s\\%sMsgHandler.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
@@ -3621,11 +3625,11 @@ bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceNa
 		WriteStringToFile(HeaderFileName, Header);
 	}
 
-	if(m_InterfaceConfig.HandlerSourceExportConfig.IsExport)
+	if (m_InterfaceConfig.HandlerSourceExportConfig.IsExport)
 	{
 		SourceFileName.Format("%s\\%sMsgHandler.%s", ExportDir, InterfaceName,
 			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
-		
+
 		CString Source = m_MsgHandlerSourceTemplate;
 
 		Source.Replace("<SpaceName>", SpaceName);
@@ -3651,8 +3655,8 @@ bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceNa
 
 bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& StructList, LPCTSTR ExportDir, LPCTSTR SpaceName)
 {
-	CString HeaderFileName,SourceFileName;
-	
+	CString HeaderFileName, SourceFileName;
+
 	for (STRUCT_DEFINE_LIST2* pList : StructList)
 	{
 		if (!pList->IgnoreOnExport && (!m_InterfaceConfig.ForceExportAll))
@@ -3790,7 +3794,7 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 
 						CString LineSpace;
 
-						
+
 
 						if (pInfo->Flag & STRUCT_FLAG_EXPORT_XML_PROCESS)
 						{
@@ -3825,7 +3829,7 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 							Source.Replace("<DBProcess>", "");
 						}
 
-						
+
 
 						LineSpace = GetLineSpace(m_MsgHandlerHeaderTemplate, "<Description>");
 						CString Description = ToComment(pInfo->Description, LineSpace);
@@ -3966,7 +3970,7 @@ bool CCallInterfaceMakerDlg::ExportDataObjectModifyFlags(vector<DATA_OBJECT_MODI
 
 		CString Header = m_DataObjectModifyFlagsHeaderTemple;
 
-		
+
 		Header.Replace("<SpaceName>", SpaceName);
 
 		LineSpace = GetLineSpace(Header, "<DataObjectModifyFlags>");
@@ -3977,15 +3981,15 @@ bool CCallInterfaceMakerDlg::ExportDataObjectModifyFlags(vector<DATA_OBJECT_MODI
 	}
 
 
-	if(m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport)
+	if (m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport)
 	{
 		CString SourceFileName;
 		CString LineSpace;
 
-		SourceFileName.Format("%s\\DataObjectModifyFlags.%s",ExportDir,
+		SourceFileName.Format("%s\\DataObjectModifyFlags.%s", ExportDir,
 			m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt);
 
-		CString Source=m_DataObjectModifyFlagsSourceTemple;
+		CString Source = m_DataObjectModifyFlagsSourceTemple;
 
 		Source.Replace("<SpaceName>", SpaceName);
 
@@ -4031,7 +4035,7 @@ CString CCallInterfaceMakerDlg::MakeMethods(CALLER_INTERFACE& InterfaceInfo, LPC
 			break;
 		}
 
-		
+
 
 		if (pParamList)
 		{
@@ -4077,24 +4081,24 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 	else
 		InterfaceName = ClassNameToUpper(InterfaceInfo.Name);
 
-	vector<INTERFACE_METHOD>& MethodList=InterfaceInfo.MethodList;
-	for(size_t i=0;i<MethodList.size();i++)
+	vector<INTERFACE_METHOD>& MethodList = InterfaceInfo.MethodList;
+	for (size_t i = 0;i < MethodList.size();i++)
 	{
-		INTERFACE_METHOD& MethodInfo=MethodList[i];
+		INTERFACE_METHOD& MethodInfo = MethodList[i];
 		CString MethodName = MethodInfo.Name;
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
 			{
 				pParamList = &MethodInfo.CallParamList;
-			}				
+			}
 			else
 			{
 				pParamList = &MethodInfo.AckParamList;
-				MethodName = MethodInfo.Name+"Ack";
-			}				
+				MethodName = MethodInfo.Name + "Ack";
+			}
 			break;
 		case INTERFACE_METHOD_TYPE_NOTIFY:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -4111,7 +4115,7 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 		if (pParamList)
 		{
 			ENUM_DEFINE_INFO EnumInfo;
-						
+
 			MethodName = ClassNameToUpper(MethodName);
 
 			EnumInfo.Name.Format("%s_%s_MEMBER_IDS", InterfaceName, MethodName);
@@ -4119,7 +4123,7 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 
 			EnumInfo.MemberList.resize(pParamList->size());
 
-			
+
 
 			for (size_t j = 0; j < pParamList->size(); j++)
 			{
@@ -4131,9 +4135,9 @@ CString CCallInterfaceMakerDlg::MakeMethodSSTIDEnumDefines(CALLER_INTERFACE& Int
 
 			MethodIDEnumDefines += MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 		}
-		
+
 	}
-	
+
 	return MethodIDEnumDefines;
 }
 
@@ -4141,13 +4145,13 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 {
 	ENUM_DEFINE_INFO EnumInfo;
 
-	EnumInfo.Name.Format("%s_MEMBER_IDS",ClassNameToUpper(StructInfo.Name));
-	EnumInfo.ShortName=EnumInfo.Name;
+	EnumInfo.Name.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
+	EnumInfo.ShortName = EnumInfo.Name;
 
 	EnumInfo.MemberList.resize(StructInfo.MemberList.size());
 
 	CString StructName;
-	StructName=StructInfo.ShortName;	
+	StructName = StructInfo.ShortName;
 
 	if (!StructInfo.BaseStruct.IsEmpty())
 	{
@@ -4157,7 +4161,7 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 			Msg.Format("结构%s有基类，但没有设置ObjectID，会导致打解包异常", StructInfo.Name);
 			AfxMessageBox(Msg);
 		}
-		else 
+		else
 		{
 			vector<UINT> ObjectIDList;
 			ObjectIDList.push_back(StructInfo.ObjectID);
@@ -4170,40 +4174,40 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 		}
 	}
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
 		CString MemberName;
-		MemberName=ClassNameToUpper(StructInfo.MemberList[j].Name);
-		EnumInfo.MemberList[j].Name.Format("SST_%s_%s",StructName,MemberName);
-		EnumInfo.MemberList[j].Value.Format("%d",StructInfo.ObjectID+StructInfo.MemberList[j].ID);
+		MemberName = ClassNameToUpper(StructInfo.MemberList[j].Name);
+		EnumInfo.MemberList[j].Name.Format("SST_%s_%s", StructName, MemberName);
+		EnumInfo.MemberList[j].Value.Format("%d", StructInfo.ObjectID + StructInfo.MemberList[j].ID);
 	}
 
 	return MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 
 
-	
+
 }
 
 CString CCallInterfaceMakerDlg::MakeMsgPackMethods(vector<INTERFACE_METHOD>& MethodList, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
 {
 	CString Methods;
-	for(size_t j=0;j<MethodList.size();j++)
+	for (size_t j = 0;j < MethodList.size();j++)
 	{
-		INTERFACE_METHOD& MethodInfo=MethodList[j];
+		INTERFACE_METHOD& MethodInfo = MethodList[j];
 		CString MethodName = MethodInfo.Name;
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
 			{
 				pParamList = &MethodInfo.CallParamList;
-			}				
+			}
 			else
 			{
 				pParamList = &MethodInfo.AckParamList;
 				MethodName = MethodInfo.Name + "Ack";
-			}				
+			}
 			break;
 		case INTERFACE_METHOD_TYPE_NOTIFY:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -4227,38 +4231,54 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethods(vector<INTERFACE_METHOD>& Met
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeParams(vector<METHOD_PARAM>& ParamList,bool IsDefine,bool IncludeDefaultValue)
+CString CCallInterfaceMakerDlg::MakeParams(vector<METHOD_PARAM>& ParamList, bool IsDefine, bool IncludeDefaultValue)
 {
 	CString Params;
-	for(size_t k=0;k<ParamList.size();k++)
+	for (size_t k = 0;k < ParamList.size();k++)
 	{
-		METHOD_PARAM& ParamInfo=ParamList[k];
+		METHOD_PARAM& ParamInfo = ParamList[k];
 
-		TYPE_DEFINE * pTypeInfo=FindVarType(ParamInfo.Type);
-		if(pTypeInfo)
-		{		
+		TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
+		if (pTypeInfo)
+		{
 			CString Param;
-			
-			if(IsDefine)
+
+			if (IsDefine)
 				Param = m_ParamDefineTemple;
 			else
 				Param = m_ParamTransTemple;
 
-			
-			if (ParamInfo.IsReference)
+
+
+			if (ParamInfo.IsArray)
+			{
+				if (IsDefine)
+				{
+					CString ReferenceDefine = m_InterfaceConfig.ArrayDefineConfig.ReferenceDefine;
+					ReferenceDefine.Replace("<Type>", pTypeInfo->CType);
+					Param.Replace("<ParamType>", ReferenceDefine);
+					Param.Replace("<ParamName>", ParamInfo.Name);
+				}
+				else
+				{
+					CString ReferenceUse = m_InterfaceConfig.ArrayDefineConfig.ReferenceUse;
+					ReferenceUse.Replace("<Variable>", ParamInfo.Name);
+					Param.Replace("<ParamName>", ReferenceUse);
+				}
+			}
+			else if (ParamInfo.IsReference)
 			{
 				if (IsDefine)
 				{
 					CString ReferenceDefine = pTypeInfo->GenerateOperations.ReferenceDefine;
 					ReferenceDefine.Replace("<Type>", pTypeInfo->CType);
 					Param.Replace("<ParamType>", ReferenceDefine);
-
 					Param.Replace("<ParamName>", ParamInfo.Name);
 				}
 				else
@@ -4285,44 +4305,60 @@ CString CCallInterfaceMakerDlg::MakeParams(vector<METHOD_PARAM>& ParamList,bool 
 				DefauleValue.Format("= %s", ParamInfo.DefaultValue);
 				Param.Replace("<ParamDefaultValue>", DefauleValue);
 			}
-			
-			if(k)
+
+			if (k)
 			{
-				Params+=",";							
+				Params += ",";
 			}
-			Params+=Param;
+			Params += Param;
 		}
 	}
 	return Params;
 }
 
-CString CCallInterfaceMakerDlg::MakeParamDescriptions(vector<METHOD_PARAM>& ParamList,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeParamDescriptions(vector<METHOD_PARAM>& ParamList, LPCTSTR szLineSpace)
 {
 	CString ParamDescriptions;
-	for(size_t k=0;k<ParamList.size();k++)
+	for (size_t k = 0;k < ParamList.size();k++)
 	{
-		METHOD_PARAM& ParamInfo=ParamList[k];
+		METHOD_PARAM& ParamInfo = ParamList[k];
 
-		TYPE_DEFINE * pTypeInfo=FindVarType(ParamInfo.Type);
-		if(pTypeInfo)
-		{			
+		TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
+		if (pTypeInfo)
+		{
 
-			CString ParamDescription=m_ParamDescriptionTemple;
+			CString ParamDescription = m_ParamDescriptionTemple;
 
-			ParamDescription.Replace("<ParamName>",ParamInfo.Name);
-			ParamDescription.Replace("<ParamType>", pTypeInfo->CType);
-			ParamDescription.Replace("<ParamDescript>",ParamInfo.Description);
-
-			ParamDescriptions+=ParamDescription;
-			if(k<ParamList.size()-1)
+			ParamDescription.Replace("<ParamName>", ParamInfo.Name);
+			if (ParamInfo.IsArray)
 			{
-				ParamDescriptions+="\r\n";
+				CString ReferenceDefine = m_InterfaceConfig.ArrayDefineConfig.ReferenceDefine;
+				ReferenceDefine.Replace("<Type>", pTypeInfo->CType);
+				ParamDescription.Replace("<ParamType>", ReferenceDefine);
+			}
+			else if (ParamInfo.IsReference)
+			{
+				CString ReferenceDefine = pTypeInfo->GenerateOperations.ReferenceDefine;
+				ReferenceDefine.Replace("<Type>", pTypeInfo->CType);
+				ParamDescription.Replace("<ParamType>", ReferenceDefine);
+			}
+			else
+			{
+				ParamDescription.Replace("<ParamType>", pTypeInfo->CType);
+			}
+
+			ParamDescription.Replace("<ParamDescript>", ParamInfo.Description);
+
+			ParamDescriptions += ParamDescription;
+			if (k < ParamList.size() - 1)
+			{
+				ParamDescriptions += "\r\n";
 			}
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	ParamDescriptions.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	ParamDescriptions.Replace("\r\n", Space);
 	return ParamDescriptions;
 }
 
@@ -4330,47 +4366,49 @@ CString CCallInterfaceMakerDlg::MakeParamDefines(vector<METHOD_PARAM>& ParamList
 {
 	CString ParamDefines;
 
-	int MaxLen=0;
-	for(size_t i=0;i<ParamList.size();i++)
+	int MaxLen = 0;
+	for (size_t i = 0;i < ParamList.size();i++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(ParamList[i].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(ParamList[i].Type);
+		if (pTypeInfo)
 		{
-			if(pTypeInfo->CType.GetLength()>MaxLen)
-				MaxLen=pTypeInfo->CType.GetLength();
+			if (pTypeInfo->CType.GetLength() > MaxLen)
+				MaxLen = pTypeInfo->CType.GetLength();
 		}
 	}
-	int SpaceLen=(((int)ceil(MaxLen/4.0f))+1)*4;
+	int SpaceLen = (((int)ceil(MaxLen / 4.0f)) + 1) * 4;
 
-	for(size_t k=0;k<ParamList.size();k++)
+	for (METHOD_PARAM& ParamInfo : ParamList)
 	{
-		METHOD_PARAM& ParamInfo=ParamList[k];
-
-		TYPE_DEFINE * pTypeInfo=FindVarType(ParamInfo.Type);
-		if(pTypeInfo)
-		{		
-			CString Param=pTypeInfo->GenerateOperations.VariableDefine;
+		TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
+		if (pTypeInfo)
+		{
+			CString Param;
+			if (ParamInfo.IsArray)
+				Param = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.VariableDefine, pTypeInfo);
+			else
+				Param = pTypeInfo->GenerateOperations.VariableDefine;
 			Param.Replace("<SpaceName>", SpaceName);
-			Param.Replace("<Variable>",ParamInfo.Name);			
-			Param.Replace("<Type>",pTypeInfo->CType);	
+			Param.Replace("<Variable>", ParamInfo.Name);
+			Param.Replace("<Type>", pTypeInfo->CType);
 			CString Space;
-			int CurSpaceCount=(int)ceil((SpaceLen-pTypeInfo->CType.GetLength())/4.0f);
-			while(CurSpaceCount)
+			int CurSpaceCount = (int)ceil((SpaceLen - pTypeInfo->CType.GetLength()) / 4.0f);
+			while (CurSpaceCount)
 			{
-				Space+="	";
+				Space += "	";
 				CurSpaceCount--;
 			}
-			Param.Replace("<Space>",Space);
+			Param.Replace("<Space>", Space);
 
 			Param = m_InterfaceConfig.LocalVariableDefinePrefix + Param;
-			
+
 			ParamDefines += Param + szSplitChar;
-			ParamDefines+="\r\n";
+			ParamDefines += "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	ParamDefines.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	ParamDefines.Replace("\r\n", Space);
 	return ParamDefines;
 }
 
@@ -4387,7 +4425,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 	CString ModuleID;
 	CString InterfaceIDEnumName;
 	CString InterfaceID;
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
 	if (pModuleInfo)
 	{
 		InterfaceIDEnumName.Format("%s_INTERFACES", ClassNameToUpper(pModuleInfo->Name));
@@ -4399,11 +4437,11 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 	MethodIDEnumName.Format("%s_METHODS", ClassNameToUpper(InterfaceInfo.Name));
 
 	CString Methods;
-	for(size_t j=0;j<InterfaceInfo.MethodList.size();j++)
+	for (size_t j = 0;j < InterfaceInfo.MethodList.size();j++)
 	{
 		INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
 		CString MethodName = MethodInfo.Name;
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
@@ -4415,7 +4453,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 			{
 				pParamList = &MethodInfo.AckParamList;
 				MethodName = MethodInfo.Name + "Ack";
-			}				
+			}
 			break;
 		case INTERFACE_METHOD_TYPE_NOTIFY:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -4432,7 +4470,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 		if (pParamList)
 		{
 			CString Method = m_MethodCallerSourceTemple;
-			
+
 			CString MethodNameUp = ClassNameToUpper(MethodName);
 
 			Method.Replace("<ModuleID>", ModuleID);
@@ -4452,7 +4490,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 			CString LineSpace = GetLineSpace(Method, "<PacketSizes>");
 			CString PackSizes = MakePackSizes(MethodInfo, ExportType, LineSpace);
 			Method.Replace("<PacketSizes>", PackSizes);
-			
+
 			Method.Replace("<InterfaceIDEnumName>", InterfaceIDEnumName);
 			Method.Replace("<InterfaceID>", InterfaceID);
 			CString MethodID;
@@ -4461,7 +4499,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 			Method.Replace("<MethodIDEnumName>", MethodIDEnumName);
 			Method.Replace("<IsAckMsg>", ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK ? "true" : "false");
 
-			if (MethodInfo.Flag&INTERFACE_METHOD_FLAG_CAN_CACHE)
+			if (MethodInfo.Flag & INTERFACE_METHOD_FLAG_CAN_CACHE)
 			{
 				Method.Replace("<IfMsgCanCache>", "");
 				Method.Replace("</IfMsgCanCache>", "");
@@ -4471,7 +4509,7 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 				RemoveBlock(Method, "<IfMsgCanCache>", "</IfMsgCanCache>");
 			}
 
-			if (MethodInfo.Flag&INTERFACE_METHOD_FLAG_NO_COMPRESS)
+			if (MethodInfo.Flag & INTERFACE_METHOD_FLAG_NO_COMPRESS)
 			{
 				Method.Replace("<IfMsgNoCompress>", "");
 				Method.Replace("</IfMsgNoCompress>", "");
@@ -4484,9 +4522,9 @@ CString CCallInterfaceMakerDlg::MakeMethodsSource(CALLER_INTERFACE& InterfaceInf
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -4502,11 +4540,11 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethodsSource(LPCTSTR SpaceName, CALL
 	CString InterfaceNameUp = ClassNameToUpper(InterfaceName);
 
 	CString Methods;
-	for(size_t j=0;j<InterfaceInfo.MethodList.size();j++)
+	for (size_t j = 0;j < InterfaceInfo.MethodList.size();j++)
 	{
-		INTERFACE_METHOD& MethodInfo=InterfaceInfo.MethodList[j];
+		INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
 		CString MethodName = MethodInfo.Name;
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
@@ -4535,7 +4573,7 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethodsSource(LPCTSTR SpaceName, CALL
 		if (pParamList)
 		{
 			CString Method = m_MsgPackMethodSourceTemple;
-			
+
 			CString MethodNameUp = ClassNameToUpper(MethodName);
 			Method.Replace("<InterfaceName>", InterfaceName);
 			Method.Replace("<MethodName>", MethodName);
@@ -4559,9 +4597,9 @@ CString CCallInterfaceMakerDlg::MakeMsgPackMethodsSource(LPCTSTR SpaceName, CALL
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -4569,7 +4607,7 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(INTERFACE_METHOD& MethodInfo,
 {
 	CString InitOperations;
 
-	vector<METHOD_PARAM> * pParamList = NULL;
+	vector<METHOD_PARAM>* pParamList = NULL;
 	switch (MethodInfo.Type)
 	{
 	case INTERFACE_METHOD_TYPE_CALL:
@@ -4584,22 +4622,23 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(INTERFACE_METHOD& MethodInfo,
 		break;
 	case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
-			pParamList = &MethodInfo.CallParamList;		
+			pParamList = &MethodInfo.CallParamList;
 		break;
 	}
 	if (pParamList)
 	{
-		for (size_t i = 0; i < pParamList->size(); i++)
-		{
-
-			TYPE_DEFINE * pTypeInfo = FindVarType((*pParamList)[i].Type);
+		for (METHOD_PARAM& ParamInfo : *pParamList)
+		{			
+			if(ParamInfo.IsArray)
+				continue;
+			TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
 			if (pTypeInfo)
 			{
 				if (!pTypeInfo->GenerateOperations.InitOperation.IsEmpty())
 				{
 					CString Operation = pTypeInfo->GenerateOperations.InitOperation;
 					Operation.Replace("<Type>", pTypeInfo->CType);
-					Operation.Replace("<Variable>", (*pParamList)[i].Name);
+					Operation.Replace("<Variable>", ParamInfo.Name);
 
 					InitOperations += Operation;
 					InitOperations += "\r\n";
@@ -4618,7 +4657,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 {
 	CString PackOperations;
 	CString MethodName = MethodInfo.Name;
-	vector<METHOD_PARAM> * pParamList = NULL;
+	vector<METHOD_PARAM>* pParamList = NULL;
 	switch (MethodInfo.Type)
 	{
 	case INTERFACE_METHOD_TYPE_CALL:
@@ -4638,20 +4677,30 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 		break;
 	case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
-			pParamList = &MethodInfo.CallParamList;		
+			pParamList = &MethodInfo.CallParamList;
 		break;
 	}
 
 	if (pParamList)
 	{
-		for (size_t i = 0; i < pParamList->size(); i++)
+		for (METHOD_PARAM& ParamInfo : *pParamList)
 		{
 
-			TYPE_DEFINE * pTypeInfo = FindVarType((*pParamList)[i].Type);
+			TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
 			if (pTypeInfo)
 			{
 				CString Operation = m_PackOperationUnitTemplate;
-
+				CString LocalPacketName = PacketName;
+				CString LocalPacketMemberName = PacketMemberName;
+				if (ParamInfo.IsArray)
+				{
+					Operation = m_InterfaceConfig.ArrayDefineConfig.PackOperation;
+					Operation.Replace("<Packet>", PacketName);
+					Operation.Replace("<PacketMember>", PacketMemberName);
+					CheckNameChange(Operation, LocalPacketName, "<ChangePacketName=");
+					CheckNameChange(Operation, LocalPacketMemberName, "<ChangePacketMemberName=");
+					Operation = ProcessArrayOperation(Operation, pTypeInfo);
+				}
 
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
@@ -4659,16 +4708,27 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 
 
-				Operation.Replace("<Variable>", (*pParamList)[i].Name);		
+				Operation.Replace("<Variable>", ParamInfo.Name);
 
+				CString SST_ID;
+				CString ParentShortName = ClassNameToUpper(MethodName);
+				SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(ParamInfo.Name));
+				SST_ID.MakeUpper();
+				Operation.Replace("<SST_NAME>", SSTIDEnumName);
+				Operation.Replace("<SST_ID>", SST_ID);
+
+				if (ParamInfo.IsArray)
+					Operation.Replace("<OrginType>", pTypeInfo->Name + "[]");
+				else
+					Operation.Replace("<OrginType>", pTypeInfo->Name);
 
 				CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
-				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE;
-				CString PackOP = MakePackOperation((*pParamList)[i].Type,
-					(*pParamList)[i].Name,
-					MethodName, ClassNameToUpper(MethodName),
-					SSTIDEnumName, (*pParamList)[i].PackFlag,
-					PacketName, PacketMemberName,
+				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE | ((ParamInfo.IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
+				CString PackOP = MakePackOperation(ParamInfo.Type,
+					ParamInfo.Name,
+					MethodName, ParentShortName,
+					SSTIDEnumName, ParamInfo.PackFlag,
+					LocalPacketName, LocalPacketMemberName,
 					OperationFlag,
 					SpaceName, LineSpace);
 
@@ -4689,19 +4749,19 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 {
 	CString PackOperations;
 	CString MethodName = MethodInfo.Name;
-	vector<METHOD_PARAM> * pParamList = NULL;
+	vector<METHOD_PARAM>* pParamList = NULL;
 	switch (MethodInfo.Type)
 	{
 	case INTERFACE_METHOD_TYPE_CALL:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
 		{
 			pParamList = &MethodInfo.CallParamList;
-		}			
+		}
 		else
 		{
 			pParamList = &MethodInfo.AckParamList;
 			MethodName = MethodInfo.Name + "Ack";
-		}			
+		}
 		break;
 	case INTERFACE_METHOD_TYPE_NOTIFY:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -4709,30 +4769,54 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 		break;
 	case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
-			pParamList = &MethodInfo.CallParamList;		
+			pParamList = &MethodInfo.CallParamList;
 		break;
 	}
 
 	if (pParamList)
 	{
-		for (size_t i = 0; i < pParamList->size(); i++)
+		for (size_t i = 0;i < pParamList->size();i++)
 		{
-
-			TYPE_DEFINE * pTypeInfo = FindVarType((*pParamList)[i].Type);
+			METHOD_PARAM& ParamInfo = (*pParamList)[i];
+			TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
 			if (pTypeInfo)
 			{
 				CString Operation = m_UnpackOperationUnitTemplate;
+				CString LocalPacketName = PacketName;
+				CString LocalPacketMemberName = PacketMemberName;
+				if (ParamInfo.IsArray)
+				{
+					Operation = m_InterfaceConfig.ArrayDefineConfig.UnpackOperation;
+
+					CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
+					VariableDefine.Replace("<Type>", pTypeInfo->CType);
+					VariableDefine.Replace("<Space>", "	");
+					VariableDefine.Replace("<Variable>", "ArrayElement");
+					VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
+					Operation.Replace("<ArrayElementVariableDefine>", VariableDefine);
+
+					CString VariableInit = pTypeInfo->GenerateOperations.InitOperation;
+					VariableInit.Replace("<Variable>", "ArrayElement");
+					Operation.Replace("<ArrayElementVariableInit>", VariableInit);
+
+					Operation.Replace("<Packet>", PacketName);
+					Operation.Replace("<PacketMember>", PacketMemberName);
+					CheckNameChange(Operation, LocalPacketName, "<ChangePacketName=");
+					CheckNameChange(Operation, LocalPacketMemberName, "<ChangePacketMemberName=");
+					Operation = ProcessArrayOperation(Operation, pTypeInfo);
+				}
 
 				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 				Operation.Replace("<IfNotInDataObject>", "");
 				Operation.Replace("</IfNotInDataObject>", "");
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
-							
+
 
 				CString SST_ID;
 
-				SST_ID.Format("SST_%s_%s", ClassNameToUpper(MethodName), ClassNameToUpper((*pParamList)[i].Name));
+				CString ParentShortName = ClassNameToUpper(MethodName);
+				SST_ID.Format("SST_%s_%s", ParentShortName, ClassNameToUpper(ParamInfo.Name));
 				SST_ID.MakeUpper();
 
 
@@ -4740,16 +4824,16 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 				Operation.Replace("<SST_NAME>", SSTIDEnumName);
 				Operation.Replace("<SST_ID>", SST_ID);
 
-				Operation.Replace("<Variable>", (*pParamList)[i].Name);
+				Operation.Replace("<Variable>", ParamInfo.Name);
 
 
 				CString LineSpace = GetLineSpace(Operation, "<PackOperation>");
-				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE;
-				CString UnpackOP = MakeUnpackOperation((*pParamList)[i].Type,
-					(*pParamList)[i].Name,
-					MethodName, ClassNameToUpper(MethodName),
-					SSTIDEnumName, (*pParamList)[i].PackFlag,
-					PacketName, PacketMemberName,
+				UINT OperationFlag = PACK_OPERATION_FLAG_IN_INTERFACE | ((ParamInfo.IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
+				CString UnpackOP = MakeUnpackOperation(ParamInfo.Type,
+					ParamInfo.Name,
+					MethodName, ParentShortName,
+					SSTIDEnumName, ParamInfo.PackFlag,
+					LocalPacketName, LocalPacketMemberName,
 					OperationFlag,
 					SpaceName, LineSpace);
 
@@ -4780,7 +4864,7 @@ CString CCallInterfaceMakerDlg::MakePackSizes(INTERFACE_METHOD& MethodInfo, INTE
 {
 	CString PackSizes;
 
-	vector<METHOD_PARAM> * pParamList = NULL;
+	vector<METHOD_PARAM>* pParamList = NULL;
 	switch (MethodInfo.Type)
 	{
 	case INTERFACE_METHOD_TYPE_CALL:
@@ -4795,19 +4879,25 @@ CString CCallInterfaceMakerDlg::MakePackSizes(INTERFACE_METHOD& MethodInfo, INTE
 		break;
 	case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
 		if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
-			pParamList = &MethodInfo.CallParamList;		
+			pParamList = &MethodInfo.CallParamList;
 		break;
 	}
 
 	if (pParamList)
 	{
-		for (size_t i = 0; i < pParamList->size(); i++)
+		for (METHOD_PARAM& ParamInfo:*pParamList)
 		{
 
-			TYPE_DEFINE * pTypeInfo = FindVarType((*pParamList)[i].Type);
+			TYPE_DEFINE* pTypeInfo = FindVarType(ParamInfo.Type);
 			if (pTypeInfo)
 			{
+				CString PackSize = m_PackSizeTemple;
 				CString Operation = pTypeInfo->GenerateOperations.SizeCaculateOperation;
+
+				
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
 
 				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 				{
@@ -4822,22 +4912,54 @@ CString CCallInterfaceMakerDlg::MakePackSizes(INTERFACE_METHOD& MethodInfo, INTE
 					Operation.Replace("</IfNotDataObject>", "");
 				}
 
-				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
-				Operation.Replace("<IfNotInArray>", "");
-				Operation.Replace("</IfNotInArray>", "");
+				if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
+				{
+					RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
+					Operation.Replace("<If64Bit>", "");
+					Operation.Replace("</If64Bit>", "");
+				}
+				else
+				{
+					RemoveBlock(Operation, "<If64Bit>", "</If64Bit>");
+					Operation.Replace("<IfNot64Bit>", "");
+					Operation.Replace("</IfNot64Bit>", "");
+				}
 
-				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
-				Operation.Replace("<IfNotInDataObject>", "");
-				Operation.Replace("</IfNotInDataObject>", "");
+				Operation.Replace("<PackFlag>", ParamInfo.PackFlag);
 
-				Operation.Replace("<Variable>", (*pParamList)[i].Name);
-				Operation.Replace("<Type>", pTypeInfo->CType);									
-				Operation.Replace("<PackFlag>", (*pParamList)[i].PackFlag);
+				if (ParamInfo.IsArray)
+				{
+					CString Var = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
+					Var.Replace("<Variable>", ParamInfo.Name);
+					Var.Replace("<Index>", "i");
+					Operation.Replace("<Variable>", Var);
+					Operation.Replace("<Type>", pTypeInfo->CType);
 
-				PackSizes += "+";
-				PackSizes += Operation;
-				if (i < pParamList->size() - 1)
-					PackSizes += "\r\n";
+					CString ArrayOP = m_InterfaceConfig.ArrayDefineConfig.SizeCaculateOperation;
+
+					ArrayOP.Replace("<Variable>", ParamInfo.Name);
+					ArrayOP.Replace("<ArrayElementSize>", Operation);
+					RemoveBlock(ArrayOP, "<IfNotInArray>", "</IfNotInArray>");
+					ArrayOP.Replace("<IfInArray>", "");
+					ArrayOP.Replace("</IfInArray>", "");
+
+					PackSize = ProcessArrayOperation(ArrayOP, pTypeInfo);
+				}
+				else
+				{
+					Operation.Replace("<Variable>", ParamInfo.Name);
+					Operation.Replace("<Type>", pTypeInfo->CType);
+					RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
+					Operation.Replace("<IfNotInArray>", "");
+					Operation.Replace("</IfNotInArray>", "");
+					PackSize.Replace("<PackSize>", Operation);
+				}
+				
+				RemoveBlock(PackSize, "<IfCheckMF>", "</IfCheckMF>");
+
+
+				PackSizes += PackSize;
+				PackSizes += "\r\n";
 			}
 		}
 		CString Space = "\r\n";
@@ -4847,20 +4969,20 @@ CString CCallInterfaceMakerDlg::MakePackSizes(INTERFACE_METHOD& MethodInfo, INTE
 	return PackSizes;
 }
 
-CString CCallInterfaceMakerDlg::MakeInitOperations(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeInitOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString InitOperations;
 
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	for (size_t i = 0;i < StructInfo.MemberList.size();i++)
 	{
-		
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-		if(pTypeInfo)
+
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
 		{
-			if(!pTypeInfo->GenerateOperations.InitOperation.IsEmpty())
+			if (!pTypeInfo->GenerateOperations.InitOperation.IsEmpty())
 			{
-				CString Operation=pTypeInfo->GenerateOperations.InitOperation;
-				if(StructInfo.MemberList[i].IsArray)
+				CString Operation = pTypeInfo->GenerateOperations.InitOperation;
+				if (StructInfo.MemberList[i].IsArray)
 				{
 					Operation = m_InterfaceConfig.ArrayDefineConfig.InitOperation;
 					CString Temp;
@@ -4872,20 +4994,20 @@ CString CCallInterfaceMakerDlg::MakeInitOperations(STRUCT_DEFINE_INFO& StructInf
 					Operation = ProcessArrayOperation(Operation, pTypeInfo);
 				}
 				CString VarName = StructInfo.MemberList[i].Name;
-				if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 					VarName = "m_" + VarName;
 				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
 				Operation.Replace("<Variable>", VarName);
 				Operation.Replace("<Type>", pTypeInfo->CType);
 
-				InitOperations+=Operation;
-				InitOperations+="\r\n";
+				InitOperations += Operation;
+				InitOperations += "\r\n";
 			}
-		}		
+		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	InitOperations.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	InitOperations.Replace("\r\n", Space);
 	return InitOperations;
 }
 CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR PacketName, LPCTSTR PacketMemberName, LPCTSTR szLineSpace)
@@ -4927,7 +5049,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInf
 			}
 		}
 		else
-		{			
+		{
 			RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
 			RetainBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
@@ -4937,7 +5059,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInf
 		CString VarName = StructInfo.MemberList[i].Name;
 		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			VarName = "m_" + VarName;
-		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;		
+		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
 		Operation.Replace("<Variable>", VarName);
 
 		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
@@ -4995,16 +5117,16 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 {
 	CString PackOperations;
 
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	for (size_t i = 0;i < StructInfo.MemberList.size();i++)
 	{
 
-		if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
 		{
-			CString Operation=m_UnpackOperationUnitTemplate;
+			CString Operation = m_UnpackOperationUnitTemplate;
 			CString LocalPacketName = PacketName;
 			CString LocalPacketMemberName = PacketMemberName;
 			if (StructInfo.MemberList[i].IsArray)
@@ -5012,7 +5134,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 				Operation = m_InterfaceConfig.ArrayDefineConfig.UnpackOperation;
 
 				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
-				VariableDefine.Replace("<Type>", pTypeInfo->CType);				
+				VariableDefine.Replace("<Type>", pTypeInfo->CType);
 				VariableDefine.Replace("<Space>", "	");
 				VariableDefine.Replace("<Variable>", "ArrayElement");
 				VariableDefine = m_InterfaceConfig.LocalVariableDefinePrefix + VariableDefine;
@@ -5029,14 +5151,14 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
-				RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-				Operation.Replace("<IfInDataObject>","");
-				Operation.Replace("</IfInDataObject>","");
-				if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
+				if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
-					RemoveBlock(Operation,"<IfCheckMF>","</IfCheckMF>");
+					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
 				else
 				{
@@ -5046,41 +5168,41 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 			}
 			else
 			{
-				RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-				Operation.Replace("<IfNotInDataObject>","");
-				Operation.Replace("</IfNotInDataObject>","");
-				RemoveBlock(Operation,"<IfCheckMF>","</IfCheckMF>");
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
+				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				RemoveBlock(Operation, "<IfUpdateMF>", "</IfUpdateMF>");
 			}
-			
-			CString SST_ID;
-			
-			SST_ID.Format("SST_%s_%s",StructInfo.ShortName,ClassNameToUpper(StructInfo.MemberList[i].Name));
-			SST_ID.MakeUpper();
-			
 
-			Operation.Replace("<SST_NAME>",SSTIDEnumName);
-			Operation.Replace("<SST_ID>",SST_ID);
+			CString SST_ID;
+
+			SST_ID.Format("SST_%s_%s", StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+			SST_ID.MakeUpper();
+
+
+			Operation.Replace("<SST_NAME>", SSTIDEnumName);
+			Operation.Replace("<SST_ID>", SST_ID);
 
 			CString VarName = StructInfo.MemberList[i].Name;
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				VarName = "m_" + VarName;
-			
+
 			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
 			Operation.Replace("<Variable>", VarName);
 
-			
+
 
 			CString ModifyFlagEnumName;
-			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS",ClassNameToUpper(StructInfo.Name));			
-			Operation.Replace("<ModifyFlagEnumName>",ModifyFlagEnumName);
+			ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
+			Operation.Replace("<ModifyFlagEnumName>", ModifyFlagEnumName);
 
-			CString ModifyFlag="MF_"+ClassNameToUpper(StructInfo.MemberList[i].Name);
-			Operation.Replace("<ModifyFlag>",ModifyFlag);
+			CString ModifyFlag = "MF_" + ClassNameToUpper(StructInfo.MemberList[i].Name);
+			Operation.Replace("<ModifyFlag>", ModifyFlag);
 			Operation.Replace("<SpaceName>", SpaceName);
 
-			CString LineSpace=GetLineSpace(Operation,"<UnpackOperation>");
+			CString LineSpace = GetLineSpace(Operation, "<UnpackOperation>");
 			UINT OperationFlag = (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0) ? PACK_OPERATION_FLAG_IN_DATA_OBJECT : 0)
 				| (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0)) ? PACK_OPERATION_FLAG_NEED_MF_CHECK : 0)
 				| ((StructInfo.MemberList[i].IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
@@ -5092,7 +5214,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 				OperationFlag,
 				SpaceName, LineSpace);
 
-			Operation.Replace("<UnpackOperation>",UnpackOP);
+			Operation.Replace("<UnpackOperation>", UnpackOP);
 
 			//if (i < StructInfo.MemberList.size() - 1)
 			//{
@@ -5103,13 +5225,13 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 			//	RetainBlock(Operation, "<IfLastItem>", "</IfLastItem>");
 			//}
 
-			PackOperations+=Operation;
-			PackOperations+="\r\n";
-		}		
+			PackOperations += Operation;
+			PackOperations += "\r\n";
+		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	PackOperations.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	PackOperations.Replace("\r\n", Space);
 	return PackOperations;
 }
 
@@ -5117,52 +5239,52 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LP
 {
 	CString PackSizes;
 
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	for (size_t i = 0;i < StructInfo.MemberList.size();i++)
 	{
-		if(StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
 		{
-			CString PackSize=m_PackSizeTemple;
-			CString Operation=pTypeInfo->GenerateOperations.SizeCaculateOperation;		
+			CString PackSize = m_PackSizeTemple;
+			CString Operation = pTypeInfo->GenerateOperations.SizeCaculateOperation;
 			CString Variable;
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
-				RemoveBlock(Operation,"<IfNotInDataObject>","</IfNotInDataObject>");
-				Operation.Replace("<IfInDataObject>","");
-				Operation.Replace("</IfInDataObject>","");
+				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
+				Operation.Replace("<IfInDataObject>", "");
+				Operation.Replace("</IfInDataObject>", "");
 
-				Variable="m_"+StructInfo.MemberList[i].Name;
-				
+				Variable = "m_" + StructInfo.MemberList[i].Name;
+
 			}
 			else
 			{
-				RemoveBlock(Operation,"<IfInDataObject>","</IfInDataObject>");
-				Operation.Replace("<IfNotInDataObject>","");
-				Operation.Replace("</IfNotInDataObject>","");				
+				RemoveBlock(Operation, "<IfInDataObject>", "</IfInDataObject>");
+				Operation.Replace("<IfNotInDataObject>", "");
+				Operation.Replace("</IfNotInDataObject>", "");
 
-				Variable=StructInfo.MemberList[i].Name;
+				Variable = StructInfo.MemberList[i].Name;
 			}
 
 			Variable = m_InterfaceConfig.MemberVariablePrefix + Variable;
 
-			if(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+			if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 			{
-				RemoveBlock(Operation,"<IfNotDataObject>","</IfNotDataObject>");
-				Operation.Replace("<IfDataObject>","");
-				Operation.Replace("</IfDataObject>","");
+				RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
+				Operation.Replace("<IfDataObject>", "");
+				Operation.Replace("</IfDataObject>", "");
 			}
 			else
 			{
-				RemoveBlock(Operation,"<IfDataObject>","</IfDataObject>");
-				Operation.Replace("<IfNotDataObject>","");
-				Operation.Replace("</IfNotDataObject>","");
+				RemoveBlock(Operation, "<IfDataObject>", "</IfDataObject>");
+				Operation.Replace("<IfNotDataObject>", "");
+				Operation.Replace("</IfNotDataObject>", "");
 			}
 
-			if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+			if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 			{
 				RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 				Operation.Replace("<If64Bit>", "");
@@ -5177,7 +5299,7 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LP
 
 			Operation.Replace("<PackFlag>", StructInfo.MemberList[i].PackFlag);
 
-			if(StructInfo.MemberList[i].IsArray)
+			if (StructInfo.MemberList[i].IsArray)
 			{
 				CString Var = m_InterfaceConfig.ArrayDefineConfig.ConstIndexOperation;
 				Var.Replace("<Variable>", Variable);
@@ -5186,7 +5308,7 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LP
 				Operation.Replace("<Type>", pTypeInfo->CType);
 
 				CString ArrayOP = m_InterfaceConfig.ArrayDefineConfig.SizeCaculateOperation;
-				
+
 				ArrayOP.Replace("<Variable>", Variable);
 				ArrayOP.Replace("<ArrayElementSize>", Operation);
 				RemoveBlock(ArrayOP, "<IfNotInArray>", "</IfNotInArray>");
@@ -5197,19 +5319,19 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LP
 			}
 			else
 			{
-				Operation.Replace("<Variable>",Variable);
-				Operation.Replace("<Type>",pTypeInfo->CType);
+				Operation.Replace("<Variable>", Variable);
+				Operation.Replace("<Type>", pTypeInfo->CType);
 				RemoveBlock(Operation, "<IfInArray>", "</IfInArray>");
 				Operation.Replace("<IfNotInArray>", "");
 				Operation.Replace("</IfNotInArray>", "");
-				PackSize.Replace("<PackSize>",Operation);
+				PackSize.Replace("<PackSize>", Operation);
 			}
 
-			
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
-				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
 					RemoveBlock(PackSize, "<IfCheckMF>", "</IfCheckMF>");
 				}
@@ -5233,13 +5355,13 @@ CString CCallInterfaceMakerDlg::MakePackSizes(STRUCT_DEFINE_INFO& StructInfo, LP
 			}
 
 
-			PackSizes+=PackSize;
-			PackSizes+="\r\n";
-		}		
+			PackSizes += PackSize;
+			PackSizes += "\r\n";
+		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	PackSizes.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	PackSizes.Replace("\r\n", Space);
 	return PackSizes;
 }
 
@@ -5268,22 +5390,22 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
-		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
 		CString Operation = m_ToXMLOperationUnitTemplate;
 		if (StructInfo.MemberList[i].IsArray)
-		{			
-			TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);			
+		{
+			TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
 			Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.ToXMLOperation, pTypeInfo);
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 			Operation.Replace("<IfInDataObject>", "");
 			Operation.Replace("</IfInDataObject>", "");
-			if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
@@ -5300,7 +5422,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
 		else
 			Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
@@ -5321,8 +5443,8 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 			StructInfo.MemberList[i].Name,
 			StructInfo.Name, StructInfo.ShortName,
 			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 			StructInfo.MemberList[i].IsArray,
 			SpaceName, LineSpace);
 
@@ -5353,10 +5475,10 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
 
-		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
 		if (pTypeInfo)
 		{
 			CString Operation = m_FromXMLOperationUnitTemplate;
@@ -5380,12 +5502,12 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
 				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 				Operation.Replace("<IfInDataObject>", "");
 				Operation.Replace("</IfInDataObject>", "");
-				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
 					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
@@ -5411,7 +5533,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 			Operation.Replace("<SST_NAME>", SSTIDEnumName);
 			Operation.Replace("<SST_ID>", SST_ID);
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				Operation.Replace("<Variable>", "m_" + StructInfo.MemberList[i].Name);
 			else
 				Operation.Replace("<Variable>", StructInfo.MemberList[i].Name);
@@ -5432,8 +5554,8 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 				StructInfo.MemberList[i].Name,
 				StructInfo.Name, StructInfo.ShortName,
 				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 				StructInfo.MemberList[i].IsArray,
 				SpaceName, LineSpace);
 
@@ -5472,7 +5594,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectJsonProcess(STRUCT_DEFINE_INFO& St
 {
 	CString JsonProcess = m_DataObjectJsonProcessTemplate;
 
-	if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+	if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 	{
 		RemoveBlock(JsonProcess, "<IfNotInDataObject>", "</IfNotInDataObject>");
 		JsonProcess.Replace("<IfInDataObject>", "");
@@ -5504,7 +5626,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
-		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
 		CString Operation = m_ToJsonOperationUnitTemplate;
@@ -5514,12 +5636,12 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 			Operation = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.ToJsonOperation, pTypeInfo);
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 			Operation.Replace("<IfInDataObject>", "");
 			Operation.Replace("</IfInDataObject>", "");
-			if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
@@ -5540,7 +5662,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			VarName = "m_" + VarName;
 		VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
-		Operation.Replace("<Variable>", VarName);		
+		Operation.Replace("<Variable>", VarName);
 
 		Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
 
@@ -5558,8 +5680,8 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 			StructInfo.MemberList[i].Name,
 			StructInfo.Name, StructInfo.ShortName,
 			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 			StructInfo.MemberList[i].IsArray,
 			SpaceName, LineSpace);
 
@@ -5590,17 +5712,17 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
 
-		if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
 		if (pTypeInfo)
 		{
 			CString Operation = m_FromJsonOperationUnitTemplate;
 			if (StructInfo.MemberList[i].IsArray)
 			{
 				Operation = m_InterfaceConfig.ArrayDefineConfig.FromJsonOperation;
-				
+
 				CString VariableDefine = pTypeInfo->GenerateOperations.VariableDefine;
 				VariableDefine.Replace("<Type>", pTypeInfo->CType);
 				VariableDefine.Replace("<Space>", "	");
@@ -5615,12 +5737,12 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 				Operation = ProcessArrayOperation(Operation, pTypeInfo);
 			}
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
 				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 				Operation.Replace("<IfInDataObject>", "");
 				Operation.Replace("</IfInDataObject>", "");
-				if (StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				if (StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
 					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
@@ -5652,7 +5774,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				VarName = "m_" + VarName;
 			VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
-			Operation.Replace("<Variable>", VarName);			
+			Operation.Replace("<Variable>", VarName);
 
 			Operation.Replace("<VariableName>", StructInfo.MemberList[i].Name);
 
@@ -5670,8 +5792,8 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 				StructInfo.MemberList[i].Name,
 				StructInfo.Name, StructInfo.ShortName,
 				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
-				(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
 				StructInfo.MemberList[i].IsArray,
 				SpaceName, LineSpace);
 
@@ -5691,7 +5813,7 @@ CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LP
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.PackOperation;
@@ -5733,9 +5855,9 @@ CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LP
 			Operation.Replace("<IfNotInArray>", "");
 			Operation.Replace("</IfNotInArray>", "");
 		}
-		
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -5748,7 +5870,7 @@ CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LP
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -5779,7 +5901,7 @@ CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LP
 		}
 
 		CString VarName = Name;
-		if((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE)==0)
+		if ((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE) == 0)
 		{
 			if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
 				VarName = "m_" + VarName;
@@ -5822,7 +5944,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, 
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.UnpackOperation;
@@ -5852,9 +5974,9 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, 
 			Operation.Replace("<IfNotInInterface>", "");
 			Operation.Replace("</IfNotInInterface>", "");
 		}
-		
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -5867,7 +5989,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, 
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -5891,7 +6013,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, 
 		}
 
 		CString VarName = Name;
-		if((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE)==0)
+		if ((OperationFlag & PACK_OPERATION_FLAG_IN_INTERFACE) == 0)
 		{
 			if (OperationFlag & PACK_OPERATION_FLAG_IN_DATA_OBJECT)
 				VarName = "m_" + VarName;
@@ -5933,7 +6055,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.ToXMLOperation;
@@ -5964,7 +6086,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 			Operation.Replace("</IfNotInDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -5977,7 +6099,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -6006,13 +6128,13 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
 			Operation = ProcessArrayOperation(Operation, pTypeInfo);
-		}		
-		
+		}
+
 		if (IsInDataObject)
 			Operation.Replace("<Variable>", CString("m_") + Name);
 		else
 			Operation.Replace("<Variable>", Name);
-		
+
 
 		Operation.Replace("<VariableName>", Name);
 
@@ -6043,7 +6165,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.FromXMLOperation;
@@ -6070,7 +6192,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 			Operation.Replace("</IfNotInDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -6083,7 +6205,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -6104,13 +6226,13 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 		if (IsArray)
 		{
 			Operation.Replace("<Variable>", "ArrayElement");
-		}		
-		
+		}
+
 		if (IsInDataObject)
 			Operation.Replace("<Variable>", CString("m_") + Name);
 		else
 			Operation.Replace("<Variable>", Name);
-		
+
 
 		Operation.Replace("<VariableName>", Name);
 		Operation.Replace("<Type>", pTypeInfo->CType);
@@ -6140,7 +6262,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.ToJsonOperation;
@@ -6171,7 +6293,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 			Operation.Replace("</IfNotInDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -6184,7 +6306,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -6213,7 +6335,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 			ArrayVar.Replace("<Index>", "i");
 			Operation.Replace("<Variable>", ArrayVar);
 			Operation = ProcessArrayOperation(Operation, pTypeInfo);
-		}		
+		}
 
 		CString VarName = Name;
 		if (IsInDataObject)
@@ -6250,7 +6372,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.FromJsonOperation;
@@ -6277,7 +6399,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 			Operation.Replace("</IfNotInDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 			Operation.Replace("<IfDataObject>", "");
@@ -6290,7 +6412,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 			Operation.Replace("</IfNotDataObject>", "");
 		}
 
-		if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_64BIT)
+		if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_64BIT)
 		{
 			RemoveBlock(Operation, "<IfNot64Bit>", "</IfNot64Bit>");
 			Operation.Replace("<If64Bit>", "");
@@ -6311,7 +6433,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 		if (IsArray)
 		{
 			Operation.Replace("<Variable>", "ArrayElement");
-		}		
+		}
 
 		CString VarName = Name;
 		if (IsInDataObject)
@@ -6372,7 +6494,7 @@ CString CCallInterfaceMakerDlg::MakeDBProcess(STRUCT_DEFINE_INFO& StructInfo, LP
 
 	LineSpace = GetLineSpace(DBProcess, "<DBPutOperations>");
 	CString DBPutOperations;
-	STRUCT_DEFINE_INFO * pStructInfo = &StructInfo;
+	STRUCT_DEFINE_INFO* pStructInfo = &StructInfo;
 	while (pStructInfo)
 	{
 		DBPutOperations = MakeDBPutOperations(*pStructInfo, SSTIDEnumName, SpaceName, LineSpace) + DBPutOperations;
@@ -6424,17 +6546,17 @@ CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperations(STRUCT_DEFINE_INFO& 
 
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
 		CString Operation = m_DBFieldDefineUnitTemplate;
-		
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 			Operation.Replace("<IfInDataObject>", "");
 			Operation.Replace("</IfInDataObject>", "");
-			if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
@@ -6449,7 +6571,7 @@ CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperations(STRUCT_DEFINE_INFO& 
 			Operation.Replace("<IfNotInDataObject>", "");
 			Operation.Replace("</IfNotInDataObject>", "");
 			RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
-		}		
+		}
 
 		CString ModifyFlagEnumName;
 		ModifyFlagEnumName.Format("%s_MODIFY_FLAGS", ClassNameToUpper(StructInfo.Name));
@@ -6465,14 +6587,14 @@ CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperations(STRUCT_DEFINE_INFO& 
 			MemberInfo.Name,
 			StructInfo.Name, StructInfo.ShortName,
 			SSTIDEnumName,
-			(StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT) != 0,
+			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 			MemberInfo.IsArray,
 			MemberInfo.DBLength,
 			SpaceName, LineSpace);
 
 		Operation.Replace("<DBFieldDefine>", DBFieldDefine);
 
-		
+
 		Operations += Operation;
 		Operations += "\r\n";
 	}
@@ -6488,7 +6610,7 @@ CString CCallInterfaceMakerDlg::MakeDBIndexDefineOperations(STRUCT_DEFINE_INFO& 
 	bool IsPrimaryDefinded = false;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
 		CString Operation;
@@ -6515,12 +6637,12 @@ CString CCallInterfaceMakerDlg::MakeDBIndexDefineOperations(STRUCT_DEFINE_INFO& 
 			continue;
 		}
 
-		if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+		if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		{
 			RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 			Operation.Replace("<IfInDataObject>", "");
 			Operation.Replace("</IfInDataObject>", "");
-			if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+			if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 			{
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
@@ -6563,13 +6685,13 @@ CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO&
 	CString Operations;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
 		if (pTypeInfo)
 		{
-			if (((pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) == 0) && (!MemberInfo.IsArray))
+			if (((pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) == 0) && (!MemberInfo.IsArray))
 				continue;
 
 			CString Operation;
@@ -6598,22 +6720,22 @@ CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO&
 				CString Space = "\r\n";
 				Space += LineSpace;
 				PackOperation.Replace("\r\n", Space);
-				Operation.Replace("<PackOperation>", PackOperation);		
+				Operation.Replace("<PackOperation>", PackOperation);
 
 				Operation = ProcessArrayOperation(Operation, pTypeInfo);
-				
+
 			}
 			else
 			{
 				Operation = pTypeInfo->GenerateOperations.DBPutOperation;
 			}
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
 				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 				Operation.Replace("<IfInDataObject>", "");
 				Operation.Replace("</IfInDataObject>", "");
-				if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
 					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
@@ -6630,7 +6752,7 @@ CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO&
 				RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 			}
 
-			if (pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)
+			if (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT)
 			{
 				RemoveBlock(Operation, "<IfNotDataObject>", "</IfNotDataObject>");
 				Operation.Replace("<IfDataObject>", "");
@@ -6663,7 +6785,7 @@ CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO&
 			Operation.Replace("<FieldName>", MemberInfo.Name);
 			Operation.Replace("<!FieldName>", ClassNameToUpper(MemberInfo.Name));
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				Operation.Replace("<Variable>", CString("m_") + MemberInfo.Name);
 			else
 				Operation.Replace("<Variable>", MemberInfo.Name);
@@ -6693,23 +6815,23 @@ CString CCallInterfaceMakerDlg::MakeDBPutOperations(STRUCT_DEFINE_INFO& StructIn
 	UINT Count = 0;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
 		if (pTypeInfo)
 		{
-			if ((pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) || MemberInfo.IsArray)
+			if ((pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DB_USE_PARAM_BIND | TYPE_DEFINE_FLAG_STRUCT)) || MemberInfo.IsArray)
 				continue;
 
 			CString Operation = pTypeInfo->GenerateOperations.DBPutOperation;
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 			{
 				RemoveBlock(Operation, "<IfNotInDataObject>", "</IfNotInDataObject>");
 				Operation.Replace("<IfInDataObject>", "");
 				Operation.Replace("</IfInDataObject>", "");
-				if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_MUST_PACK)
+				if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_MUST_PACK)
 				{
 					RemoveBlock(Operation, "<IfCheckMF>", "</IfCheckMF>");
 				}
@@ -6737,7 +6859,7 @@ CString CCallInterfaceMakerDlg::MakeDBPutOperations(STRUCT_DEFINE_INFO& StructIn
 			Operation.Replace("<FieldName>", MemberInfo.Name);
 			Operation.Replace("<!FieldName>", ClassNameToUpper(MemberInfo.Name));
 
-			if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+			if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				Operation.Replace("<Variable>", CString("m_") + MemberInfo.Name);
 			else
 				Operation.Replace("<Variable>", MemberInfo.Name);
@@ -6769,7 +6891,7 @@ CString CCallInterfaceMakerDlg::MakeDBFields(STRUCT_DEFINE_INFO& StructInfo, BYT
 	UINT Count = 0;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
 		if ((DBIndexType == DB_INDEX_TYPE_NONE) || (MemberInfo.DBIndexType == DBIndexType))
@@ -6795,14 +6917,14 @@ CString CCallInterfaceMakerDlg::MakeDBFieldDefineOperation(LPCTSTR Type, LPCTSTR
 {
 	CString Operation;
 
-	TYPE_DEFINE * pTypeInfo = FindVarType(Type);
+	TYPE_DEFINE* pTypeInfo = FindVarType(Type);
 	if (pTypeInfo)
 	{
 		Operation = pTypeInfo->GenerateOperations.DBFieldDefineOperation;
 
-		SelectBlock(Operation, "IsArray", IsArray);		
+		SelectBlock(Operation, "IsArray", IsArray);
 
-		Operation.Replace("<FieldName>", Name);		
+		Operation.Replace("<FieldName>", Name);
 		Operation.Replace("<DBLength>", DBLength);
 
 		CString FullModifyFlag;
@@ -6827,10 +6949,10 @@ CString CCallInterfaceMakerDlg::MakeDBFieldFormats(STRUCT_DEFINE_INFO& StructInf
 	UINT Count = 0;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
-		if (MemberInfo.Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
+		if (MemberInfo.Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)
 			continue;
 
-		TYPE_DEFINE * pTypeInfo = FindVarType(MemberInfo.Type);
+		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
 		if (pTypeInfo)
 		{
 			if (Count)
@@ -6883,7 +7005,7 @@ CString CCallInterfaceMakerDlg::MakeLogDataList(STRUCT_DEFINE_INFO& StructInfo, 
 		{
 			Operations += ",\r\n";
 			Operations += szLineSpace;
-		}			
+		}
 
 		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
 		if (pTypeInfo)
@@ -6927,7 +7049,7 @@ CString CCallInterfaceMakerDlg::MakeLuaProcess(STRUCT_DEFINE_INFO& StructInfo, L
 		RemoveBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
 		Process.Replace("<BaseClass>", StructInfo.BaseStruct);
 	}
-		
+
 
 	CString LineSpace = GetLineSpace(Process, "<ToLuaTableOperations>");
 	CString Operations = MakeToLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
@@ -6961,7 +7083,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectLuaProcess(STRUCT_DEFINE_INFO& Str
 		RetainBlock(Process, "<IfHaveBaseClass>", "</IfHaveBaseClass>");
 		RemoveBlock(Process, "<IfNotHaveBaseClass>", "</IfNotHaveBaseClass>");
 		Process.Replace("<BaseClass>", StructInfo.BaseStruct);
-	}	
+	}
 
 	CString LineSpace = GetLineSpace(Process, "<ToLuaTableOperations>");
 	CString Operations = MakeToLuaTableOperations(StructInfo, SSTIDEnumName, SpaceName, LineSpace);
@@ -7083,7 +7205,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperations(STRUCT_DEFINE_INFO& Str
 			Operations += Operation;
 			Operations += "\r\n";
 		}
-		
+
 	}
 	CString Space = "\r\n";
 	Space += szLineSpace;
@@ -7095,7 +7217,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 {
 	CString Operation;
 
-	
+
 	Operation = pTypeInfo->GenerateOperations.ToLuaOperation;
 
 	if (IsInDataObject)
@@ -7137,7 +7259,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 		Operation.Replace("</IfNot64Bit>", "");
 	}
 
-	
+
 
 	CString SST_ID;
 
@@ -7155,7 +7277,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 		ArrayVar.Replace("<Index>", "i");
 		Operation.Replace("<Variable>", ArrayVar);
 		Operation = ProcessArrayOperation(Operation, pTypeInfo);
-	}	
+	}
 
 	CString VarName = Name;
 	if (IsInDataObject)
@@ -7179,7 +7301,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 	Operation.Replace("<ModifyFlag>", ModifyFlag);
 
 	Operation.Replace("<SpaceName>", SpaceName);
-	
+
 
 	CString Space = "\r\n";
 	Space += szLineSpace;
@@ -7376,7 +7498,7 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperation(TYPE_DEFINE* pTypeInfo
 	{
 		Operation.Replace("<Variable>", "ArrayElement");
 	}
-	
+
 	CString VarName = Name;
 	if (IsInDataObject)
 		VarName = "m_" + VarName;
@@ -7410,16 +7532,16 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperation(TYPE_DEFINE* pTypeInfo
 CString CCallInterfaceMakerDlg::MakeMsgHandlerMethods(CALLER_INTERFACE& InterfaceInfo, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR szLineSpace)
 {
 	CString Methods;
-	for(size_t j=0;j<InterfaceInfo.MethodList.size();j++)
+	for (size_t j = 0;j < InterfaceInfo.MethodList.size();j++)
 	{
-		INTERFACE_METHOD& MethodInfo=InterfaceInfo.MethodList[j];
+		INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
 
 		CString MethodName = MethodInfo.Name;
 		bool IsExport = true;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
-			if (ExportType != INTERFACE_METHOD_EXPORT_TYPE_CALL)			
+			if (ExportType != INTERFACE_METHOD_EXPORT_TYPE_CALL)
 			{
 				MethodName = MethodInfo.Name + "Ack";
 			}
@@ -7441,9 +7563,9 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethods(CALLER_INTERFACE& Interfac
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -7456,23 +7578,23 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& In
 		InterfaceName = InterfaceInfo.Name;
 
 	CString Methods;
-	for(size_t j=0;j<InterfaceInfo.MethodList.size();j++)
+	for (size_t j = 0;j < InterfaceInfo.MethodList.size();j++)
 	{
-		INTERFACE_METHOD& MethodInfo=InterfaceInfo.MethodList[j];
+		INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
 		CString MethodName = MethodInfo.Name;
-		vector<METHOD_PARAM> * pParamList = NULL;
+		vector<METHOD_PARAM>* pParamList = NULL;
 		switch (MethodInfo.Type)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
 			{
 				pParamList = &MethodInfo.CallParamList;
-			}				
+			}
 			else
 			{
 				pParamList = &MethodInfo.AckParamList;
 				MethodName = MethodInfo.Name + "Ack";
-			}				
+			}
 			break;
 		case INTERFACE_METHOD_TYPE_NOTIFY:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_ACK)
@@ -7480,7 +7602,7 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& In
 			break;
 		case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
 			if (ExportType == INTERFACE_METHOD_EXPORT_TYPE_CALL)
-				pParamList = &MethodInfo.CallParamList;			
+				pParamList = &MethodInfo.CallParamList;
 			break;
 		}
 
@@ -7524,9 +7646,9 @@ CString CCallInterfaceMakerDlg::MakeMsgHandlerMethodsSource(CALLER_INTERFACE& In
 			Methods += Method + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -7542,25 +7664,25 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo,
 	CString InterfaceIDEnumName;
 	CString InterfaceID;
 	CString ModuleID;
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
 	if (pModuleInfo)
 	{
 		InterfaceIDEnumName.Format("%s_INTERFACES", ClassNameToUpper(pModuleInfo->Name));
-		InterfaceID.Format("%s_INTERFACE_%s", ClassNameToUpper(pModuleInfo->Name), ClassNameToUpper(InterfaceInfo.Name));	
+		InterfaceID.Format("%s_INTERFACE_%s", ClassNameToUpper(pModuleInfo->Name), ClassNameToUpper(InterfaceInfo.Name));
 		ModuleID = "MODULE_ID_" + ClassNameToUpper(pModuleInfo->Name);
 	}
 
-	
-	
+
+
 
 	CString MethodIDEnumName;
 	MethodIDEnumName.Format("%s_METHODS", ClassNameToUpper(InterfaceInfo.Name));
 
 	CString MapInits;
-	for(size_t j=0;j<InterfaceInfo.MethodList.size();j++)
+	for (size_t j = 0;j < InterfaceInfo.MethodList.size();j++)
 	{
-		INTERFACE_METHOD& MethodInfo=InterfaceInfo.MethodList[j];
-		CString MapInit=m_MsgMapInitTemple;
+		INTERFACE_METHOD& MethodInfo = InterfaceInfo.MethodList[j];
+		CString MapInit = m_MsgMapInitTemple;
 
 		CString MethodName = MethodInfo.Name;
 		bool IsExport = true;
@@ -7581,7 +7703,7 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo,
 				IsExport = false;
 			break;
 		}
-		
+
 		if (IsExport)
 		{
 			CString MethodNameUp = ClassNameToUpper(MethodName);
@@ -7595,7 +7717,7 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo,
 			MapInit.Replace("<!MethodName>", MethodNameUp);
 			MapInit.Replace("<@InterfaceName>", InterfaceInfo.Name);
 
-			MapInit.Replace("<InterfaceIDEnumName>", InterfaceIDEnumName);			
+			MapInit.Replace("<InterfaceIDEnumName>", InterfaceIDEnumName);
 			MapInit.Replace("<InterfaceID>", InterfaceID);
 			CString MethodID;
 			MethodID.Format("METHOD_%s", ClassNameToUpper(MethodInfo.Name));
@@ -7606,9 +7728,9 @@ CString CCallInterfaceMakerDlg::MakeMsgMapInits(CALLER_INTERFACE& InterfaceInfo,
 			MapInits += MapInit + "\r\n";
 		}
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	MapInits.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	MapInits.Replace("\r\n", Space);
 	return MapInits;
 }
 
@@ -7695,7 +7817,7 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 				}
 			}
 
-			if(Struct.Find("<LuaProcess>") >= 0)
+			if (Struct.Find("<LuaProcess>") >= 0)
 			{
 				if (StructDefine.Flag & STRUCT_FLAG_EXPORT_LUA_PROCESS)
 				{
@@ -7838,27 +7960,27 @@ CString CCallInterfaceMakerDlg::MakeStructDefines(vector<STRUCT_DEFINE_INFO*>& S
 CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SplitChar, bool AllMemberAddSplitChar, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Members;
-	int MaxLen=0;
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	int MaxLen = 0;
+	for (size_t i = 0;i < StructInfo.MemberList.size();i++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[i].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[i].Type);
+		if (pTypeInfo)
 		{
-			if(pTypeInfo->CType.GetLength()>MaxLen)
-				MaxLen=pTypeInfo->CType.GetLength();
+			if (pTypeInfo->CType.GetLength() > MaxLen)
+				MaxLen = pTypeInfo->CType.GetLength();
 		}
-		
+
 	}
 	CString MemberTemplate;
-	if (StructInfo.Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+	if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 		MemberTemplate = m_DataObjectMemberTemplate;
 	else
 		MemberTemplate = m_StructMemberTemplate;
 
 	int HeadLen = GetHeadLen(MemberTemplate, "<VariableDefine>");
-	MaxLen+=HeadLen;
-	int SpaceLen=(((int)ceil(MaxLen/4.0f))+1)*4-HeadLen;
-	
+	MaxLen += HeadLen;
+	int SpaceLen = (((int)ceil(MaxLen / 4.0f)) + 1) * 4 - HeadLen;
+
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
 		CString Member = MemberTemplate;
@@ -7895,7 +8017,7 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 			VariableDefine.Replace("<Variable>", VarName);
 			if (AllMemberAddSplitChar || i < StructInfo.MemberList.size() - 1)
 				VariableDefine = VariableDefine + SplitChar;
-			Member.Replace("<VariableDefine>", VariableDefine);		
+			Member.Replace("<VariableDefine>", VariableDefine);
 		}
 		Member.Replace("<MemberName>", MemberInfo.Name);
 		Member.Replace("<OrginType>", MemberInfo.Type);
@@ -7920,9 +8042,9 @@ CString CCallInterfaceMakerDlg::MakeStructMembers(STRUCT_DEFINE_INFO& StructInfo
 
 		Members += Member + "\r\n";
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Members.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Members.Replace("\r\n", Space);
 	return Members;
 }
 
@@ -7935,9 +8057,9 @@ CString CCallInterfaceMakerDlg::MakeCloneOperations(STRUCT_DEFINE_INFO& StructIn
 		TYPE_DEFINE* pTypeInfo = FindVarType(MemberInfo.Type);
 		if (pTypeInfo)
 		{
-			
+
 			CString Operation = MakeCloneOperation(MemberInfo.Name, pTypeInfo, MemberInfo.IsArray,
-				StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT, StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT, 
+				StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT, StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT,
 				(MemberInfo.Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0, MemberInfo.PackFlag,
 				szLeftValue, szRightValue, StructInfo.Name, SpaceName, NULL);
 			Source += Operation + "\r\n";
@@ -8078,16 +8200,16 @@ CString CCallInterfaceMakerDlg::MakeCloneOperation(LPCTSTR VariableName, TYPE_DE
 	return Operation;
 }
 
-bool CCallInterfaceMakerDlg::MakeDataObjectFlagIndicesEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& AllDataStructList, ENUM_DEFINE_INFO& EnumInfo)
+bool CCallInterfaceMakerDlg::MakeDataObjectFlagIndicesEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, ENUM_DEFINE_INFO& EnumInfo)
 {
 
-	EnumInfo.Name="DATA_OBJECT_FLAGS";
-	EnumInfo.ShortName=EnumInfo.Name;
+	EnumInfo.Name = "DATA_OBJECT_FLAGS";
+	EnumInfo.ShortName = EnumInfo.Name;
 
-	vector<STRUCT_DEFINE_INFO *> DataObjectList;
+	vector<STRUCT_DEFINE_INFO*> DataObjectList;
 	GetDataObjectListSorted(AllDataStructList, DataObjectList);
 
-	for (size_t i = 0; i<DataObjectList.size(); i++)
+	for (size_t i = 0; i < DataObjectList.size(); i++)
 	{
 		ENUM_MEMBER_INFO MemberInfo;
 		CString MemberName;
@@ -8096,23 +8218,23 @@ bool CCallInterfaceMakerDlg::MakeDataObjectFlagIndicesEnum(vector<BASE_DATA_STRU
 
 		EnumInfo.MemberList.push_back(MemberInfo);
 	}
-	
+
 	ENUM_MEMBER_INFO MemberInfo;
-	MemberInfo.Name="DATA_OBJECT_FLAG_MAX";
+	MemberInfo.Name = "DATA_OBJECT_FLAG_MAX";
 	EnumInfo.MemberList.push_back(MemberInfo);
-	
+
 	return true;
 }
 
-bool CCallInterfaceMakerDlg::MakeDataObjectSSTIDsEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& DataStructList, ENUM_DEFINE_INFO& EnumInfo)
+bool CCallInterfaceMakerDlg::MakeDataObjectSSTIDsEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DataStructList, ENUM_DEFINE_INFO& EnumInfo)
 {
-	EnumInfo.Name="DATA_OBJECT_SSTIDS";
-	EnumInfo.ShortName=EnumInfo.Name;
+	EnumInfo.Name = "DATA_OBJECT_SSTIDS";
+	EnumInfo.ShortName = EnumInfo.Name;
 
-	vector<STRUCT_DEFINE_INFO *> DataObjectList;
+	vector<STRUCT_DEFINE_INFO*> DataObjectList;
 	GetDataObjectListSorted(DataStructList, DataObjectList);
 
-	for (size_t i = 0; i<DataObjectList.size(); i++)
+	for (size_t i = 0; i < DataObjectList.size(); i++)
 	{
 		ENUM_MEMBER_INFO MemberInfo;
 		CString MemberName;
@@ -8121,7 +8243,7 @@ bool CCallInterfaceMakerDlg::MakeDataObjectSSTIDsEnum(vector<BASE_DATA_STRUCT_DE
 		MemberInfo.Value.Format("%d", DataObjectList[i]->ObjectID);
 
 		EnumInfo.MemberList.push_back(MemberInfo);
-	}	
+	}
 	return true;
 }
 
@@ -8157,42 +8279,42 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagEnumDefine(STRUCT_DEFINE
 	return MakeEnumDefine(EnumInfo, SpaceName, szLineSpace);
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectMembersGetModifyFlag(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectMembersGetModifyFlag(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString Source;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo&&(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)&&
-			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo && (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT) &&
+			((StructInfo.MemberList[j].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0) &&
 			(!StructInfo.MemberList[j].IsArray))
 		{
 			CString Temp = m_DataObjectGetModifyFlagDefineTemplate;
 
-			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;			
+			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
 			Temp.Replace("<Variable>", VarName);
 
-			Source+=Temp;
-		}		
+			Source += Temp;
+		}
 	}
 
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersIsModified(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersIsModified(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString Source;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo&&(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)&&
-			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo && (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT) &&
+			((StructInfo.MemberList[j].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0) &&
 			(!StructInfo.MemberList[j].IsArray))
 		{
 			CString Temp = m_DataObjectIsModifiedDefineTemplate;
@@ -8200,28 +8322,28 @@ CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersIsModified(STRUCT_DEFIN
 			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
 			Temp.Replace("<Variable>", VarName);
 
-			Source+=Temp;
-		}		
+			Source += Temp;
+		}
 	}
 
 	//if(Source.IsEmpty())
 	//	Source="||false";
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersClearModifyFlag(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersClearModifyFlag(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString Source;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo&&(pTypeInfo->Flag&TYPE_DEFINE_FLAG_DATA_OBJECT)&&
-			((StructInfo.MemberList[j].Flag&STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE)==0)&&
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo && (pTypeInfo->Flag & TYPE_DEFINE_FLAG_DATA_OBJECT) &&
+			((StructInfo.MemberList[j].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0) &&
 			(!StructInfo.MemberList[j].IsArray))
 		{
 			CString Temp = m_DataObjectClearModifyFlagDefineTemplate;
@@ -8229,43 +8351,43 @@ CString CCallInterfaceMakerDlg::MakeDataDataObjectMembersClearModifyFlag(STRUCT_
 			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
 			Temp.Replace("<Variable>", VarName);
 
-			Source+=Temp;
-		}		
+			Source += Temp;
+		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
 
 
-CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDeclare(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDeclare(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString Methods;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo)
 		{
-			CString Method=pTypeInfo->GenerateOperations.SetMethodDeclare;
+			CString Method = pTypeInfo->GenerateOperations.SetMethodDeclare;
 			if (StructInfo.MemberList[j].IsArray)
 			{
 				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.SetMethodDeclare, pTypeInfo);
 			}
 
-			Method.Replace("<Type>",pTypeInfo->CType);
-			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
+			Method.Replace("<Type>", pTypeInfo->CType);
+			Method.Replace("<VariableName>", StructInfo.MemberList[j].Name);
 
-			Methods+=Method+"\r\n";
-		}		
+			Methods += Method + "\r\n";
+		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -8348,36 +8470,36 @@ CString CCallInterfaceMakerDlg::MakeDataObjectSetMethodsDefine(STRUCT_DEFINE_INF
 		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_INFO& StructInfo,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace)
 {
 	CString Methods;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo)
 		{
-			CString Method=pTypeInfo->GenerateOperations.GetMethodDeclare;
+			CString Method = pTypeInfo->GenerateOperations.GetMethodDeclare;
 			if (StructInfo.MemberList[j].IsArray)
 			{
 				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.GetMethodDeclare, pTypeInfo);
 			}
 
-			Method.Replace("<Type>",pTypeInfo->CType);
-			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
+			Method.Replace("<Type>", pTypeInfo->CType);
+			Method.Replace("<VariableName>", StructInfo.MemberList[j].Name);
 			CString ConstMethod = Method;
 			Method.Replace("<const>", "");
 			Methods += Method + "\r\n";
 
 			if (ConstMethod.Find("<const>") >= 0)
 			{
-				if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+				if (pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
 				{
 					ConstMethod.Replace("<const>", "const");
 					Methods += ConstMethod + "\r\n";
@@ -8386,9 +8508,9 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_IN
 		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -8396,42 +8518,42 @@ CString CCallInterfaceMakerDlg::MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INF
 {
 	CString Methods;
 
-	for(size_t j=0;j<StructInfo.MemberList.size();j++)
+	for (size_t j = 0;j < StructInfo.MemberList.size();j++)
 	{
-		TYPE_DEFINE * pTypeInfo=FindVarType(StructInfo.MemberList[j].Type);
-		if(pTypeInfo)
+		TYPE_DEFINE* pTypeInfo = FindVarType(StructInfo.MemberList[j].Type);
+		if (pTypeInfo)
 		{
-			CString Method=pTypeInfo->GenerateOperations.GetMethodDefine;
+			CString Method = pTypeInfo->GenerateOperations.GetMethodDefine;
 			if (StructInfo.MemberList[j].IsArray)
 			{
 				Method = ProcessArrayOperation(m_InterfaceConfig.ArrayDefineConfig.GetMethodDefine, pTypeInfo);
 			}
 
-			Method.Replace("<Type>",pTypeInfo->CType);
-			Method.Replace("<VariableName>",StructInfo.MemberList[j].Name);
+			Method.Replace("<Type>", pTypeInfo->CType);
+			Method.Replace("<VariableName>", StructInfo.MemberList[j].Name);
 			CString VarName = m_InterfaceConfig.MemberVariablePrefix + "m_" + StructInfo.MemberList[j].Name;
 			Method.Replace("<Variable>", VarName);
-			Method.Replace("<ClassName>",StructInfo.Name);
+			Method.Replace("<ClassName>", StructInfo.Name);
 			Method.Replace("<SpaceName>", SpaceName);
 
-			CString ConstMethod = Method;			
+			CString ConstMethod = Method;
 			Method.Replace("<const>", "");
-			Methods+=Method+"\r\n";
+			Methods += Method + "\r\n";
 
 			if (ConstMethod.Find("<const>") >= 0)
 			{
-				if (pTypeInfo->Flag&(TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
+				if (pTypeInfo->Flag & (TYPE_DEFINE_FLAG_DATA_OBJECT | TYPE_DEFINE_FLAG_STRUCT | TYPE_DEFINE_FLAG_REF_TYPE))
 				{
 					ConstMethod.Replace("<const>", "const");
 					Methods += ConstMethod + "\r\n";
 				}
 			}
-		}		
+		}
 	}
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Methods.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Methods.Replace("\r\n", Space);
 	return Methods;
 }
 
@@ -8483,50 +8605,50 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsHeader(vector<BASE_DATA
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsSource(vector<BASE_DATA_STRUCT_DEFINE_LIST *>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsSource(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
 
-	vector<STRUCT_DEFINE_INFO *> DataObjectList;
+	vector<STRUCT_DEFINE_INFO*> DataObjectList;
 
 	GetDataObjectListSorted(AllDataStructList, DataObjectList);
-	
 
-	UINT ModifyFlagDefineSize=0;
 
-	for (size_t i = 0; i<AllDataStructList.size(); i++)
+	UINT ModifyFlagDefineSize = 0;
+
+	for (size_t i = 0; i < AllDataStructList.size(); i++)
 	{
 		if (AllDataStructList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)AllDataStructList[i];
-			for(size_t j=0;j<pStructList->StructList.size();j++)
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)AllDataStructList[i];
+			for (size_t j = 0;j < pStructList->StructList.size();j++)
 			{
-				if (pStructList->StructList[j].Flag&STRUCT_FLAG_IS_DATA_OBJECT)
+				if (pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 				{
-					CString Define=m_DataObjectModifyFlagDefineTemple;
+					CString Define = m_DataObjectModifyFlagDefineTemple;
 
-					DATA_OBJECT_MODIFY_FLAG ModifyFlag=MakeDataObjectFullModifyFlag(pStructList->StructList[j],DataObjectList);		
+					DATA_OBJECT_MODIFY_FLAG ModifyFlag = MakeDataObjectFullModifyFlag(pStructList->StructList[j], DataObjectList);
 
-					ModifyFlagDefineSize=ModifyFlag.ModifyFlag.size();
+					ModifyFlagDefineSize = ModifyFlag.ModifyFlag.size();
 
-					ModifyFlag.Name.Format("DOMF_%s_FULL",ClassNameToUpper(pStructList->StructList[j].Name));
-					Define.Replace("<FlagName>",ModifyFlag.Name);
+					ModifyFlag.Name.Format("DOMF_%s_FULL", ClassNameToUpper(pStructList->StructList[j].Name));
+					Define.Replace("<FlagName>", ModifyFlag.Name);
 					Define.Replace("<SpaceName>", SpaceName);
 
-					CString Space=GetLineSpace(Define,"<FlagData>");
+					CString Space = GetLineSpace(Define, "<FlagData>");
 					CString FlagData = MakeDataObjectModifyFlagData(ModifyFlag, SpaceName, Space);
-					Define.Replace("<FlagData>",FlagData);
+					Define.Replace("<FlagData>", FlagData);
 
-					Source+=Define+"\r\n";
+					Source += Define + "\r\n";
 				}
 			}
 		}
 	}
 
-	for (size_t i = 0; i<DataObjectModifyFlags.size(); i++)
+	for (size_t i = 0; i < DataObjectModifyFlags.size(); i++)
 	{
-		
-		CString Define=m_DataObjectModifyFlagDefineTemple;		
+
+		CString Define = m_DataObjectModifyFlagDefineTemple;
 
 		if (DataObjectModifyFlags[i].ModifyFlag.size() != ModifyFlagDefineSize)
 		{
@@ -8534,21 +8656,21 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagsSource(vector<BASE_DATA
 			Msg.Format("[%s]的大小不正确,", DataObjectModifyFlags[i].Name);
 			AfxMessageBox(Msg);
 		}
-		
+
 		Define.Replace("<FlagName>", DataObjectModifyFlags[i].Name);
 		Define.Replace("<SpaceName>", SpaceName);
 
-		CString Space=GetLineSpace(Define,"<FlagData>");
+		CString Space = GetLineSpace(Define, "<FlagData>");
 		CString FlagData = MakeDataObjectModifyFlagData(DataObjectModifyFlags[i], SpaceName, Space);
-		Define.Replace("<FlagData>",FlagData);
+		Define.Replace("<FlagData>", FlagData);
 
-		Source+=Define+"\r\n";
-		
+		Source += Define + "\r\n";
+
 	}
-	
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
@@ -8585,7 +8707,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_
 			if (j)
 				Member += FlagSeparatorStr;
 			Member += FlagUnit;
-		}		
+		}
 		if (i)
 		{
 			Source += ObjSeparatorStr + "\r\n";
@@ -8594,12 +8716,12 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_
 		{
 			Source += ZeroValue;
 		}
-		else			
+		else
 		{
 			CString Line = Template;
 			Line.Replace("<ObjFlag>", Member);
 			Source += Line;
-		}		
+		}
 	}
 
 	CString Space = "\r\n";
@@ -8608,7 +8730,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
 
@@ -8616,16 +8738,16 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 		Source = m_EnumDefine64Template;
 	else
 		Source = m_EnumDefineTemplate;
-	Source.Replace("<EnumName>",EnumInfo.Name);
+	Source.Replace("<EnumName>", EnumInfo.Name);
 	Source.Replace("<ShowName>", EnumInfo.ShowName);
 	Source.Replace("<SpaceName>", SpaceName);
-	
+
 	if (EnumInfo.Description.IsEmpty())
 		Source.Replace("<Description>", "");
 	else
 		Source.Replace("<Description>", m_InterfaceConfig.CommentPrefix + EnumInfo.Description);
 	Source.Replace("<OrginDescription>", EnumInfo.Description);
-	
+
 	if (EnumInfo.MemberList.size())
 	{
 		Source.Replace("<LastEnumValue>", EnumInfo.MemberList[EnumInfo.MemberList.size() - 1].Name);
@@ -8645,9 +8767,9 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 	{
 		SelectBlock(Source, "IsFlagEnum", false);
 	}
-	
 
-	CString Space=GetLineSpace(Source,"<EnumMembers>");	
+
+	CString Space = GetLineSpace(Source, "<EnumMembers>");
 	CString EnumMembers;
 
 	int Value = 0;
@@ -8719,12 +8841,12 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 
 		SelectBlock(Member, "IsLast", i == (EnumInfo.MemberList.size() - 1));
 		SelectBlock(Member, "HideInPropertyGrid", MemberInfo.Flag & ENUM_MEMBER_FLAG_HIDE_IN_PROPERTY_GRID);
-		
+
 		EnumMembers += Member + "\r\n";
 	}
 	CString LineSpace = GetLineSpace(Source, "<EnumMembers>");
 	EnumMembers.Replace("\r\n", "\r\n" + LineSpace);
-	Source.Replace("<EnumMembers>",EnumMembers);
+	Source.Replace("<EnumMembers>", EnumMembers);
 
 	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST)
 	{
@@ -8825,8 +8947,8 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 	{
 		RemoveBlock(Source, "<IfExportEnumStrList>", "</IfExportEnumStrList>");
 	}
-	
-	if(EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN)
+
+	if (EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN)
 	{
 		RetainBlock(Source, "<IfExportEnumTransFn>", "</IfExportEnumTransFn>");
 
@@ -8983,7 +9105,7 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 	if ((EnumInfo.Flag & ENUM_DEFINE_FLAG_EXPORT_BIND_DATA_PROCESS))
 	{
 		RetainBlock(Source, "<IfExportBindDataProcess>", "</IfExportBindDataProcess>");
-		
+
 		CString LineSpace;
 		CString Operations;
 		for (ENUM_MEMBER_INFO& Info : EnumInfo.MemberList)
@@ -9004,7 +9126,7 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 						Operation.Replace("<BindDataLen>", Temp);
 						LineSpace = GetLineSpace(Operation, "<PropertyGridFillOperations>");
 						Temp = MakePropertyGridFillOperations(*pStruct, true, LineSpace);
-						Operation.Replace("<PropertyGridFillOperations>", Temp);						
+						Operation.Replace("<PropertyGridFillOperations>", Temp);
 					}
 					else
 					{
@@ -9013,7 +9135,7 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 					if (!Operations.IsEmpty())
 						Operations.Append("\r\n");
 					Operations.Append(Operation);
-				}				
+				}
 			}
 		}
 		LineSpace = GetLineSpace(Source, "<BindDataFillOperations>");
@@ -9060,13 +9182,13 @@ CString CCallInterfaceMakerDlg::MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTS
 		RemoveBlock(Source, "<IfExportBindDataProcess>", "</IfExportBindDataProcess>");
 	}
 
-	Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+	Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
-CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDefineList, LPCTSTR SpaceName,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString EnumDefines;
 	for (size_t i = 0; i < EnumDefineList.size(); i++)
@@ -9078,9 +9200,9 @@ CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDe
 		EnumDefines += Enum + "\r\n\r\n";
 
 	}
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	EnumDefines.Replace("\r\n",Space);
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	EnumDefines.Replace("\r\n", Space);
 	return EnumDefines;
 }
 
@@ -9118,65 +9240,65 @@ CString CCallInterfaceMakerDlg::MakeEnumDefines(vector<ENUM_DEFINE_INFO>& EnumDe
 //	return Source;
 //}
 
-CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& ConstDefineList, LPCTSTR SpaceName,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::MakeConstDefines(vector<CONST_DEFINE_INFO>& ConstDefineList, LPCTSTR SpaceName, LPCTSTR szLineSpace)
 {
 	CString Source;
-	
-	
-	for(size_t i=0;i<ConstDefineList.size();i++)
-	{
-		TYPE_DEFINE * pType=FindVarType(ConstDefineList[i].Type);
-		CString Const;
-		if(pType)
-		{
-			Const=m_ConstDefineTemplate;
 
-			Const.Replace("<Type>",pType->CType);
+
+	for (size_t i = 0;i < ConstDefineList.size();i++)
+	{
+		TYPE_DEFINE* pType = FindVarType(ConstDefineList[i].Type);
+		CString Const;
+		if (pType)
+		{
+			Const = m_ConstDefineTemplate;
+
+			Const.Replace("<Type>", pType->CType);
 			Const.Replace("<SpaceName>", SpaceName);
 		}
 		else
 		{
-			Const=m_MacroDefineTemplate;
+			Const = m_MacroDefineTemplate;
 		}
 
-		if(ConstDefineList[i].Description.IsEmpty())
-			Const.Replace("<Description>","");
+		if (ConstDefineList[i].Description.IsEmpty())
+			Const.Replace("<Description>", "");
 		else
-			Const.Replace("<Description>","\\"+ConstDefineList[i].Description);
-		Const.Replace("<Name>",ConstDefineList[i].Name);
-		CString Value=ConstDefineList[i].Value;
+			Const.Replace("<Description>", "\\" + ConstDefineList[i].Description);
+		Const.Replace("<Name>", ConstDefineList[i].Name);
+		CString Value = ConstDefineList[i].Value;
 		Value.Trim();
 		if (Value.GetLength() && Value[0] == '"' && Value[Value.GetLength() - 1] == '"')
 		{
 			Value.Trim('"');
 			Value = MakeStringConst(Value);
-		}			
-		Const.Replace("<Value>",Value);
+		}
+		Const.Replace("<Value>", Value);
 
-		Source+=Const+"\r\n\r\n";
+		Source += Const + "\r\n\r\n";
 
-	}	
+	}
 
-	
 
-	CString Space="\r\n";
-	Space+=szLineSpace;
-	Source.Replace("\r\n",Space);
+
+	CString Space = "\r\n";
+	Space += szLineSpace;
+	Source.Replace("\r\n", Space);
 	return Source;
 }
 
 CString CCallInterfaceMakerDlg::MakeStringConst(LPCTSTR StrValue)
 {
-	CString Value=m_StringConstDefineTemplate;
+	CString Value = m_StringConstDefineTemplate;
 
-	Value.Replace("<StrValue>",StrValue);
+	Value.Replace("<StrValue>", StrValue);
 
 	return Value;
 }
 
 CString CCallInterfaceMakerDlg::MakeToStringExp(STRUCT_MEMBER_INFO& MemberInfo, TYPE_DEFINE* pType, bool IsInDataObject)
 {
-	CString ToStringOP = pType->GenerateOperations.ToStringOperation;	
+	CString ToStringOP = pType->GenerateOperations.ToStringOperation;
 	SelectBlock(ToStringOP, "HaveStrTrans", pType->Flag & TYPE_DEFINE_FLAG_ENUM_HAVE_STR_TRANS);
 	SelectBlock(ToStringOP, "HaveExtendType", !MemberInfo.ExtendType.IsEmpty());
 	CString VarName = MemberInfo.Name;
@@ -9306,20 +9428,20 @@ CString CCallInterfaceMakerDlg::MakeToStringExp(STRUCT_MEMBER_INFO& MemberInfo, 
 //	return EnumDefines;
 //}
 
-DATA_OBJECT_MODIFY_FLAG CCallInterfaceMakerDlg::MakeDataObjectFullModifyFlag(STRUCT_DEFINE_INFO& StructInfo,vector<STRUCT_DEFINE_INFO *>& DataObjectList)
+DATA_OBJECT_MODIFY_FLAG CCallInterfaceMakerDlg::MakeDataObjectFullModifyFlag(STRUCT_DEFINE_INFO& StructInfo, vector<STRUCT_DEFINE_INFO*>& DataObjectList)
 {
 	DATA_OBJECT_MODIFY_FLAG ModifyFlag;
 
 	ModifyFlag.ModifyFlag.resize(DataObjectList.size());
 
-	for(size_t i=0;i<DataObjectList.size();i++)
+	for (size_t i = 0;i < DataObjectList.size();i++)
 	{
-		if(DataObjectList[i]->Name==StructInfo.Name||HaveMemberByType(StructInfo,DataObjectList[i]->Name))
+		if (DataObjectList[i]->Name == StructInfo.Name || HaveMemberByType(StructInfo, DataObjectList[i]->Name))
 		{
-			ModifyFlag.ModifyFlag[i].ClassName=DataObjectList[i]->Name;
-			for(size_t j=0;j<DataObjectList[i]->MemberList.size();j++)
+			ModifyFlag.ModifyFlag[i].ClassName = DataObjectList[i]->Name;
+			for (size_t j = 0;j < DataObjectList[i]->MemberList.size();j++)
 			{
-				if((DataObjectList[i]->MemberList[j].Flag&STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET)==0)
+				if ((DataObjectList[i]->MemberList[j].Flag & STRUCT_MEMBER_FLAG_EXCLUDE_IN_PACKET) == 0)
 				{
 					ModifyFlag.ModifyFlag[i].Members.push_back(DataObjectList[i]->MemberList[j].Name);
 				}
@@ -9374,14 +9496,14 @@ CString CCallInterfaceMakerDlg::MakeStructEditorProcess(STRUCT_DEFINE_INFO& Stru
 	Operations.Empty();
 	LineSpace = GetLineSpace(Source, "<FillListItemOperations>");
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
-	{		
+	{
 		if ((!MemberInfo.ShowName.IsEmpty()) && (!MemberInfo.IsArray) && ((MemberInfo.Flag & STRUCT_MEMBER_FLAG_HIDE_IN_EDITOR_LIST) == 0))
 		{
 			TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
 			if (pType && ((pType->Flag & TYPE_DEFINE_FLAG_STRUCT) == 0))
 			{
 				CString Operation = m_FillListItemUnitTemplate;
-				
+
 				Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType, false));
 				if (!Operations.IsEmpty())
 					Operations.Append("\r\n");
@@ -9431,7 +9553,7 @@ CString CCallInterfaceMakerDlg::MakePropertyGridFillOperations(STRUCT_DEFINE_INF
 	CString Operations;
 	CString SSTIDEnumName;
 	SSTIDEnumName.Format("%s_MEMBER_IDS", ClassNameToUpper(StructInfo.Name));
-	
+
 	UINT Index = 0;
 	for (STRUCT_MEMBER_INFO& MemberInfo : StructInfo.MemberList)
 	{
@@ -9451,20 +9573,20 @@ CString CCallInterfaceMakerDlg::MakePropertyGridFillOperations(STRUCT_DEFINE_INF
 }
 
 CString CCallInterfaceMakerDlg::MakePropertyGridFillOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, LPCTSTR SSTIDEnumName, bool ReplaceByBindData, LPCTSTR szLineSpace)
-{	
+{
 	CString Operation;
 	TYPE_DEFINE* pType = FindVarType(MemberInfo.Type);
 	if (pType)
-	{		
+	{
 		if (MemberInfo.IsArray)
 		{
-			Operation = m_InterfaceConfig.ArrayDefineConfig.PropertyGridFillOperation;			
+			Operation = m_InterfaceConfig.ArrayDefineConfig.PropertyGridFillOperation;
 			CString SubOperation = pType->GenerateOperations.PropertyGridFillOperation;
 			CString LineSpace = GetLineSpace(Operation, "<PropertyGridFillOperation>");
 			SubOperation.Replace("\r\n", "\r\n" + LineSpace);
 			RemoveBlock(SubOperation, "<IfNotInArray>", "</IfNotInArray>");
 			RetainBlock(SubOperation, "<IfInArray>", "</IfInArray>");
-			CString Var = m_InterfaceConfig.ArrayDefineConfig.IndexOperation;			
+			CString Var = m_InterfaceConfig.ArrayDefineConfig.IndexOperation;
 			Var.Replace("<Variable>", MemberInfo.Name);
 			Var.Replace("<Index>", "i");
 			SubOperation.Replace("<Variable>", Var);
@@ -9494,7 +9616,7 @@ CString CCallInterfaceMakerDlg::MakePropertyGridFillOperation(STRUCT_DEFINE_INFO
 					else
 					{
 						SelectBlock(Operation, "IsFlagEnum", false);
-					}					
+					}
 				}
 
 				if (IsBeBind(StructInfo, MemberInfo.Name))
@@ -9524,13 +9646,13 @@ CString CCallInterfaceMakerDlg::MakePropertyGridFillOperation(STRUCT_DEFINE_INFO
 					TYPE_DEFINE* pBindDataType = FindVarType(pBindData->Type);
 					if (pBindDataType)
 						Operation.Replace("<BindParentType>", pBindDataType->CType);
-				}						
+				}
 			}
 			else
 			{
 				SelectBlock(Operation, "HaveBindData", false);
 			}
-			
+
 			Operation.Replace("<VarShowName>", MakeStringConst(MemberInfo.ShowName));
 			Operation.Replace("<Description>", MakeStringConst(MemberInfo.Description));
 			Operation.Replace("<VarStrValue>", MakeToStringExp(MemberInfo, pType, false));
@@ -9541,7 +9663,7 @@ CString CCallInterfaceMakerDlg::MakePropertyGridFillOperation(STRUCT_DEFINE_INFO
 
 			if (ReplaceByBindData)
 			{
-				SelectBlock(Operation, "InBindData", true);								
+				SelectBlock(Operation, "InBindData", true);
 			}
 			else
 			{
@@ -10037,7 +10159,7 @@ CString CCallInterfaceMakerDlg::MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructI
 			if (pType)
 			{
 				CString Operation;
-				if(MemberInfo.IsArray)
+				if (MemberInfo.IsArray)
 					Operation = m_InterfaceConfig.ArrayDefineConfig.ToXLSOperation;
 				else
 					Operation = pType->GenerateOperations.ToXLSOperation;
@@ -10047,7 +10169,7 @@ CString CCallInterfaceMakerDlg::MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructI
 				if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
 					VarName = "m_" + VarName;
 				VarName = m_InterfaceConfig.MemberVariablePrefix + VarName;
-				Operation.Replace("<Variable>", VarName);				
+				Operation.Replace("<Variable>", VarName);
 				if (!Operations.IsEmpty())
 					Operations.Append("\r\n");
 				Operations.Append(Operation);
@@ -10087,7 +10209,7 @@ CString CCallInterfaceMakerDlg::MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructI
 	}
 	Operations.Replace("\r\n", "\r\n" + LineSpace);
 	Source.Replace("<FromXLSOperations>", Operations);
-		
+
 
 	CString Space = "\r\n";
 	Space += szLineSpace;
@@ -10097,7 +10219,7 @@ CString CCallInterfaceMakerDlg::MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructI
 
 bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR Type, int Depth)
 {
-	if(StructInfo.BaseStruct==Type)
+	if (StructInfo.BaseStruct == Type)
 		return true;
 	Depth--;
 	if (Depth <= 0)
@@ -10106,11 +10228,11 @@ bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LP
 		return false;
 	}
 
-	STRUCT_DEFINE_INFO * pStructInfo = NULL;
-	for(size_t i=0;i<StructInfo.MemberList.size();i++)
+	STRUCT_DEFINE_INFO* pStructInfo = NULL;
+	for (size_t i = 0;i < StructInfo.MemberList.size();i++)
 	{
-		if(StructInfo.MemberList[i].Type==Type)
-			return true;		
+		if (StructInfo.MemberList[i].Type == Type)
+			return true;
 	}
 	for (size_t i = 0; i < StructInfo.MemberList.size(); i++)
 	{
@@ -10130,20 +10252,20 @@ bool CCallInterfaceMakerDlg::HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LP
 	return false;
 }
 
-STRUCT_DEFINE_INFO * CCallInterfaceMakerDlg::GetStructDefineInfo(LPCTSTR Type)
+STRUCT_DEFINE_INFO* CCallInterfaceMakerDlg::GetStructDefineInfo(LPCTSTR Type)
 {
-	for (size_t i = 0; i<m_AllDataStructList.size(); i++)
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
 	{
 		if (m_AllDataStructList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)m_AllDataStructList[i];
-			for(size_t j=0;j<pStructList->StructList.size();j++)
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)m_AllDataStructList[i];
+			for (size_t j = 0;j < pStructList->StructList.size();j++)
 			{
-				if(pStructList->StructList[j].Name==Type)
+				if (pStructList->StructList[j].Name == Type)
 					return &(pStructList->StructList[j]);
 			}
 		}
-	}	
+	}
 	return NULL;
 }
 ENUM_DEFINE_INFO* CCallInterfaceMakerDlg::GetEnumDefine(LPCTSTR EnumName)
@@ -10162,12 +10284,12 @@ ENUM_DEFINE_INFO* CCallInterfaceMakerDlg::GetEnumDefine(LPCTSTR EnumName)
 	}
 	return NULL;
 }
-void CCallInterfaceMakerDlg::GetDataObjectDefineList(vector<STRUCT_DEFINE_INFO *>& DataObjectList)
+void CCallInterfaceMakerDlg::GetDataObjectDefineList(vector<STRUCT_DEFINE_INFO*>& DataObjectList)
 {
-	GetDataObjectListSorted(m_AllDataStructList, DataObjectList);	
+	GetDataObjectListSorted(m_AllDataStructList, DataObjectList);
 }
 
-MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::GetModuleInfo(UINT ModuleID)
+MODULE_DEFINE_INFO* CCallInterfaceMakerDlg::GetModuleInfo(UINT ModuleID)
 {
 	if (m_MainModule.ModuleID == ModuleID)
 		return &m_MainModule;
@@ -10179,7 +10301,7 @@ MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::GetModuleInfo(UINT ModuleID)
 	return &m_MainModule;
 }
 
-MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::GetModuleInfoByName(LPCTSTR szModuleName)
+MODULE_DEFINE_INFO* CCallInterfaceMakerDlg::GetModuleInfoByName(LPCTSTR szModuleName)
 {
 	if (m_MainModule.Name == szModuleName)
 		return &m_MainModule;
@@ -10193,15 +10315,15 @@ MODULE_DEFINE_INFO * CCallInterfaceMakerDlg::GetModuleInfoByName(LPCTSTR szModul
 
 LPCTSTR CCallInterfaceMakerDlg::GetModuleName(UINT ModuleID)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 		return pModuleInfo->Name;
 	return "未知";
 }
 
-CALLER_INTERFACE * CCallInterfaceMakerDlg::AddInterfaceInfo(CALLER_INTERFACE& InterfaceInfo)
+CALLER_INTERFACE* CCallInterfaceMakerDlg::AddInterfaceInfo(CALLER_INTERFACE& InterfaceInfo)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(InterfaceInfo.ModuleID);
 	if (pModuleInfo)
 	{
 		InterfaceInfo.ID = pModuleInfo->IDSeed;
@@ -10213,9 +10335,9 @@ CALLER_INTERFACE * CCallInterfaceMakerDlg::AddInterfaceInfo(CALLER_INTERFACE& In
 	}
 	return NULL;
 }
-CALLER_INTERFACE * CCallInterfaceMakerDlg::GetInterfaceInfoByID(UINT ModuleID, UINT InterfaceID)
+CALLER_INTERFACE* CCallInterfaceMakerDlg::GetInterfaceInfoByID(UINT ModuleID, UINT InterfaceID)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->InterfaceList.size(); i++)
@@ -10228,9 +10350,9 @@ CALLER_INTERFACE * CCallInterfaceMakerDlg::GetInterfaceInfoByID(UINT ModuleID, U
 	}
 	return NULL;
 }
-CALLER_INTERFACE * CCallInterfaceMakerDlg::GetInterfaceInfoByName(LPCTSTR ModuleName, LPCTSTR InterfaceName)
+CALLER_INTERFACE* CCallInterfaceMakerDlg::GetInterfaceInfoByName(LPCTSTR ModuleName, LPCTSTR InterfaceName)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfoByName(ModuleName);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfoByName(ModuleName);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->InterfaceList.size(); i++)
@@ -10245,7 +10367,7 @@ CALLER_INTERFACE * CCallInterfaceMakerDlg::GetInterfaceInfoByName(LPCTSTR Module
 }
 bool CCallInterfaceMakerDlg::DeleteInterfaceInfoByID(UINT ModuleID, UINT InterfaceID)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->InterfaceList.size(); i++)
@@ -10268,26 +10390,26 @@ bool CCallInterfaceMakerDlg::DeleteInterfaceInfoByID(UINT ModuleID, UINT Interfa
 	return false;
 }
 
-BASE_DATA_STRUCT_DEFINE_LIST * CCallInterfaceMakerDlg::NewDataStructList(UINT ModuleID, DATA_STRUCT_TYPE Type, LPCTSTR Name)
+BASE_DATA_STRUCT_DEFINE_LIST* CCallInterfaceMakerDlg::NewDataStructList(UINT ModuleID, DATA_STRUCT_TYPE Type, LPCTSTR Name)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 	{
-		BASE_DATA_STRUCT_DEFINE_LIST * pDataStructList = NULL;
+		BASE_DATA_STRUCT_DEFINE_LIST* pDataStructList = NULL;
 		switch (Type)
 		{
 		case DATA_STRUCT_CONST:
 			pDataStructList = new CONST_DEFINE_LIST;
 			pDataStructList->ListType = DATA_STRUCT_CONST;
 			break;
-		case DATA_STRUCT_ENUM:			
+		case DATA_STRUCT_ENUM:
 			pDataStructList = new ENUM_DEFINE_LIST;
 			pDataStructList->ListType = DATA_STRUCT_ENUM;
 			break;
 		case DATA_STRUCT_STRUCT:
 			pDataStructList = new STRUCT_DEFINE_LIST;
 			pDataStructList->ListType = DATA_STRUCT_STRUCT;
-			break;		
+			break;
 		}
 		if (pDataStructList)
 		{
@@ -10299,9 +10421,9 @@ BASE_DATA_STRUCT_DEFINE_LIST * CCallInterfaceMakerDlg::NewDataStructList(UINT Mo
 	}
 	return NULL;
 }
-BASE_DATA_STRUCT_DEFINE_LIST * CCallInterfaceMakerDlg::GetDataStructList(UINT ModuleID, DATA_STRUCT_TYPE Type, LPCTSTR Name)
+BASE_DATA_STRUCT_DEFINE_LIST* CCallInterfaceMakerDlg::GetDataStructList(UINT ModuleID, DATA_STRUCT_TYPE Type, LPCTSTR Name)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->DataStructDefineList.size(); i++)
@@ -10314,7 +10436,7 @@ BASE_DATA_STRUCT_DEFINE_LIST * CCallInterfaceMakerDlg::GetDataStructList(UINT Mo
 }
 bool CCallInterfaceMakerDlg::DeleteDataStructList(UINT ModuleID, DATA_STRUCT_TYPE Type, LPCTSTR Name)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->DataStructDefineList.size(); i++)
@@ -10332,15 +10454,15 @@ bool CCallInterfaceMakerDlg::DeleteDataStructList(UINT ModuleID, DATA_STRUCT_TYP
 				pModuleInfo->DataStructDefineList.erase(pModuleInfo->DataStructDefineList.begin() + i);
 				return true;
 			}
-				
+
 		}
 	}
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::DataStructListMoveUp(BASE_DATA_STRUCT_DEFINE_LIST * pList)
+bool CCallInterfaceMakerDlg::DataStructListMoveUp(BASE_DATA_STRUCT_DEFINE_LIST* pList)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(pList->ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(pList->ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->DataStructDefineList.size(); i++)
@@ -10352,7 +10474,7 @@ bool CCallInterfaceMakerDlg::DataStructListMoveUp(BASE_DATA_STRUCT_DEFINE_LIST *
 					pModuleInfo->DataStructDefineList.erase(pModuleInfo->DataStructDefineList.begin() + i);
 					pModuleInfo->DataStructDefineList.insert(pModuleInfo->DataStructDefineList.begin() + i - 1, pList);
 					return true;
-				}				
+				}
 				return false;
 			}
 
@@ -10360,9 +10482,9 @@ bool CCallInterfaceMakerDlg::DataStructListMoveUp(BASE_DATA_STRUCT_DEFINE_LIST *
 	}
 	return false;
 }
-bool CCallInterfaceMakerDlg::DataStructListMoveDown(BASE_DATA_STRUCT_DEFINE_LIST * pList)
+bool CCallInterfaceMakerDlg::DataStructListMoveDown(BASE_DATA_STRUCT_DEFINE_LIST* pList)
 {
-	MODULE_DEFINE_INFO * pModuleInfo = GetModuleInfo(pList->ModuleID);
+	MODULE_DEFINE_INFO* pModuleInfo = GetModuleInfo(pList->ModuleID);
 	if (pModuleInfo)
 	{
 		for (size_t i = 0; i < pModuleInfo->DataStructDefineList.size(); i++)
@@ -10383,9 +10505,9 @@ bool CCallInterfaceMakerDlg::DataStructListMoveDown(BASE_DATA_STRUCT_DEFINE_LIST
 	return false;
 }
 
-bool CCallInterfaceMakerDlg::DataStructListMoveToModule(BASE_DATA_STRUCT_DEFINE_LIST * pList, MODULE_DEFINE_INFO * pModuleInfo)
+bool CCallInterfaceMakerDlg::DataStructListMoveToModule(BASE_DATA_STRUCT_DEFINE_LIST* pList, MODULE_DEFINE_INFO* pModuleInfo)
 {
-	MODULE_DEFINE_INFO * pOldModuleInfo = GetModuleInfo(pList->ModuleID);
+	MODULE_DEFINE_INFO* pOldModuleInfo = GetModuleInfo(pList->ModuleID);
 	if (pOldModuleInfo)
 	{
 		for (size_t i = 0; i < pOldModuleInfo->DataStructDefineList.size(); i++)
@@ -10397,7 +10519,7 @@ bool CCallInterfaceMakerDlg::DataStructListMoveToModule(BASE_DATA_STRUCT_DEFINE_
 			}
 		}
 		pModuleInfo->DataStructDefineList.push_back(pList);
-		pList->ModuleID = pModuleInfo->ModuleID;		
+		pList->ModuleID = pModuleInfo->ModuleID;
 		return true;
 	}
 	return false;
@@ -10409,7 +10531,7 @@ bool CCallInterfaceMakerDlg::AddModule(LPCTSTR szFileName)
 		AfxMessageBox("无法添加主模块作为引用模块");
 		return false;
 	}
-	MODULE_DEFINE_INFO * pModuleIndo = LoadModule(szFileName);
+	MODULE_DEFINE_INFO* pModuleIndo = LoadModule(szFileName);
 	if (pModuleIndo)
 	{
 		CEasyString RelativePath = CFileTools::GetRelativePath(CFileTools::GetPathDirectory(m_MainModule.ModuleDefineFileName), szFileName);
@@ -10438,11 +10560,11 @@ bool CCallInterfaceMakerDlg::DeleteModule(UINT ModuleID)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
-void CCallInterfaceMakerDlg::OnNMDblclkInterfaceList(NMHDR *pNMHDR, LRESULT *pResult)
+void CCallInterfaceMakerDlg::OnNMDblclkInterfaceList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	//LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<NMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
@@ -10454,67 +10576,67 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonConfig()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDlgConfig Dlg;
-	Dlg.m_Config=m_InterfaceConfig;
-	if(Dlg.DoModal()==IDOK)
+	Dlg.m_Config = m_InterfaceConfig;
+	if (Dlg.DoModal() == IDOK)
 	{
-		m_InterfaceConfig=Dlg.m_Config;
+		m_InterfaceConfig = Dlg.m_Config;
 		SaveConfig();
 	}
 }
 
-CString CCallInterfaceMakerDlg::GetLineSpace(CString& TempleStr,LPCTSTR szWord)
+CString CCallInterfaceMakerDlg::GetLineSpace(CString& TempleStr, LPCTSTR szWord)
 {
 	CString Space;
 
-	int Pos=TempleStr.Find(szWord);
-	if(Pos>=0)
+	int Pos = TempleStr.Find(szWord);
+	if (Pos >= 0)
 	{
-		Space=TempleStr.Left(Pos);
-		int SpaceLen=0;
-		for(int i=Space.GetLength()-1;i>=0;i--)
+		Space = TempleStr.Left(Pos);
+		int SpaceLen = 0;
+		for (int i = Space.GetLength() - 1;i >= 0;i--)
 		{
-			if(Space[i]!=' '&&Space[i]!='	')
+			if (Space[i] != ' ' && Space[i] != '	')
 				break;
 			SpaceLen++;
 		}
-		Space=Space.Right(SpaceLen);
+		Space = Space.Right(SpaceLen);
 	}
 	return Space;
 }
-int CCallInterfaceMakerDlg::GetHeadLen(CString& TempleStr,LPCTSTR szWord)
+int CCallInterfaceMakerDlg::GetHeadLen(CString& TempleStr, LPCTSTR szWord)
 {
 	CString Head;
-	int HeadLen=0;
+	int HeadLen = 0;
 
-	int Pos=TempleStr.Find(szWord);
-	if(Pos>=0)
+	int Pos = TempleStr.Find(szWord);
+	if (Pos >= 0)
 	{
-		Head=TempleStr.Left(Pos);
-		for(int i=Head.GetLength()-1;i>=0;i--)
+		Head = TempleStr.Left(Pos);
+		for (int i = Head.GetLength() - 1;i >= 0;i--)
 		{
-			if(Head[i]=='\r'||Head[i]=='\n')
+			if (Head[i] == '\r' || Head[i] == '\n')
 				break;
 			HeadLen++;
 		}
 	}
 	return HeadLen;
 }
-CString CCallInterfaceMakerDlg::ToComment(CString& Content,LPCTSTR szLineSpace)
+CString CCallInterfaceMakerDlg::ToComment(CString& Content, LPCTSTR szLineSpace)
 {
 	CString ToComment = m_InterfaceConfig.CommentPrefix + Content;
-	CString Space="\r\n//";
-	Space+=szLineSpace;
-	ToComment.Replace("\r\n",Space);
+	CString Space = "\r\n//";
+	Space += szLineSpace;
+	ToComment.Replace("\r\n", Space);
 	return ToComment;
 }
 
 CString CCallInterfaceMakerDlg::ClassNameToFileName(LPCTSTR szClassName)
 {
-	CString Output=szClassName;
+	CString Output = szClassName;
 	Output.Trim();
-	if(Output.GetLength()>=2)
+	if (Output.GetLength() >= 2)
 	{
-		if(Output[0]=='C'&&IsBigChar(Output[1]))
+		if (Output[0] == 'C' && IsBigChar(Output[1]))
 			Output.Delete(0);
 	}
 	return Output;
@@ -10522,12 +10644,12 @@ CString CCallInterfaceMakerDlg::ClassNameToFileName(LPCTSTR szClassName)
 
 CString CCallInterfaceMakerDlg::ClassNameToUpper(LPCTSTR szClassName)
 {
-	CString Output=ClassNameToFileName(szClassName);
-	for(int i=Output.GetLength()-1;i>0;i--)
+	CString Output = ClassNameToFileName(szClassName);
+	for (int i = Output.GetLength() - 1;i > 0;i--)
 	{
 		if (IsBigChar(Output[i]) && i && (!IsBigChar(Output[i - 1])) && (Output[i - 1] != '_'))
 		{
-			Output.Insert(i,'_');
+			Output.Insert(i, '_');
 		}
 	}
 	Output.MakeUpper();
@@ -10536,7 +10658,7 @@ CString CCallInterfaceMakerDlg::ClassNameToUpper(LPCTSTR szClassName)
 
 bool CCallInterfaceMakerDlg::IsBigChar(TCHAR c)
 {
-	return c>='A'&&c<='Z';
+	return c >= 'A' && c <= 'Z';
 }
 
 
@@ -10544,11 +10666,11 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSelectAllInterface()
 {
 	// TODO: 在此添加控件通知处理程序代码
 
-	for(int i=0;i<m_lvInterfaceList.GetItemCount();i++)
+	for (int i = 0;i < m_lvInterfaceList.GetItemCount();i++)
 	{
-		m_lvInterfaceList.SetCheck(i,m_SelectAll);
+		m_lvInterfaceList.SetCheck(i, m_SelectAll);
 	}
-	m_SelectAll=!m_SelectAll;
+	m_SelectAll = !m_SelectAll;
 }
 
 
@@ -10661,7 +10783,7 @@ void CCallInterfaceMakerDlg::RemoveMark(CString& Template, LPCTSTR szMark)
 		{
 			NeedCutHeader = false;
 		}
-		if(NeedCutHeader)
+		if (NeedCutHeader)
 		{
 			int CheckPos = StartPos;
 			CheckPos--;
@@ -10737,7 +10859,7 @@ CString CCallInterfaceMakerDlg::GetBlock(const CString& Template, LPCTSTR szBloc
 	int StartPos = Template.Find(szBlockStart);
 	if (StartPos >= 0)
 	{
-		StartPos+= strlen(szBlockStart);
+		StartPos += strlen(szBlockStart);
 		int EndPos = Template.Find(szBlockEnd, StartPos);
 		if (EndPos > StartPos)
 		{
@@ -10779,7 +10901,7 @@ int CCallInterfaceMakerDlg::IsEmptySuffix(CString& Template, int Pos)
 	return Pos;
 }
 
-CString CCallInterfaceMakerDlg::RestoreFileToTemplate(LPCTSTR szFileName,const CString& szTemplate)
+CString CCallInterfaceMakerDlg::RestoreFileToTemplate(LPCTSTR szFileName, const CString& szTemplate)
 {
 	if (CFileTools::IsFileExist(szFileName))
 	{
@@ -10788,29 +10910,29 @@ CString CCallInterfaceMakerDlg::RestoreFileToTemplate(LPCTSTR szFileName,const C
 		{
 			return RestoreToTemplate(InputFile.GetData(), szTemplate);
 		}
-	}	
+	}
 	return szTemplate;
 }
 
-CString CCallInterfaceMakerDlg::RestoreToTemplate(LPCTSTR szInput,const CString& szTemplate)
+CString CCallInterfaceMakerDlg::RestoreToTemplate(LPCTSTR szInput, const CString& szTemplate)
 {
-	CString Output=szInput;
-	int BlockIndex=1;
-	while(true)
+	CString Output = szInput;
+	int BlockIndex = 1;
+	while (true)
 	{
 		CString BlockStart;
 		CString BlockEnd;
-		BlockStart.Format("<GenerateArea%dStart>",BlockIndex);
-		BlockEnd.Format("<GenerateArea%dEnd>",BlockIndex);
-		int TemplateStartPos=szTemplate.Find(BlockStart);
-		int TemplateEndPos=szTemplate.Find(BlockEnd);
-		int InputStartPos=Output.Find(BlockStart);
-		int InputEndPos=Output.Find(BlockEnd);
-		if(TemplateStartPos>=0&&TemplateEndPos>=0&&InputStartPos>=0&&InputEndPos>=0)
+		BlockStart.Format("<GenerateArea%dStart>", BlockIndex);
+		BlockEnd.Format("<GenerateArea%dEnd>", BlockIndex);
+		int TemplateStartPos = szTemplate.Find(BlockStart);
+		int TemplateEndPos = szTemplate.Find(BlockEnd);
+		int InputStartPos = Output.Find(BlockStart);
+		int InputEndPos = Output.Find(BlockEnd);
+		if (TemplateStartPos >= 0 && TemplateEndPos >= 0 && InputStartPos >= 0 && InputEndPos >= 0)
 		{
-			CString TemplateBlock=szTemplate.Mid(TemplateStartPos,TemplateEndPos-TemplateStartPos+BlockEnd.GetLength());
-			Output.Delete(InputStartPos,InputEndPos-InputStartPos+BlockEnd.GetLength());
-			Output.Insert(InputStartPos,TemplateBlock);
+			CString TemplateBlock = szTemplate.Mid(TemplateStartPos, TemplateEndPos - TemplateStartPos + BlockEnd.GetLength());
+			Output.Delete(InputStartPos, InputEndPos - InputStartPos + BlockEnd.GetLength());
+			Output.Insert(InputStartPos, TemplateBlock);
 		}
 		else
 		{
@@ -10821,9 +10943,9 @@ CString CCallInterfaceMakerDlg::RestoreToTemplate(LPCTSTR szInput,const CString&
 	return Output;
 }
 
-void CCallInterfaceMakerDlg::GetDataStructPacketList(int Type,vector<CString>& NameList)
+void CCallInterfaceMakerDlg::GetDataStructPacketList(int Type, vector<CString>& NameList)
 {
-	for (size_t i = 0; i<m_AllDataStructList.size(); i++)
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
 	{
 		if (m_AllDataStructList[i]->ListType == Type)
 			NameList.push_back(m_AllDataStructList[i]->ListName);
@@ -10832,66 +10954,66 @@ void CCallInterfaceMakerDlg::GetDataStructPacketList(int Type,vector<CString>& N
 
 bool CCallInterfaceMakerDlg::MoveDataStruct(int Type, LPCTSTR SourcePacket, LPCTSTR TargetPacket, LPCTSTR Name)
 {
-	BASE_DATA_STRUCT_DEFINE_LIST * pSourcePacket=NULL;
-	BASE_DATA_STRUCT_DEFINE_LIST * pTargetPacket=NULL;
-	for (size_t i = 0; i<m_AllDataStructList.size(); i++)
+	BASE_DATA_STRUCT_DEFINE_LIST* pSourcePacket = NULL;
+	BASE_DATA_STRUCT_DEFINE_LIST* pTargetPacket = NULL;
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
 	{
-		if (m_AllDataStructList[i]->ListType == Type&&m_AllDataStructList[i]->ListName == SourcePacket)
+		if (m_AllDataStructList[i]->ListType == Type && m_AllDataStructList[i]->ListName == SourcePacket)
 			pSourcePacket = m_AllDataStructList[i];
-		if (m_AllDataStructList[i]->ListType == Type&&m_AllDataStructList[i]->ListName == TargetPacket)
+		if (m_AllDataStructList[i]->ListType == Type && m_AllDataStructList[i]->ListName == TargetPacket)
 			pTargetPacket = m_AllDataStructList[i];
-		if(pSourcePacket&&pTargetPacket)
+		if (pSourcePacket && pTargetPacket)
 			break;
 	}
-	if(pSourcePacket&&pTargetPacket)
+	if (pSourcePacket && pTargetPacket)
 	{
-		switch(Type)
+		switch (Type)
 		{
 		case DATA_STRUCT_CONST:
+		{
+			CONST_DEFINE_LIST* pSourceList = (CONST_DEFINE_LIST*)pSourcePacket;
+			CONST_DEFINE_LIST* pTargetList = (CONST_DEFINE_LIST*)pTargetPacket;
+			for (size_t i = 0;i < pSourceList->ConstList.size();i++)
 			{
-				CONST_DEFINE_LIST * pSourceList=(CONST_DEFINE_LIST *)pSourcePacket;
-				CONST_DEFINE_LIST * pTargetList=(CONST_DEFINE_LIST *)pTargetPacket;
-				for(size_t i=0;i<pSourceList->ConstList.size();i++)
+				if (pSourceList->ConstList[i].Name == Name)
 				{
-					if(pSourceList->ConstList[i].Name==Name)
-					{
-						pTargetList->ConstList.push_back(pSourceList->ConstList[i]);
-						pSourceList->ConstList.erase(pSourceList->ConstList.begin()+i);
-						return true;
-					}
+					pTargetList->ConstList.push_back(pSourceList->ConstList[i]);
+					pSourceList->ConstList.erase(pSourceList->ConstList.begin() + i);
+					return true;
 				}
 			}
-			break;
+		}
+		break;
 		case DATA_STRUCT_ENUM:
+		{
+			ENUM_DEFINE_LIST* pSourceList = (ENUM_DEFINE_LIST*)pSourcePacket;
+			ENUM_DEFINE_LIST* pTargetList = (ENUM_DEFINE_LIST*)pTargetPacket;
+			for (size_t i = 0;i < pSourceList->EnumList.size();i++)
 			{
-				ENUM_DEFINE_LIST * pSourceList=(ENUM_DEFINE_LIST *)pSourcePacket;
-				ENUM_DEFINE_LIST * pTargetList=(ENUM_DEFINE_LIST *)pTargetPacket;
-				for(size_t i=0;i<pSourceList->EnumList.size();i++)
+				if (pSourceList->EnumList[i].Name == Name)
 				{
-					if(pSourceList->EnumList[i].Name==Name)
-					{
-						pTargetList->EnumList.push_back(pSourceList->EnumList[i]);
-						pSourceList->EnumList.erase(pSourceList->EnumList.begin()+i);
-						return true;
-					}
+					pTargetList->EnumList.push_back(pSourceList->EnumList[i]);
+					pSourceList->EnumList.erase(pSourceList->EnumList.begin() + i);
+					return true;
 				}
 			}
-			break;
+		}
+		break;
 		case DATA_STRUCT_STRUCT:
+		{
+			STRUCT_DEFINE_LIST* pSourceList = (STRUCT_DEFINE_LIST*)pSourcePacket;
+			STRUCT_DEFINE_LIST* pTargetList = (STRUCT_DEFINE_LIST*)pTargetPacket;
+			for (size_t i = 0;i < pSourceList->StructList.size();i++)
 			{
-				STRUCT_DEFINE_LIST * pSourceList=(STRUCT_DEFINE_LIST *)pSourcePacket;
-				STRUCT_DEFINE_LIST * pTargetList=(STRUCT_DEFINE_LIST *)pTargetPacket;
-				for(size_t i=0;i<pSourceList->StructList.size();i++)
+				if (pSourceList->StructList[i].Name == Name)
 				{
-					if(pSourceList->StructList[i].Name==Name)
-					{
-						pTargetList->StructList.push_back(pSourceList->StructList[i]);
-						pSourceList->StructList.erase(pSourceList->StructList.begin()+i);
-						return true;
-					}
+					pTargetList->StructList.push_back(pSourceList->StructList[i]);
+					pSourceList->StructList.erase(pSourceList->StructList.begin() + i);
+					return true;
 				}
 			}
-			break;
+		}
+		break;
 		}
 	}
 	return false;
@@ -10916,7 +11038,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonDataStructDef()
 void CCallInterfaceMakerDlg::OnBnClickedButtonArrangeIds()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	if(AfxMessageBox("是否要重排所有的ID，这将使接口和旧版本不兼容？",MB_YESNO)==IDYES)
+	if (AfxMessageBox("是否要重排所有的ID，这将使接口和旧版本不兼容？", MB_YESNO) == IDYES)
 	{
 		for (size_t i = 0; i < m_AllModuleList.size(); i++)
 		{
@@ -10930,36 +11052,36 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonArrangeIds()
 
 int CCallInterfaceMakerDlg::InterfaceInfoComp(LPCVOID p1, LPCVOID p2)
 {
-	const CALLER_INTERFACE * pInterfaceInfo1 = (const CALLER_INTERFACE *)p1;
-	const CALLER_INTERFACE * pInterfaceInfo2 = (const CALLER_INTERFACE *)p2;
+	const CALLER_INTERFACE* pInterfaceInfo1 = (const CALLER_INTERFACE*)p1;
+	const CALLER_INTERFACE* pInterfaceInfo2 = (const CALLER_INTERFACE*)p2;
 	return strcmp(pInterfaceInfo1->Name, pInterfaceInfo2->Name);
 }
 
 int CCallInterfaceMakerDlg::InterfaceMethodComp(LPCVOID p1, LPCVOID p2)
 {
-	const INTERFACE_METHOD * pMethodInfo1 = (const INTERFACE_METHOD *)p1;
-	const INTERFACE_METHOD * pMethodInfo2 = (const INTERFACE_METHOD *)p2;
-	return strcmp(pMethodInfo1->Name, pMethodInfo2->Name); 
+	const INTERFACE_METHOD* pMethodInfo1 = (const INTERFACE_METHOD*)p1;
+	const INTERFACE_METHOD* pMethodInfo2 = (const INTERFACE_METHOD*)p2;
+	return strcmp(pMethodInfo1->Name, pMethodInfo2->Name);
 }
 
 int CCallInterfaceMakerDlg::StructComp(LPCVOID p1, LPCVOID p2)
 {
-	const STRUCT_DEFINE_INFO * pInfo1 = (const STRUCT_DEFINE_INFO *)p1;
-	const STRUCT_DEFINE_INFO * pInfo2 = (const STRUCT_DEFINE_INFO *)p2;
+	const STRUCT_DEFINE_INFO* pInfo1 = (const STRUCT_DEFINE_INFO*)p1;
+	const STRUCT_DEFINE_INFO* pInfo2 = (const STRUCT_DEFINE_INFO*)p2;
 	return strcmp(pInfo1->Name, pInfo2->Name);
 }
 
 int CCallInterfaceMakerDlg::EnumComp(LPCVOID p1, LPCVOID p2)
 {
-	const ENUM_DEFINE_INFO * pInfo1 = (const ENUM_DEFINE_INFO *)p1;
-	const ENUM_DEFINE_INFO * pInfo2 = (const ENUM_DEFINE_INFO *)p2;
+	const ENUM_DEFINE_INFO* pInfo1 = (const ENUM_DEFINE_INFO*)p1;
+	const ENUM_DEFINE_INFO* pInfo2 = (const ENUM_DEFINE_INFO*)p2;
 	return strcmp(pInfo1->Name, pInfo2->Name);
 }
 
 int CCallInterfaceMakerDlg::ConstComp(LPCVOID p1, LPCVOID p2)
 {
-	const CONST_DEFINE_INFO * pInfo1 = (const CONST_DEFINE_INFO *)p1;
-	const CONST_DEFINE_INFO * pInfo2 = (const CONST_DEFINE_INFO *)p2;
+	const CONST_DEFINE_INFO* pInfo1 = (const CONST_DEFINE_INFO*)p1;
+	const CONST_DEFINE_INFO* pInfo2 = (const CONST_DEFINE_INFO*)p2;
 	return strcmp(pInfo1->Name, pInfo2->Name);
 }
 
@@ -10987,9 +11109,9 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSortAll()
 		qsort(m_ImportModuleList[i].InterfaceList.begin()._Ptr, m_ImportModuleList[i].InterfaceList.size(), sizeof(CALLER_INTERFACE), InterfaceInfoComp);
 	}
 
-	for (size_t i = 0; i <m_AllInterfaceList.size(); i++)
+	for (size_t i = 0; i < m_AllInterfaceList.size(); i++)
 	{
-		CALLER_INTERFACE * pInterfaceInfo = m_AllInterfaceList[i];
+		CALLER_INTERFACE* pInterfaceInfo = m_AllInterfaceList[i];
 		qsort(pInterfaceInfo->MethodList.begin()._Ptr, pInterfaceInfo->MethodList.size(), sizeof(INTERFACE_METHOD), InterfaceMethodComp);
 	}
 
@@ -10998,20 +11120,20 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSortAll()
 		switch (m_AllDataStructList[i]->ListType)
 		{
 		case DATA_STRUCT_CONST:
-			{
-				CONST_DEFINE_LIST * pConstList = (CONST_DEFINE_LIST *)m_AllDataStructList[i];
-				qsort(pConstList->ConstList.begin()._Ptr, pConstList->ConstList.size(), sizeof(CONST_DEFINE_INFO), ConstComp);
-			}
-			break;
+		{
+			CONST_DEFINE_LIST* pConstList = (CONST_DEFINE_LIST*)m_AllDataStructList[i];
+			qsort(pConstList->ConstList.begin()._Ptr, pConstList->ConstList.size(), sizeof(CONST_DEFINE_INFO), ConstComp);
+		}
+		break;
 		case DATA_STRUCT_ENUM:
-			{
-				ENUM_DEFINE_LIST * pEnumList = (ENUM_DEFINE_LIST *)m_AllDataStructList[i];
-				qsort(pEnumList->EnumList.begin()._Ptr, pEnumList->EnumList.size(), sizeof(ENUM_DEFINE_INFO), EnumComp);
-			}
-			break;
+		{
+			ENUM_DEFINE_LIST* pEnumList = (ENUM_DEFINE_LIST*)m_AllDataStructList[i];
+			qsort(pEnumList->EnumList.begin()._Ptr, pEnumList->EnumList.size(), sizeof(ENUM_DEFINE_INFO), EnumComp);
+		}
+		break;
 		case DATA_STRUCT_STRUCT:
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)m_AllDataStructList[i];
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)m_AllDataStructList[i];
 			qsort(pStructList->StructList.begin()._Ptr, pStructList->StructList.size(), sizeof(STRUCT_DEFINE_INFO), StructComp);
 		}
 		break;
@@ -11071,7 +11193,7 @@ void CCallInterfaceMakerDlg::ArrangeIds(MODULE_DEFINE_INFO& ModuleInfo)
 	{
 		if (ModuleInfo.DataStructDefineList[i]->ListType == DATA_STRUCT_STRUCT)
 		{
-			STRUCT_DEFINE_LIST * pStructList = (STRUCT_DEFINE_LIST *)ModuleInfo.DataStructDefineList[i];
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)ModuleInfo.DataStructDefineList[i];
 			for (size_t j = 0; j < pStructList->StructList.size(); j++)
 			{
 				STRUCT_DEFINE_INFO& StructInfo = pStructList->StructList[j];
@@ -11089,14 +11211,14 @@ void CCallInterfaceMakerDlg::ArrangeIds(MODULE_DEFINE_INFO& ModuleInfo)
 
 bool CCallInterfaceMakerDlg::CheckBaseStructObjectID(vector<UINT>& ObjectIDList, LPCTSTR szBaseStructName)
 {
-	STRUCT_DEFINE_INFO * pStructInfo = GetStructDefineInfo(szBaseStructName);
+	STRUCT_DEFINE_INFO* pStructInfo = GetStructDefineInfo(szBaseStructName);
 	if (pStructInfo)
 	{
 		for (size_t i = 0; i < ObjectIDList.size(); i++)
 		{
 			if (pStructInfo->ObjectID == ObjectIDList[i])
 				return false;
-		}		
+		}
 		ObjectIDList.push_back(pStructInfo->ObjectID);
 		if (!pStructInfo->BaseStruct.IsEmpty())
 			return CheckBaseStructObjectID(ObjectIDList, pStructInfo->BaseStruct);
@@ -11107,7 +11229,7 @@ bool CCallInterfaceMakerDlg::CheckBaseStructObjectID(vector<UINT>& ObjectIDList,
 
 CString CCallInterfaceMakerDlg::ProcessArrayOperation(CString Operation, TYPE_DEFINE* pElementType)
 {
-	if(pElementType)
+	if (pElementType)
 	{
 		if (pElementType->Flag & TYPE_DEFINE_FLAG_BASE_TYPE)
 		{
@@ -11120,9 +11242,9 @@ CString CCallInterfaceMakerDlg::ProcessArrayOperation(CString Operation, TYPE_DE
 			RemoveBlock(Operation, "<IfIsBaseType>", "</IfIsBaseType>");
 			Operation.Replace("<IfIsNotBaseType>", "");
 			Operation.Replace("</IfIsNotBaseType>", "");
-		}		
-		
-		if ((pElementType->Flag & TYPE_DEFINE_FLAG_VARIABLE_LEN)|| (pElementType->Flag & TYPE_DEFINE_FLAG_STRUCT))
+		}
+
+		if ((pElementType->Flag & TYPE_DEFINE_FLAG_VARIABLE_LEN) || (pElementType->Flag & TYPE_DEFINE_FLAG_STRUCT))
 		{
 			RemoveBlock(Operation, "<IfIsFixLenType>", "</IfIsFixLenType>");
 			Operation.Replace("<IfIsVariableLenType>", "");

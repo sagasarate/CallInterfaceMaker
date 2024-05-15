@@ -143,14 +143,14 @@ UINT <ClassName>::GetSmartStructSize(const DATA_OBJECT_MODIFY_FLAGS& MemberFlags
 {
 //<GenerateArea9Start>
 	UINT64 Flag=MemberFlags[<CLASS_FLAG_INDEX>];
-	UINT Size=0;
+	UINT _PackSize=0;
 	<PacketSizes>
 		
 	<IfHaveBaseClass>
-	Size+=<BaseClass>::GetSmartStructSize(MemberFlags);
+	_PackSize+=<BaseClass>::GetSmartStructSize(MemberFlags);
 	</IfHaveBaseClass>
 //<GenerateArea9End>	
-	return Size;
+	return _PackSize;
 
 }
 

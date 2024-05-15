@@ -546,6 +546,7 @@ struct METHOD_PARAM
 	CString		DefaultValue;
 	bool		CanNull;
 	bool		IsReference;
+	bool		IsArray;
 	CString		Description;
 	CString		PackFlag;
 };

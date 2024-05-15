@@ -23,7 +23,7 @@ public:
 	CDlgParamEditor(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CDlgParamEditor();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_DIALOG_PARAM_EDITOR };
 
 protected:
@@ -35,7 +35,7 @@ public:
 protected:
 	virtual void OnOK();
 	virtual void OnCancel();
-protected:	
+protected:
 	CString			m_Name;
 	CComboBox		m_cbType;
 	CString			m_Type;
@@ -44,46 +44,49 @@ protected:
 	CString			m_DefaultValue;
 	BOOL			m_CanNull;
 	BOOL			m_IsReference;
+	BOOL			m_IsArray;
 	UINT			m_ID;
 	CString			m_PackFlag;
 public:
 	void SetID(UINT ID);
 	void SetData(METHOD_PARAM& ParamInfo);
 	void GetData(METHOD_PARAM& ParamInfo);
-	
-	
-	
-	
-	
+
+
+
+
+
 };
 
 inline void CDlgParamEditor::SetID(UINT ID)
 {
-	m_ID=ID;
+	m_ID = ID;
 }
 
 inline void CDlgParamEditor::SetData(METHOD_PARAM& ParamInfo)
 {
-	m_Name=ParamInfo.Name;
-	m_Type=ParamInfo.Type;
-	m_Length=ParamInfo.Length;
-	m_DefaultValue=ParamInfo.DefaultValue;
-	m_Description=ParamInfo.Description;
-	m_CanNull=ParamInfo.CanNull;	
-	m_IsReference=ParamInfo.IsReference;
-	m_ID=ParamInfo.ID;
+	m_Name = ParamInfo.Name;
+	m_Type = ParamInfo.Type;
+	m_Length = ParamInfo.Length;
+	m_DefaultValue = ParamInfo.DefaultValue;
+	m_Description = ParamInfo.Description;
+	m_CanNull = ParamInfo.CanNull;
+	m_IsReference = ParamInfo.IsReference;
+	m_IsArray = ParamInfo.IsArray;
+	m_ID = ParamInfo.ID;
 	m_PackFlag = ParamInfo.PackFlag;
 }
 
 inline void CDlgParamEditor::GetData(METHOD_PARAM& ParamInfo)
 {
-	ParamInfo.Name=m_Name;
-	ParamInfo.Type=m_Type;
-	ParamInfo.Length=m_Length;
-	ParamInfo.DefaultValue=m_DefaultValue;
-	ParamInfo.Description=m_Description;
-	ParamInfo.CanNull=m_CanNull;
-	ParamInfo.IsReference=m_IsReference;
-	ParamInfo.ID=m_ID;
+	ParamInfo.Name = m_Name;
+	ParamInfo.Type = m_Type;
+	ParamInfo.Length = m_Length;
+	ParamInfo.DefaultValue = m_DefaultValue;
+	ParamInfo.Description = m_Description;
+	ParamInfo.CanNull = m_CanNull;
+	ParamInfo.IsReference = m_IsReference;
+	ParamInfo.IsArray = m_IsArray;
+	ParamInfo.ID = m_ID;
 	ParamInfo.PackFlag = m_PackFlag;
 }

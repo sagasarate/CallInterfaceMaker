@@ -54,12 +54,12 @@ struct <StructName><IfHaveBaseClass>:</IfHaveBaseClass><BaseStruct>
 	}
 	UINT GetSmartStructSize() const
 	{
-		UINT Size=0;
+		UINT _PackSize = 0;
 		<IfHaveBaseClass>
-		Size += <BaseClass>::GetSmartStructSize();
+		_PackSize += <BaseClass>::GetSmartStructSize();
 		</IfHaveBaseClass>
 		<PacketSizes>
-		return Size;
+		return _PackSize;
 	}
 	void CloneFrom(const <StructName>& Value)
 	{

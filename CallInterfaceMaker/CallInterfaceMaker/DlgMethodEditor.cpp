@@ -41,22 +41,22 @@ void CDlgMethodEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, m_MethodInfo.Name);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, m_MethodInfo.Description);
 	DDX_Text(pDX, IDC_EDIT_METHOD_ID, m_MethodInfo.ID);
-	BOOL CanCache = (m_MethodInfo.Flag&INTERFACE_METHOD_FLAG_CAN_CACHE) ? TRUE : FALSE;
-	BOOL NoCompress = (m_MethodInfo.Flag&INTERFACE_METHOD_FLAG_NO_COMPRESS) ? TRUE : FALSE;
+	BOOL CanCache = (m_MethodInfo.Flag & INTERFACE_METHOD_FLAG_CAN_CACHE) ? TRUE : FALSE;
+	BOOL NoCompress = (m_MethodInfo.Flag & INTERFACE_METHOD_FLAG_NO_COMPRESS) ? TRUE : FALSE;
 	DDX_Check(pDX, IDC_CHECK_CAN_CACHE, CanCache);
 	DDX_Check(pDX, IDC_CHECK_NO_COMPRESS, NoCompress);
-	m_MethodInfo.Flag = (CanCache ? INTERFACE_METHOD_FLAG_CAN_CACHE : 0)|
+	m_MethodInfo.Flag = (CanCache ? INTERFACE_METHOD_FLAG_CAN_CACHE : 0) |
 		(NoCompress ? INTERFACE_METHOD_FLAG_NO_COMPRESS : 0);
 
 	if (pDX->m_bSaveAndValidate)
 	{
-		m_MethodInfo.Type = m_cbType.GetCurSel();		
+		m_MethodInfo.Type = m_cbType.GetCurSel();
 	}
 	else
 	{
 		m_cbType.SetCurSel(m_MethodInfo.Type);
 	}
-	
+
 }
 
 
@@ -79,16 +79,16 @@ BOOL CDlgMethodEditor::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_lvParamList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
+	m_lvParamList.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 
-	m_lvParamList.InsertColumn(0,"名称",LVCFMT_LEFT,150);
-	m_lvParamList.InsertColumn(1,"ID",LVCFMT_LEFT,50);
-	m_lvParamList.InsertColumn(2,"类型",LVCFMT_LEFT,60);	
-	m_lvParamList.InsertColumn(3,"长度",LVCFMT_LEFT,50);
-	m_lvParamList.InsertColumn(4,"缺省值",LVCFMT_LEFT,50);
-	m_lvParamList.InsertColumn(5,"可为空",LVCFMT_LEFT,60);
-	m_lvParamList.InsertColumn(6,"描述",LVCFMT_LEFT,200);
+	m_lvParamList.InsertColumn(0, "名称", LVCFMT_LEFT, 150);
+	m_lvParamList.InsertColumn(1, "ID", LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(2, "类型", LVCFMT_LEFT, 60);
+	m_lvParamList.InsertColumn(3, "长度", LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(4, "缺省值", LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(5, "可为空", LVCFMT_LEFT, 60);
+	m_lvParamList.InsertColumn(6, "描述", LVCFMT_LEFT, 200);
 
 	m_cbType.ResetContent();
 	for (int i = 0; i < INTERFACE_METHOD_TYPE_MAX; i++)
@@ -123,10 +123,10 @@ void CDlgMethodEditor::OnBnClickedButtonAddParam()
 	// TODO: 在此添加控件通知处理程序代码
 	CDlgParamEditor Dlg;
 
-	
+
 	Dlg.SetID(m_MethodInfo.ParamIDSeed);
-	
-	if(Dlg.DoModal()==IDOK)
+
+	if (Dlg.DoModal() == IDOK)
 	{
 		m_MethodInfo.ParamIDSeed++;
 		METHOD_PARAM ParamInfo;
@@ -143,18 +143,18 @@ void CDlgMethodEditor::OnBnClickedButtonAddParam()
 			AddListItem(ParamInfo, m_MethodInfo.AckParamList.size() - 1);
 			break;
 		}
-		
+		ListCtrlColAutoFit(m_lvParamList);
 	}
 }
 
 void CDlgMethodEditor::OnBnClickedButtonEditParam()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvParamList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvParamList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvParamList.GetNextSelectedItem(Pos);
-		UINT Index=(UINT)m_lvParamList.GetItemData(Item);
+		int Item = m_lvParamList.GetNextSelectedItem(Pos);
+		UINT Index = (UINT)m_lvParamList.GetItemData(Item);
 		switch (m_tabParamList.GetCurSel())
 		{
 		case INTERFACE_METHOD_PARAM_TYPE_CALL:
@@ -167,7 +167,7 @@ void CDlgMethodEditor::OnBnClickedButtonEditParam()
 				if (Dlg.DoModal() == IDOK)
 				{
 					Dlg.GetData(m_MethodInfo.CallParamList[Index]);
-					EditListItem(Item, m_MethodInfo.CallParamList[Index]);
+					FillListItem(Item, m_MethodInfo.CallParamList[Index]);
 				}
 			}
 			break;
@@ -181,12 +181,12 @@ void CDlgMethodEditor::OnBnClickedButtonEditParam()
 				if (Dlg.DoModal() == IDOK)
 				{
 					Dlg.GetData(m_MethodInfo.AckParamList[Index]);
-					EditListItem(Item, m_MethodInfo.AckParamList[Index]);
+					FillListItem(Item, m_MethodInfo.AckParamList[Index]);
 				}
 			}
 			break;
 		}
-		
+		ListCtrlColAutoFit(m_lvParamList);
 	}
 	else
 	{
@@ -197,11 +197,11 @@ void CDlgMethodEditor::OnBnClickedButtonEditParam()
 void CDlgMethodEditor::OnBnClickedButtonDelParam()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvParamList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvParamList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvParamList.GetNextSelectedItem(Pos);
-		UINT Index=(UINT)m_lvParamList.GetItemData(Item);
+		int Item = m_lvParamList.GetNextSelectedItem(Pos);
+		UINT Index = (UINT)m_lvParamList.GetItemData(Item);
 		switch (m_tabParamList.GetCurSel())
 		{
 		case INTERFACE_METHOD_PARAM_TYPE_CALL:
@@ -213,7 +213,7 @@ void CDlgMethodEditor::OnBnClickedButtonDelParam()
 				if (AfxMessageBox(Msg, MB_YESNO) == IDYES)
 				{
 					m_MethodInfo.CallParamList.erase(m_MethodInfo.CallParamList.begin() + Index);
-					FillListItem();
+					FillList();
 				}
 			}
 			break;
@@ -226,22 +226,22 @@ void CDlgMethodEditor::OnBnClickedButtonDelParam()
 				if (AfxMessageBox(Msg, MB_YESNO) == IDYES)
 				{
 					m_MethodInfo.AckParamList.erase(m_MethodInfo.AckParamList.begin() + Index);
-					FillListItem();
+					FillList();
 				}
 			}
 			break;
 		}
-		
+
 	}
 }
 void CDlgMethodEditor::OnBnClickedButtonParamUp()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvParamList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvParamList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvParamList.GetNextSelectedItem(Pos);
-		UINT Index=(UINT)m_lvParamList.GetItemData(Item);
+		int Item = m_lvParamList.GetNextSelectedItem(Pos);
+		UINT Index = (UINT)m_lvParamList.GetItemData(Item);
 		switch (m_tabParamList.GetCurSel())
 		{
 		case INTERFACE_METHOD_PARAM_TYPE_CALL:
@@ -250,7 +250,7 @@ void CDlgMethodEditor::OnBnClickedButtonParamUp()
 				METHOD_PARAM Temp = m_MethodInfo.CallParamList[Index];
 				m_MethodInfo.CallParamList.erase(m_MethodInfo.CallParamList.begin() + Index);
 				m_MethodInfo.CallParamList.insert(m_MethodInfo.CallParamList.begin() + Index - 1, Temp);
-				FillListItem();
+				FillList();
 				SelectItemByName(Temp.Name);
 			}
 			break;
@@ -260,23 +260,23 @@ void CDlgMethodEditor::OnBnClickedButtonParamUp()
 				METHOD_PARAM Temp = m_MethodInfo.AckParamList[Index];
 				m_MethodInfo.AckParamList.erase(m_MethodInfo.AckParamList.begin() + Index);
 				m_MethodInfo.AckParamList.insert(m_MethodInfo.AckParamList.begin() + Index - 1, Temp);
-				FillListItem();
+				FillList();
 				SelectItemByName(Temp.Name);
 			}
 			break;
 		}
-		
+
 	}
 }
 
 void CDlgMethodEditor::OnBnClickedButtonParamDown()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION Pos=m_lvParamList.GetFirstSelectedItemPosition();
-	if(Pos)
+	POSITION Pos = m_lvParamList.GetFirstSelectedItemPosition();
+	if (Pos)
 	{
-		int Item=m_lvParamList.GetNextSelectedItem(Pos);
-		UINT Index=(UINT)m_lvParamList.GetItemData(Item);
+		int Item = m_lvParamList.GetNextSelectedItem(Pos);
+		UINT Index = (UINT)m_lvParamList.GetItemData(Item);
 		switch (m_tabParamList.GetCurSel())
 		{
 		case INTERFACE_METHOD_PARAM_TYPE_CALL:
@@ -285,7 +285,7 @@ void CDlgMethodEditor::OnBnClickedButtonParamDown()
 				METHOD_PARAM Temp = m_MethodInfo.CallParamList[Index];
 				m_MethodInfo.CallParamList.erase(m_MethodInfo.CallParamList.begin() + Index);
 				m_MethodInfo.CallParamList.insert(m_MethodInfo.CallParamList.begin() + Index + 1, Temp);
-				FillListItem();
+				FillList();
 				SelectItemByName(Temp.Name);
 			}
 			break;
@@ -295,92 +295,22 @@ void CDlgMethodEditor::OnBnClickedButtonParamDown()
 				METHOD_PARAM Temp = m_MethodInfo.AckParamList[Index];
 				m_MethodInfo.AckParamList.erase(m_MethodInfo.AckParamList.begin() + Index);
 				m_MethodInfo.AckParamList.insert(m_MethodInfo.AckParamList.begin() + Index + 1, Temp);
-				FillListItem();
+				FillList();
 				SelectItemByName(Temp.Name);
 			}
 			break;
-		}		
-	}
-}
-
-void CDlgMethodEditor::AddListItem(METHOD_PARAM& ParamInfo,UINT Index)
-{
-	CString Temp;
-	int Item=m_lvParamList.InsertItem(m_lvParamList.GetItemCount(),ParamInfo.Name);
-	m_lvParamList.SetItemData(Item,(INT_PTR)Index);
-
-	Temp.Format("%u",ParamInfo.ID);
-	m_lvParamList.SetItemText(Item,1,Temp);
-
-	TYPE_DEFINE * pTypeInfo=GetMainDlg()->FindVarType(ParamInfo.Type);
-	if(pTypeInfo)
-	{
-		CString Temp = pTypeInfo->Name;
-		if(ParamInfo.IsReference)		
-		{
-			Temp=pTypeInfo->GenerateOperations.ReferenceDefine;
-			Temp.Replace("<Type>",pTypeInfo->Name);
-			m_lvParamList.SetItemText(Item,2,Temp);
 		}
-		
-		m_lvParamList.SetItemText(Item,2,Temp);
 	}
-	else
-	{
-		m_lvParamList.SetItemText(Item,2,"未知");
-	}
-	Temp.Format("%d",ParamInfo.Length);
-	m_lvParamList.SetItemText(Item,3,Temp);
-	m_lvParamList.SetItemText(Item,4,ParamInfo.DefaultValue);
-	if(ParamInfo.CanNull)
-	{
-		m_lvParamList.SetItemText(Item,5,"是");
-	}
-	else
-	{
-		m_lvParamList.SetItemText(Item,5,"否");
-	}
-	m_lvParamList.SetItemText(Item,6,ParamInfo.Description);
 }
 
-void CDlgMethodEditor::EditListItem(int Item,METHOD_PARAM& ParamInfo)
+void CDlgMethodEditor::AddListItem(METHOD_PARAM& ParamInfo, UINT Index)
 {
-	CString Temp;
-	m_lvParamList.SetItemText(Item,0,ParamInfo.Name);
-	Temp.Format("%u",ParamInfo.ID);
-	m_lvParamList.SetItemText(Item,1,Temp);
-
-	TYPE_DEFINE * pTypeInfo=GetMainDlg()->FindVarType(ParamInfo.Type);
-	if(pTypeInfo)
-	{
-		if(ParamInfo.IsReference)		
-		{
-			CString Temp=pTypeInfo->GenerateOperations.ReferenceDefine;
-			Temp.Replace("<Type>",pTypeInfo->Name);
-			m_lvParamList.SetItemText(Item,2,Temp);
-		}
-		else
-			m_lvParamList.SetItemText(Item,2,pTypeInfo->Name);
-	}
-	else
-	{
-		m_lvParamList.SetItemText(Item,2,"未知");
-	}
-	Temp.Format("%d",ParamInfo.Length);
-	m_lvParamList.SetItemText(Item,3,Temp);
-	m_lvParamList.SetItemText(Item,4,ParamInfo.DefaultValue);
-	if(ParamInfo.CanNull)
-	{
-		m_lvParamList.SetItemText(Item,5,"可为空");
-	}
-	else
-	{
-		m_lvParamList.SetItemText(Item,5,"不可为空");
-	}
-	m_lvParamList.SetItemText(Item,6,ParamInfo.Description);
+	int Item = m_lvParamList.InsertItem(Index, "");
+	FillListItem(Item, ParamInfo);
+	m_lvParamList.SetItemData(Item, (INT_PTR)Index);
 }
 
-void CDlgMethodEditor::FillListItem()
+void CDlgMethodEditor::FillList()
 {
 	m_lvParamList.DeleteAllItems();
 	switch (m_tabParamList.GetCurSel())
@@ -398,26 +328,71 @@ void CDlgMethodEditor::FillListItem()
 		}
 		break;
 	}
+	ListCtrlColAutoFit(m_lvParamList);
+}
+
+void CDlgMethodEditor::FillListItem(int Item, METHOD_PARAM& ParamInfo)
+{
+	CString Temp;
+
+	m_lvParamList.SetItemText(Item,0, ParamInfo.Name);
+	Temp.Format("%u", ParamInfo.ID);
+	m_lvParamList.SetItemText(Item, 1, Temp);
+
+	TYPE_DEFINE* pTypeInfo = GetMainDlg()->FindVarType(ParamInfo.Type);
+	if (pTypeInfo)
+	{
+		CString Temp = pTypeInfo->Name;
+		if (ParamInfo.IsArray)
+		{
+			Temp = GetMainDlg()->GetConfig().ArrayDefineConfig.ReferenceDefine;
+			Temp.Replace("<Type>", pTypeInfo->Name);
+		}			
+		else if (ParamInfo.IsReference)
+		{
+			Temp = pTypeInfo->GenerateOperations.ReferenceDefine;
+			Temp.Replace("<Type>", pTypeInfo->Name);
+		}
+		
+
+		m_lvParamList.SetItemText(Item, 2, Temp);
+	}
+	else
+	{
+		m_lvParamList.SetItemText(Item, 2, "未知");
+	}
+	Temp.Format("%d", ParamInfo.Length);
+	m_lvParamList.SetItemText(Item, 3, Temp);
+	m_lvParamList.SetItemText(Item, 4, ParamInfo.DefaultValue);
+	if (ParamInfo.CanNull)
+	{
+		m_lvParamList.SetItemText(Item, 5, "是");
+	}
+	else
+	{
+		m_lvParamList.SetItemText(Item, 5, "否");
+	}
+	m_lvParamList.SetItemText(Item, 6, ParamInfo.Description);
 }
 
 void CDlgMethodEditor::SelectItemByName(LPCTSTR szName)
 {
-	for(int i=0;i<m_lvParamList.GetItemCount();i++)
+	for (int i = 0;i < m_lvParamList.GetItemCount();i++)
 	{
-		if(m_lvParamList.GetItemText(i,0)==szName)
+		if (m_lvParamList.GetItemText(i, 0) == szName)
 		{
-			m_lvParamList.SetItemState(i,LVIS_SELECTED,LVIS_SELECTED);
-			m_lvParamList.EnsureVisible(i,false);
+			m_lvParamList.SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
+			m_lvParamList.EnsureVisible(i, false);
 		}
 		else
 		{
-			m_lvParamList.SetItemState(i,0,LVIS_SELECTED);
+			m_lvParamList.SetItemState(i, 0, LVIS_SELECTED);
 		}
 	}
 }
 
 void CDlgMethodEditor::InitTab()
-{	
+{
 	if (m_CurTabType != m_cbType.GetCurSel())
 	{
 		m_CurTabType = m_cbType.GetCurSel();
@@ -437,12 +412,12 @@ void CDlgMethodEditor::InitTab()
 
 		m_tabParamList.SetCurSel(0);
 
-		FillListItem();
+		FillList();
 	}
 }
 
 
-void CDlgMethodEditor::OnNMDblclkListParam(NMHDR *pNMHDR, LRESULT *pResult)
+void CDlgMethodEditor::OnNMDblclkListParam(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	//LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<NMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
@@ -458,9 +433,9 @@ void CDlgMethodEditor::OnCbnSelchangeComboMethodType()
 }
 
 
-void CDlgMethodEditor::OnTcnSelchangeTabParamList(NMHDR *pNMHDR, LRESULT *pResult)
+void CDlgMethodEditor::OnTcnSelchangeTabParamList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
 	*pResult = 0;
-	FillListItem();
+	FillList();
 }

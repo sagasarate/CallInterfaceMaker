@@ -161,13 +161,13 @@ end
 function <SpaceName>.<ClassName>:GetSmartStructSize(MemberFlags)
 --<GenerateArea13Start>
 		local Flag = MemberFlags[<SpaceName>.DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX> + 1];
-		local Size = 0;
+		local _PackSize = 0;
 
 		<PacketSizes>
 			
 		<IfHaveBaseClass>
-		Size = Size + <SpaceName>.<BaseClass>:GetSmartStructSize(self,MemberFlags);
+		_PackSize = _PackSize + <SpaceName>.<BaseClass>:GetSmartStructSize(self,MemberFlags);
 		</IfHaveBaseClass>
 --<GenerateArea13End>	
-		return Size;
+		return _PackSize;
 end

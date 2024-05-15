@@ -3,21 +3,21 @@
 		return COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
 	end
 
-	local MsgDataSize = SmartStruct.GetEmptyStructSize()
-		<PacketSizes>;
+	local _PackSize = SmartStruct.GetEmptyStructSize();
+	<PacketSizes>;
 
 	local MsgFlag = 0;
 	<IfMsgCanCache>MsgFlag = MsgFlag | DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
 	<IfMsgNoCompress>MsgFlag = MsgFlag | DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_NO_COMPRESS;</IfMsgNoCompress>
 		
-	local MsgBuffer = ByteArray.New(MsgDataSize);
+	local MsgBuffer = ByteArray.New(_PackSize);
 	
 	
     local MsgID = MAKE_MSG_ID(<SpaceName>.MODULE_IDS.<ModuleID>, <SpaceName>.<InterfaceIDEnumName>.<InterfaceID>,
 		<SpaceName>.<MethodIDEnumName>.<MethodID>, <IsAckMsg>);		
 
 	
-	local Packet = SmartStruct.New(MsgBuffer, 0, MsgDataSize, true);
+	local Packet = SmartStruct.New(MsgBuffer, 0, _PackSize, true);
 	
 	if self:PackMsg<MethodName>(Packet<,Params>) then
 		if self.m_Operator:SendMessage(self.m_TargetID, MsgID, MsgFlag, MsgBuffer) then
