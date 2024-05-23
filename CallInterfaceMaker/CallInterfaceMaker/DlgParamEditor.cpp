@@ -30,6 +30,7 @@ CDlgParamEditor::CDlgParamEditor(CWnd* pParent /*=NULL*/)
 	, m_DefaultValue(_T(""))
 	, m_CanNull(FALSE)
 	, m_IsReference(FALSE)
+	, m_IsArray(FALSE)
 	, m_ID(0)
 {
 
