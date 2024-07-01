@@ -80,8 +80,8 @@ BOOL CDlgTypeEditor::OnInitDialog()
 	m_tbOperations.SetCurSel(0);
 	m_lvTypeList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
 
-	m_lvTypeList.InsertColumn(0,"名称",LVCFMT_LEFT,80);
-	m_lvTypeList.InsertColumn(1,"C类型",LVCFMT_LEFT,80);
+	m_lvTypeList.InsertColumn(0,_T("名称"),LVCFMT_LEFT,80);
+	m_lvTypeList.InsertColumn(1,_T("C类型"),LVCFMT_LEFT,80);
 
 	FillList();
 
@@ -156,7 +156,7 @@ void CDlgTypeEditor::ShowItemData(int Item)
 	{
 		m_TypeName.Empty();
 		m_CType.Empty();
-		m_edOperation.SetWindowText("");		
+		m_edOperation.SetWindowText(_T(""));		
 		m_IsRefType = FALSE;
 		m_UseParamBind = FALSE;
 		m_IsBaseType = FALSE;
@@ -231,8 +231,8 @@ void CDlgTypeEditor::OnBnClickedNew()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	TYPE_DEFINE NewType;
-	NewType.Name="新类型";
-	NewType.CType="char";
+	NewType.Name=_T("新类型");
+	NewType.CType=_T("char");
 	m_TypeList.push_back(NewType);
 	UINT Index=m_TypeList.size()-1;
 	m_IsModified=true;
@@ -249,7 +249,7 @@ void CDlgTypeEditor::OnBnClickedDel()
 	if(Pos)
 	{
 		int Item=m_lvTypeList.GetNextSelectedItem(Pos);
-		if(AfxMessageBox("是否要删除该类型定义?",MB_YESNO)==IDYES)
+		if(AfxMessageBox(_T("是否要删除该类型定义?"),MB_YESNO)==IDYES)
 		{
 			UINT Index=m_lvTypeList.GetItemData(Item);
 			m_TypeList.erase(m_TypeList.begin()+Index);
@@ -275,7 +275,7 @@ void CDlgTypeEditor::OnCancel()
 	// TODO: 在此添加专用代码和/或调用基类
 	if(m_IsModified)
 	{
-		if(AfxMessageBox("是否要放弃已作出的更改？",MB_YESNO)==IDYES)
+		if(AfxMessageBox(_T("是否要放弃已作出的更改？"),MB_YESNO)==IDYES)
 		{
 			CDialog::OnCancel();
 		}

@@ -41,8 +41,8 @@ void CDlgStructEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_EXPORT_XML_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_XML_PROCESS);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_JSON_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_JSON_PROCESS);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_DB_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_DB_PROCESS);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_EDITOR_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_EDITOR_PROCESS);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_LOG_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_LOG_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_FILE_LOG_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_FILE_LOG_PROCESS);
+	DDX_Check(pDX, IDC_CHECK_EXPORT_ALI_LOG_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_ALI_LOG_PROCESS);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_LUA_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_LUA_PROCESS);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_XLS_PROCESS, m_StructDefineInfo.Flag, STRUCT_FLAG_EXPORT_XLS_PROCESS);
 }
@@ -74,13 +74,13 @@ void CDlgStructEditor::FillList()
 		int Item = m_lvMemberList.InsertItem(m_lvMemberList.GetItemCount(), Member.Name);
 		
 		if (Member.IsArray)
-			Temp.Format("%s[%u,%u]", Member.Type, Member.ArrayStartLength, Member.ArrayGrowLength);
+			Temp.Format(_T("%s[%u,%u]"), Member.Type, Member.ArrayStartLength, Member.ArrayGrowLength);
 		else
 			Temp = Member.Type;
 		m_lvMemberList.SetItemText(Item, 1, Temp);
-		Temp.Format("%u", Member.ID);
+		Temp.Format(_T("%u"), Member.ID);
 		m_lvMemberList.SetItemText(Item, 2, Temp);
-		Temp.Format("0x%X", Member.Flag);
+		Temp.Format(_T("0x%X"), Member.Flag);
 		m_lvMemberList.SetItemText(Item, 3, Temp);
 		m_lvMemberList.SetItemText(Item, 4, Member.ShowName);
 		m_lvMemberList.SetItemText(Item, 5, Member.BindData);
@@ -208,7 +208,7 @@ void CDlgStructEditor::OnBnClickedButtonDelMember()
 		int Item=m_lvMemberList.GetNextSelectedItem(Pos);
 		size_t Index=m_lvMemberList.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除成员[%s]",
+		Msg.Format(_T("是否要删除成员[%s]"),
 			m_lvMemberList.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -230,8 +230,8 @@ void CDlgStructEditor::OnBnClickedOk()
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(true);
 	m_cbBaseStruct.GetWindowText(m_StructDefineInfo.BaseStruct);
-	if(m_StructDefineInfo.BaseStruct=="无")
-		m_StructDefineInfo.BaseStruct="";
+	if(m_StructDefineInfo.BaseStruct==_T("无"))
+		m_StructDefineInfo.BaseStruct=_T("");
 
 
 	m_StructDefineInfo.Name.Trim();
@@ -298,7 +298,7 @@ static int MemberComp(LPCVOID p1, LPCVOID p2)
 {
 	const STRUCT_MEMBER_INFO* pInfo1 = (const STRUCT_MEMBER_INFO*)p1;
 	const STRUCT_MEMBER_INFO* pInfo2 = (const STRUCT_MEMBER_INFO*)p2;
-	return strcmp(pInfo1->Name, pInfo2->Name);
+	return _tcscmp(pInfo1->Name, pInfo2->Name);
 }
 
 void CDlgStructEditor::OnBnClickedButtonSort()

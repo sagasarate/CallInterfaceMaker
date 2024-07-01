@@ -1,4 +1,4 @@
 if self:MemberExist("<MethodName>") then
 	MsgMap[MAKE_MSG_ID(<SpaceName>.MODULE_IDS.<ModuleID>, <SpaceName>.<InterfaceIDEnumName>.<InterfaceID>,
-		<SpaceName>.<MethodIDEnumName>.<MethodID>, <IsAckMsg>)] = self.HandleMsg<MethodName>;
+		<SpaceName>.<MethodIDEnumName>.<MethodID>, <IsAckMsg>true<!IsAckMsg>false</IsAckMsg>)] = self.HandleMsg<MethodName>;
 end

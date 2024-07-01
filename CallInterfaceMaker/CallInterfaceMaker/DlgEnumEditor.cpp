@@ -37,7 +37,6 @@ void CDlgEnumEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_EXPORT_STR_VALUE, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_STR_VALUE);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_STR_TRANS_FN, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_STR_TRANS_FN);
 	DDX_Check(pDX, IDC_CHECK_EXPORT_ENUM_LIST, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_ENUM_LIST);
-	DDX_Check(pDX, IDC_CHECK_EXPORT_BIND_DATA_PROCESS, m_EnumDefineInfo.Flag, ENUM_DEFINE_FLAG_EXPORT_BIND_DATA_PROCESS);
 
 
 	
@@ -55,8 +54,8 @@ void CDlgEnumEditor::DoDataExchange(CDataExchange* pDX)
 	if (pDX->m_bSaveAndValidate)
 	{
 		m_cbBindDataType.GetWindowText(m_EnumMemberInfo.BindDataType);
-		if (m_EnumMemberInfo.BindDataType == "无")
-			m_EnumMemberInfo.BindDataType = "";
+		if (m_EnumMemberInfo.BindDataType == _T("无"))
+			m_EnumMemberInfo.BindDataType = _T("");
 	}
 	else
 	{
@@ -87,7 +86,7 @@ void CDlgEnumEditor::FillList()
 	{
 		int Item = m_lvMemberList.InsertItem(i, m_EnumDefineInfo.MemberList[i].Name);
 		m_lvMemberList.SetItemText(Item, 1, m_EnumDefineInfo.MemberList[i].Value);
-		Temp.Format("0x%X", m_EnumDefineInfo.MemberList[i].Flag);
+		Temp.Format(_T("0x%X"), m_EnumDefineInfo.MemberList[i].Flag);
 		m_lvMemberList.SetItemText(Item, 2, Temp);
 		m_lvMemberList.SetItemText(Item, 3, m_EnumDefineInfo.MemberList[i].StrValue);
 		m_lvMemberList.SetItemText(Item, 4, m_EnumDefineInfo.MemberList[i].BindDataType);
@@ -149,7 +148,7 @@ void CDlgEnumEditor::OnBnClickedButtonAddMember()
 
 	if(m_EnumMemberInfo.Name.IsEmpty())
 	{
-		AfxMessageBox("请输入成员名称");
+		AfxMessageBox(_T("请输入成员名称"));
 		return;
 	}
 	
@@ -184,7 +183,7 @@ void CDlgEnumEditor::OnBnClickedButtonDelMember()
 		int Item=m_lvMemberList.GetNextSelectedItem(Pos);
 		size_t Index=m_lvMemberList.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除成员[%s]",
+		Msg.Format(_T("是否要删除成员[%s]"),
 			m_lvMemberList.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -275,7 +274,7 @@ static int MemberComp(LPCVOID p1, LPCVOID p2)
 {
 	const ENUM_MEMBER_INFO* pInfo1 = (const ENUM_MEMBER_INFO*)p1;
 	const ENUM_MEMBER_INFO* pInfo2 = (const ENUM_MEMBER_INFO*)p2;
-	return strcmp(pInfo1->Name, pInfo2->Name);
+	return _tcscmp(pInfo1->Name, pInfo2->Name);
 }
 
 void CDlgEnumEditor::OnBnClickedButtonSort()

@@ -82,13 +82,13 @@ BOOL CDlgMethodEditor::OnInitDialog()
 	m_lvParamList.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 
-	m_lvParamList.InsertColumn(0, "名称", LVCFMT_LEFT, 150);
-	m_lvParamList.InsertColumn(1, "ID", LVCFMT_LEFT, 50);
-	m_lvParamList.InsertColumn(2, "类型", LVCFMT_LEFT, 60);
-	m_lvParamList.InsertColumn(3, "长度", LVCFMT_LEFT, 50);
-	m_lvParamList.InsertColumn(4, "缺省值", LVCFMT_LEFT, 50);
-	m_lvParamList.InsertColumn(5, "可为空", LVCFMT_LEFT, 60);
-	m_lvParamList.InsertColumn(6, "描述", LVCFMT_LEFT, 200);
+	m_lvParamList.InsertColumn(0, _T("名称"), LVCFMT_LEFT, 150);
+	m_lvParamList.InsertColumn(1, _T("ID"), LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(2, _T("类型"), LVCFMT_LEFT, 60);
+	m_lvParamList.InsertColumn(3, _T("长度"), LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(4, _T("缺省值"), LVCFMT_LEFT, 50);
+	m_lvParamList.InsertColumn(5, _T("可为空"), LVCFMT_LEFT, 60);
+	m_lvParamList.InsertColumn(6, _T("描述"), LVCFMT_LEFT, 200);
 
 	m_cbType.ResetContent();
 	for (int i = 0; i < INTERFACE_METHOD_TYPE_MAX; i++)
@@ -190,7 +190,7 @@ void CDlgMethodEditor::OnBnClickedButtonEditParam()
 	}
 	else
 	{
-		MessageBox("请选择一个参数");
+		MessageBox(_T("请选择一个参数"));
 	}
 }
 
@@ -208,7 +208,7 @@ void CDlgMethodEditor::OnBnClickedButtonDelParam()
 			if (Index < m_MethodInfo.CallParamList.size())
 			{
 				CString Msg;
-				Msg.Format("是否要删除参数[%s]",
+				Msg.Format(_T("是否要删除参数[%s]"),
 					m_MethodInfo.CallParamList[Index].Name);
 				if (AfxMessageBox(Msg, MB_YESNO) == IDYES)
 				{
@@ -221,7 +221,7 @@ void CDlgMethodEditor::OnBnClickedButtonDelParam()
 			if (Index < m_MethodInfo.AckParamList.size())
 			{
 				CString Msg;
-				Msg.Format("是否要删除参数[%s]",
+				Msg.Format(_T("是否要删除参数[%s]"),
 					m_MethodInfo.AckParamList[Index].Name);
 				if (AfxMessageBox(Msg, MB_YESNO) == IDYES)
 				{
@@ -305,7 +305,7 @@ void CDlgMethodEditor::OnBnClickedButtonParamDown()
 
 void CDlgMethodEditor::AddListItem(METHOD_PARAM& ParamInfo, UINT Index)
 {
-	int Item = m_lvParamList.InsertItem(Index, "");
+	int Item = m_lvParamList.InsertItem(Index, _T(""));
 	FillListItem(Item, ParamInfo);
 	m_lvParamList.SetItemData(Item, (INT_PTR)Index);
 }
@@ -336,7 +336,7 @@ void CDlgMethodEditor::FillListItem(int Item, METHOD_PARAM& ParamInfo)
 	CString Temp;
 
 	m_lvParamList.SetItemText(Item,0, ParamInfo.Name);
-	Temp.Format("%u", ParamInfo.ID);
+	Temp.Format(_T("%u"), ParamInfo.ID);
 	m_lvParamList.SetItemText(Item, 1, Temp);
 
 	TYPE_DEFINE* pTypeInfo = GetMainDlg()->FindVarType(ParamInfo.Type);
@@ -346,12 +346,12 @@ void CDlgMethodEditor::FillListItem(int Item, METHOD_PARAM& ParamInfo)
 		if (ParamInfo.IsArray)
 		{
 			Temp = GetMainDlg()->GetConfig().ArrayDefineConfig.ReferenceDefine;
-			Temp.Replace("<Type>", pTypeInfo->Name);
+			Temp.Replace(_T("<Type>"), pTypeInfo->Name);
 		}			
 		else if (ParamInfo.IsReference)
 		{
 			Temp = pTypeInfo->GenerateOperations.ReferenceDefine;
-			Temp.Replace("<Type>", pTypeInfo->Name);
+			Temp.Replace(_T("<Type>"), pTypeInfo->Name);
 		}
 		
 
@@ -359,18 +359,18 @@ void CDlgMethodEditor::FillListItem(int Item, METHOD_PARAM& ParamInfo)
 	}
 	else
 	{
-		m_lvParamList.SetItemText(Item, 2, "未知");
+		m_lvParamList.SetItemText(Item, 2, _T("未知"));
 	}
-	Temp.Format("%d", ParamInfo.Length);
+	Temp.Format(_T("%d"), ParamInfo.Length);
 	m_lvParamList.SetItemText(Item, 3, Temp);
 	m_lvParamList.SetItemText(Item, 4, ParamInfo.DefaultValue);
 	if (ParamInfo.CanNull)
 	{
-		m_lvParamList.SetItemText(Item, 5, "是");
+		m_lvParamList.SetItemText(Item, 5, _T("是"));
 	}
 	else
 	{
-		m_lvParamList.SetItemText(Item, 5, "否");
+		m_lvParamList.SetItemText(Item, 5, _T("否"));
 	}
 	m_lvParamList.SetItemText(Item, 6, ParamInfo.Description);
 }
@@ -400,14 +400,14 @@ void CDlgMethodEditor::InitTab()
 		switch (m_CurTabType)
 		{
 		case INTERFACE_METHOD_TYPE_CALL:
-			m_tabParamList.InsertItem(0, "调用参数");
-			m_tabParamList.InsertItem(1, "回调参数");
+			m_tabParamList.InsertItem(0, _T("调用参数"));
+			m_tabParamList.InsertItem(1, _T("回调参数"));
 			break;
 		case INTERFACE_METHOD_TYPE_NOTIFY:
-			m_tabParamList.InsertItem(0, "通知参数");
+			m_tabParamList.InsertItem(0, _T("通知参数"));
 			break;
 		case INTERFACE_METHOD_TYPE_CALL_WITHOUT_RESULT:
-			m_tabParamList.InsertItem(0, "调用参数");
+			m_tabParamList.InsertItem(0, _T("调用参数"));
 		}
 
 		m_tabParamList.SetCurSel(0);

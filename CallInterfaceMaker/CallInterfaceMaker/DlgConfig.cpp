@@ -126,7 +126,7 @@ void CDlgConfig::OnCancel()
 	
 	if(m_IsModified)
 	{
-		if(AfxMessageBox("是否要放弃已作出的更改？",MB_YESNO)==IDYES)
+		if(AfxMessageBox(_T("是否要放弃已作出的更改？"),MB_YESNO)==IDYES)
 		{
 			CDialog::OnCancel();
 		}

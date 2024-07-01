@@ -14,7 +14,7 @@ public int <MethodName>(<Params>)
 	byte[] MsgBuffer=new byte[_PackSize];
 	
 	
-    uint MsgID = CBaseMsgHandler.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>);		
+    uint MsgID = CBaseMsgHandler.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
 
 	
 	CSmartStruct Packet=new CSmartStruct(MsgBuffer,0,_PackSize,true);

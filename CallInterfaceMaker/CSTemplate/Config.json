@@ -1,0 +1,207 @@
+﻿{
+    "OneFileExport": {
+        "IsExport": false,
+        "ExportExt": "h"
+    },
+    "InterfaceHeaderExport": {
+        "IsExport": false,
+        "ExportExt": "cs"
+    },
+    "StructExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "EnumExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "ConstExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "DataStructHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "InterfaceExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "CallHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "CallSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "HandlerHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "HandlerSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "DataObjectHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "DataObjectModifyFlagsHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectModifyFlagsSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cs"
+    },
+    "DefaultStructGenerateOperations": {
+        "PackOperation": "CSmartStruct SubPacket=<Packet>.PrepareSubStruct();\r\n<IfNotDataObject>if(!<Variable>.MakePacket(SubPacket))\r\n\tFailCount++;</IfNotDataObject>\r\n<IfDataObject>if(!<Variable>.MakePacket(SubPacket,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>))\r\n\tFailCount++;</IfDataObject>\r\n<Packet>.FinishMember(<IfNotInArray>(ushort)<SST_NAME>.<SST_ID>,</IfNotInArray>SubPacket.GetDataLen());",
+        "UnpackOperation": "<IfNotDataObject><Variable>.ParsePacket(<PacketMember>);</IfNotDataObject>\r\n<IfDataObject><Variable>.ParsePacket(<PacketMember>,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);</IfDataObject>",
+        "SizeCaculateOperation": "<IfNotDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetStructMemberSize(((<Type>)<Variable>).GetSmartStructSize())</IfNotDataObject><IfDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetStructMemberSize(((<Type>)<Variable>).GetSmartStructSize(<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>))</IfDataObject>",
+        "ToXMLOperation": "<IfNotDataObject>\r\nXmlNode NodeSave=StructNode;\r\nStructNode=NodeSave.OwnerDocument.CreateElement(\"<VariableName>\");\r\nNodeSave.AppendChild(StructNode);\t\r\n<Variable>.ToXML(StructNode);\r\nStructNode= NodeSave;\r\n</IfNotDataObject>\r\n<IfDataObject>\r\nXmlNode NodeSave=StructNode;\r\nStructNode=NodeSave.OwnerDocument.CreateElement(\"<VariableName>\");\r\nNodeSave.AppendChild(StructNode);\t\r\n<Variable>.ToXML(StructNode,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);\r\nStructNode= NodeSave;\r\n</IfDataObject>",
+        "FromXMLOperation": "<IfNotDataObject>\r\nXmlNode NodeSave=StructNode;\r\nStructNode= NodeSave.SelectSingleNode(\"<VariableName>\");\r\nif(StructNode!=null)\r\n{\r\n\t<Variable>.FromXML(StructNode);\r\n}\r\nStructNode= NodeSave;\r\n</IfNotDataObject>\r\n<IfDataObject>\r\nXmlNode NodeSave=StructNode;\r\nStructNode= NodeSave.SelectSingleNode(\"<VariableName>\");\r\nif(StructNode!=null)\r\n{\r\n\t<Variable>.FromXML(StructNode,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);\r\n}\r\nStructNode= NodeSave;\r\n</IfDataObject>\r\n<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>",
+        "ToJsonOperation": "JObject DataNode = new JObject();\r\n<IfNotDataObject>\r\n<Variable>.ToJson(DataNode);\r\n</IfNotDataObject>\r\n<IfDataObject>\r\n<Variable>.ToJson(DataNode, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IsArray>\r\nArrayNode.Add(DataNode);\r\n<!IsArray>\r\nStructNode[\"<VariableName>\"] = DataNode;\r\n</IsArray>",
+        "FromJsonOperation": "<IsArray>\r\nif(ArrayElementNode.Type == JTokenType.Object)\r\n{\r\n<IfDataObject>\r\n    <Variable>.FromJson(ArrayElementNode as JObject, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n    <Variable>.FromJson(ArrayElementNode as JObject);\r\n</IfNotDataObject>\r\n}\r\n<!IsArray>\r\nJToken DateNode = StructNode[\"<VariableName>\"];\r\nif(DateNode != null && DateNode.Type == JTokenType.Object)\r\n{\r\n<IfDataObject>\r\n    <Variable>.FromJson(DateNode as JObject, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n    <Variable>.FromJson(DateNode as JObject);\r\n</IfNotDataObject>\r\n}\r\n</IsArray>\r\n<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Type><Space><Variable>=new <Type>()",
+        "InitOperation": "<Variable>.Clear();",
+        "CloneOperation": "<IfInDataObject>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfInDataObject>\r\n{\r\n\t<IfNotDataObject><LeftValue><Variable>=<RightValue><Variable>.Clone();</IfNotDataObject>\r\n\t<IfDataObject><LeftValue><Variable>.CloneFrom(<RightValue><Variable>,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject>DATA_OBJECT_MODIFY_FLAGS.<PackFlag></IfNotInDataObject>);</IfDataObject>\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public <Type> Get<VariableName>()\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public void Set<VariableName>(<Type> Value)\r\n{\r\n\t<Variable>=(<Type>)Value.Clone();\r\n\t<IfUpdateMF>m_ModifyFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "XLSRange[StartRow, StartCol + ColCount].Text = \"<VariableName>\";\r\nXLSRange[StartRow + 1, StartCol + ColCount].Text = \"<Type>\";\r\nXLSRange[StartRow + 2, StartCol + ColCount].Text = <Description> + ConvertorTools.GetAdditionalDesc(\"<VariableName>\", typeof(<Type>), false);\r\nColCount++;\r\n",
+        "CheckXLSColumnOperation": "if (ConvertorTools.ColumnNameToNumber(XLSRange,\"<VariableName>\") < 0)\r\n{\r\n\tMessageBox.Show(MsgPrefix + \"列<VariableName>不存在\");\r\n\treturn false;\r\n}\r\nColCount++;\r\n",
+        "ToXLSOperation": "XLSRange[StartRow, StartCol + ColCount].Text = ConvertorTools.StructToString(<Variable>);\r\nColCount++;\r\n",
+        "FromXLSOperation": "Col = ConvertorTools.ColumnNameToNumber(XLSRange, \"<VariableName>\");\r\nif (Col >= 0)\r\n{\r\n\tif (XLSRange[StartRow, Col].HasFormula)\r\n\t\tValueStr = XLSRange[StartRow, Col].EnvalutedValue;\r\n\telse\r\n\t\tValueStr = XLSRange[StartRow, Col].Value;\r\n\tif (!ConvertorTools.StringToStruct(ValueStr, <Variable>))\r\n\t{\r\n\t\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>解析失败\");\r\n\t\treturn false;\r\n\t}\r\n}\r\nelse\r\n{\r\n\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>不存在\");\r\n\treturn false;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnumGenerateOperations": {
+        "PackOperation": "if(!<Packet>.AddMember(<IfNotInArray>(ushort)<SST_NAME>.<SST_ID>,</IfNotInArray>(uint)<Variable>)) FailCount++;\r\n",
+        "UnpackOperation": "<Variable>=(<Type>)((uint)<PacketMember>);",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetFixMemberSize(sizeof(int))",
+        "ToXMLOperation": "XmlAttribute Attr<VariableName>=StructNode.OwnerDocument.CreateAttribute(\"<VariableName>\");\r\nAttr<VariableName>.Value = ((uint)<Variable>).ToString();\r\nStructNode.Attributes.Append(Attr<VariableName>);",
+        "FromXMLOperation": "XmlAttribute Attr<VariableName>=StructNode.Attributes[\"<VariableName>\"];\r\nif(Attr<VariableName>!=null)\r\n{\r\n\tuint ParseTemp = 0;\r\n\tInt32.TryParse(Attr<VariableName>.Value,out ParseTemp);\r\n\t<Variable> = ParseTemp;\r\n\t<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "ToJsonOperation": "<IsArray>\r\nArrayNode.Add((uint)<Variable>);\r\n<!IsArray>\r\nStructNode[\"<VariableName>\"]=(uint)<Variable>;\r\n</IsArray>",
+        "FromJsonOperation": "<IsArray>\r\nif(ArrayElementNode.Type == JTokenType.Integer)\r\n{\r\n    <Variable> = (<Type>)((int)ArrayElementNode);\r\n    <IfUpdateMF>UpdateFlag |= (ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}\r\n<!IsArray>\r\nif (StructNode[\"<VariableName>\"] != null)\r\n{\r\n    if(StructNode[\"<VariableName>\"].Type == JTokenType.Integer)\r\n    {\r\n        <Variable> = (<Type>)((int)StructNode[\"<VariableName>\"]);\r\n        <IfUpdateMF>UpdateFlag |= (ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n    }    \r\n}\r\n</IsArray>",
+        "ReferenceDefine": "ref <Type>",
+        "ReferenceUse": "ref <Variable>",
+        "VariableDefine": "<Type><Space><Variable>",
+        "InitOperation": "<Variable>=0;",
+        "CloneOperation": "<IfInDataObject>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfInDataObject>\r\n{\r\n\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public <Type> Get<VariableName>()\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public void Set<VariableName>(<Type> Value)\r\n{\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>m_ModifyFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "XLSRange[StartRow, StartCol + ColCount].Text = \"<VariableName>\";\r\nXLSRange[StartRow + 1, StartCol + ColCount].Text = \"<Type>\";\r\nXLSRange[StartRow + 2, StartCol + ColCount].Text = <Description> + \"\\n\" + <Type>_UTILS.GetDescs();\r\nColCount++;\r\n",
+        "CheckXLSColumnOperation": "if (ConvertorTools.ColumnNameToNumber(XLSRange,\"<VariableName>\") < 0)\r\n{\r\n\tMessageBox.Show(MsgPrefix + \"列<VariableName>不存在\");\r\n\treturn false;\r\n}\r\nColCount++;\r\n",
+        "ToXLSOperation": "XLSRange[StartRow, StartCol + ColCount].Value = ((uint)<Variable>).ToString();\r\nColCount++;\r\n",
+        "FromXLSOperation": "Col = ConvertorTools.ColumnNameToNumber(XLSRange, \"<VariableName>\");\r\nif (Col >= 0)\r\n{\r\n\tuint EnumValue = (uint)<Variable>;\r\n\tif (XLSRange[StartRow, Col].HasFormula)\r\n\t\tValueStr = XLSRange[StartRow, Col].EnvalutedValue;\r\n\telse\r\n\t\tValueStr = XLSRange[StartRow, Col].Value;\r\n\tif (uint.TryParse(ValueStr, out EnumValue))\r\n\t{\r\n\t\t<Variable> = (<Type>)EnumValue;\r\n\t}\r\n\telse\r\n\t{\r\n\t\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>解析失败\");\r\n\t\treturn false;\r\n\t}\r\n}\r\nelse\r\n{\r\n\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>不存在\");\r\n\treturn false;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnum64GenerateOperations": {
+        "PackOperation": "if(!<Packet>.AddMember(<IfNotInArray>(ushort)<SST_NAME>.<SST_ID>,</IfNotInArray>(long)<Variable>)) FailCount++;",
+        "UnpackOperation": "<Variable>=(<Type>)((ulong)<PacketMember>);",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetFixMemberSize(sizeof(long))",
+        "ToXMLOperation": "XmlAttribute Attr<VariableName>=StructNode.OwnerDocument.CreateAttribute(\"<VariableName>\");\r\nAttr<VariableName>.Value = ((ulong)<Variable>).ToString();\r\nStructNode.Attributes.Append(Attr<VariableName>);",
+        "FromXMLOperation": "XmlAttribute Attr<VariableName>=StructNode.Attributes[\"<VariableName>\"];\r\nif(Attr<VariableName>!=null)\r\n{\t\r\n\tulong ParseTemp = 0;\r\n\tUint64.TryParse(Attr<VariableName>.Value,out ParseTemp);\r\n\t<Variable> = ParseTemp;\r\n\t<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "ToJsonOperation": "<IsArray>\r\nArrayNode.Add((uint)<Variable>);\r\n<!IsArray>\r\nStructNode[\"<VariableName>\"]=(long)<Variable>;\r\n</IsArray>",
+        "FromJsonOperation": "<IsArray>\r\nif(ArrayElementNode.Type == JTokenType.Integer)\r\n{\r\n    <Variable> =  (<Type>)((long)ArrayElementNode);\r\n    <IfUpdateMF>UpdateFlag |= (ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}\r\n<!IsArray>\r\nif (StructNode[\"<VariableName>\"] != null)\r\n{\r\n    if(StructNode[\"<VariableName>\"].Type == JTokenType.Integer)\r\n    {\r\n        <Variable> = (<Type>)((long)StructNode[\"<VariableName>\"]);\r\n        <IfUpdateMF>UpdateFlag |= (ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n    }    \r\n}\r\n</IsArray>",
+        "ReferenceDefine": "ref <Type>",
+        "ReferenceUse": "ref <Variable>",
+        "VariableDefine": "<Type><Space><Variable>",
+        "InitOperation": "<Variable>=0;",
+        "CloneOperation": "<IfInDataObject>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfInDataObject>\r\n{\r\n\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public <Type> Get<VariableName>()\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public void Set<VariableName>(<Type> Value)\r\n{\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>m_ModifyFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "XLSRange[StartRow, StartCol + ColCount].Text = \"<VariableName>\";\r\nXLSRange[StartRow + 1, StartCol + ColCount].Text = \"<Type>\";\r\nXLSRange[StartRow + 2, StartCol + ColCount].Text = <Description> + \"\\n\" + <Type>_UTILS.GetDescs();\r\nColCount++;\r\n",
+        "CheckXLSColumnOperation": "if (ConvertorTools.ColumnNameToNumber(XLSRange,\"<VariableName>\") < 0)\r\n{\r\n\tMessageBox.Show(MsgPrefix + \"列<VariableName>不存在\");\r\n\treturn false;\r\n}\r\nColCount++;\r\n",
+        "ToXLSOperation": "XLSRange[StartRow, StartCol + ColCount].Value = ((ulong)<Variable>).ToString();\r\nColCount++;\r\n",
+        "FromXLSOperation": "Col = ConvertorTools.ColumnNameToNumber(XLSRange, \"<VariableName>\");\r\nif (Col >= 0)\r\n{\r\n\tulong EnumValue = (ulong)<Variable>;\r\n\tif (XLSRange[StartRow, Col].HasFormula)\r\n\t\tValueStr = XLSRange[StartRow, Col].EnvalutedValue;\r\n\telse\r\n\t\tValueStr = XLSRange[StartRow, Col].Value;\r\n\tif (ulong.TryParse(ValueStr, out EnumValue))\r\n\t{\r\n\t\t<Variable> = (<Type>)EnumValue;\r\n\t}\r\n\telse\r\n\t{\r\n\t\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>解析失败\");\r\n\t\treturn false;\r\n\t}\r\n}\r\nelse\r\n{\r\n\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>不存在\");\r\n\treturn false;\r\n}\r\n",
+        "FormatSpecOperation": ""
+    },
+    "ArrayDefineConfig": {
+        "PackOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tCSmartArray ArrayPacket = <Packet>.PrepareSubArray();\r\n\t<IfIsBaseType>ArrayPacket.AddArray(<Variable>);</IfIsBaseType>\r\n\t<IfIsNotBaseType><ChangePacketName=ArrayPacket>for(int i=0;i<<Variable>.Count;i++)\r\n\t{\r\n\t\t<PackOperation>\r\n\t}</IfIsNotBaseType>\r\n\t<Packet>.FinishMember((ushort)<SST_NAME>.<SST_ID>,ArrayPacket.GetDataLen());\r\n}",
+        "UnpackOperation": "case (ushort)<SST_NAME>.<SST_ID>:\r\n\t<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n\t{\r\n\t\t<Variable>.Clear();\r\n\t\tCSmartArray ArrayPacket=<PacketMember>;\r\n\t\t<IfIsBaseType>ArrayPacket.GetArray(<Variable>);</IfIsBaseType>\r\n\t\t<IfIsNotBaseType>int SubPos=ArrayPacket.GetFirstMemberPosition();\r\n\t\twhile(SubPos>0)\r\n\t\t{\r\n\t\t\tCSmartValue ArrayMember=ArrayPacket.GetNextMember(ref SubPos);<ChangePacketMemberName=ArrayMember>\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<UnpackOperation>\r\n\t\t\t<Variable>.Add(ArrayElement);\r\n\t\t}</IfIsNotBaseType>\r\n\t\t<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n\t}\r\n\tbreak;",
+        "SizeCaculateOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n<IfCheckMF>{</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><IfIsFixLenType>_PackSize += <ArrayElementSize>*(uint)<Variable>.Count;</IfIsFixLenType>\r\n<IfCheckMF>\t</IfCheckMF><IfIsVariableLenType>for(int i=0;i<<Variable>.Count;i++)\r\n<IfCheckMF>\t</IfCheckMF>{\r\n<IfCheckMF>\t</IfCheckMF>\t_PackSize += <ArrayElementSize>;\r\n<IfCheckMF>\t</IfCheckMF>}</IfIsVariableLenType>\r\n<IfCheckMF>\t</IfCheckMF>_PackSize += CSmartStruct.GetArrayMemberSize(0);\r\n<IfCheckMF>}</IfCheckMF>",
+        "ToXMLOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tXmlNode NodeSaveArray=StructNode;\r\n\tXmlNode NodeArray=NodeSaveArray.OwnerDocument.CreateElement(\"<VariableName>\");\r\n\tNodeSaveArray.AppendChild(NodeArray);\r\n\tfor(int i=0;i<<Variable>.Count;i++)\r\n\t{\r\n\t\tStructNode =  NodeArray.OwnerDocument.CreateElement(\"ArrayElement\");\r\n\t\tNodeArray.AppendChild(StructNode);\r\n\t\t<ToXMLOperation>\r\n\t}\t\r\n\tStructNode= NodeSaveArray;\r\n}",
+        "FromXMLOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tXmlNode NodeSaveArray=StructNode;\r\n\tXmlNode NodeArray= NodeSaveArray.SelectSingleNode(\"<VariableName>\");\r\n\tif(NodeArray!=null)\r\n\t{\r\n\t\tforeach(XmlNode ChildNode in NodeArray.ChildNodes)\r\n\t\t{\r\n\t\t\tStructNode =  ChildNode;\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<ArrayElementVariableInit>\r\n\t\t\t<FromXMLOperation>\r\n\t\t\t<Variable>.Add(ArrayElement);\r\n\t\t}\t\r\n\t}\r\n\tStructNode=NodeSaveArray;\r\n}",
+        "ToJsonOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tJArray ArrayNode = new JArray();    \r\n\tfor(int i=0;i<<Variable>.Count;i++)\r\n\t{\r\n\t\t<ToJsonOperation>\r\n\t}\t\r\n\tStructNode[\"<VariableName>\"] = ArrayNode;\r\n}",
+        "FromJsonOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n    JToken ArrayNode = StructNode[\"<VariableName>\"];\r\n\tif(ArrayNode != null && ArrayNode.Type == JTokenType.Array)\r\n\t{\r\n\t\tforeach(JToken ArrayElementNode in ArrayNode)\r\n\t\t{\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<ArrayElementVariableInit>\r\n\t\t\t<FromJsonOperation>\r\n\t\t\t<Variable>.Add(ArrayElement);\r\n\t\t}\t\r\n\t}\r\n}",
+        "ReferenceDefine": "List<<Type>>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "List<<Type>><Space><Variable>=new List<<Type>>()",
+        "InitOperation": "<Variable>.Clear();",
+        "CloneOperation": "<IfInDataObject>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfInDataObject>\r\n{\r\n\t<IfNotRefType><LeftValue><Variable>=new List<<Type>>(<RightValue><Variable>);</IfNotRefType>\r\n\t<IfRefType><LeftValue><Variable>.Clear();\r\n\tfor (int i = 0; i < <RightValue><Variable>.Count;i++ )\r\n\t{\r\n\t\t<Type> ElementObject = <RightValue><Variable>[i];\r\n\t\t<LeftValue><Variable>.Add(ElementObject.Clone() as <Type>);\r\n\t}</IfRefType>\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public List<<Type>> Get<VariableName>()\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public void Set<VariableName>(List<<Type>> Value)\r\n{\r\n\t<IfNotRefType><Variable>= new List<<Type>>(Value);</IfNotRefType>\r\n\t<IfRefType><Variable>.Clear();\r\n\tfor (int i = 0; i < Value.Count;i++ )\r\n\t{\r\n\t\t<Type> ElementObject = Value[i];\r\n\t\t<Variable>.Add(ElementObject.Clone() as <Type>);\r\n\t}</IfRefType>\r\n\t<IfUpdateMF>m_ModifyFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "((<Type>)<Variable>[<Index>])",
+        "ConstIndexOperation": "(<Variable>[<Index>])",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "XLSRange[StartRow, StartCol + ColCount].Text = \"<VariableName>\";\r\nXLSRange[StartRow + 1, StartCol + ColCount].Text = \"<Type>\" + \"[]\";\r\nXLSRange[StartRow + 2, StartCol + ColCount].Text = <Description> + ConvertorTools.GetAdditionalDesc(\"<VariableName>\", typeof(<Type>), true);\r\nColCount++;\r\n",
+        "CheckXLSColumnOperation": "if (ConvertorTools.ColumnNameToNumber(XLSRange,\"<VariableName>\") < 0)\r\n{\r\n\tMessageBox.Show(MsgPrefix + \"列<VariableName>不存在\");\r\n\treturn false;\r\n}\r\nColCount++;",
+        "ToXLSOperation": "XLSRange[StartRow, StartCol + ColCount].Text = ConvertorTools.StructToString(<Variable>);\r\nColCount++;\r\n",
+        "FromXLSOperation": "Col = ConvertorTools.ColumnNameToNumber(XLSRange, \"<VariableName>\");\r\nif (Col >= 0)\r\n{\r\n\tif (XLSRange[StartRow, Col].HasFormula)\r\n\t\tValueStr = XLSRange[StartRow, Col].EnvalutedValue;\r\n\telse\r\n\t\tValueStr = XLSRange[StartRow, Col].Value;\r\n\tif (!ConvertorTools.StringToStruct(ValueStr, <Variable>))\r\n\t{\r\n\t\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>解析失败\");\r\n\t\treturn false;\r\n\t}\r\n}\r\nelse\r\n{\r\n\tMessageBox.Show(MsgPrefix + $\"行{StartRow}列<VariableName>不存在\");\r\n\treturn false;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "OtherConfig": {
+        "CommentPrefix": "//",
+        "LocalVariableDefinePrefix": "",
+        "MemberVariablePrefix": "",
+        "DefaultPacketName": "Packet",
+        "DefaultPacketMemberName": "PacketMember",
+        "SupportBigInt": false,
+        "ForceExportAll": false
+    }
+}

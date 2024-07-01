@@ -52,7 +52,7 @@ void CDlgEnumList::FillList()
 	m_lvEnum.DeleteAllItems();
 	for(size_t i=0;i<m_EnumDefineList.size();i++)
 	{
-		int Item=m_lvEnum.InsertItem(i,"");
+		int Item=m_lvEnum.InsertItem(i,_T(""));
 		FillItem(Item,m_EnumDefineList[i],i);
 	}
 }
@@ -135,7 +135,7 @@ void CDlgEnumList::OnBnClickedButtonDel()
 		int Item=m_lvEnum.GetNextSelectedItem(Pos);
 		size_t Index=m_lvEnum.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除枚举[%s]",
+		Msg.Format(_T("是否要删除枚举[%s]"),
 			m_lvEnum.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -229,7 +229,7 @@ void CDlgEnumList::OnBnClickedButtonMove()
 		vector<CString> StructPacketList;
 		GetMainDlg()->GetDataStructPacketList(DATA_STRUCT_ENUM,StructPacketList);
 		CDlgListSelector Dlg;
-		Dlg.Init("移动到...",StructPacketList);
+		Dlg.Init(_T("移动到..."),StructPacketList);
 		if(Dlg.DoModal()==IDOK)
 		{
 			for(size_t i=0;i<MoveList.size();i++)
@@ -238,7 +238,7 @@ void CDlgEnumList::OnBnClickedButtonMove()
 
 				if(!GetMainDlg()->MoveDataStruct(DATA_STRUCT_ENUM,m_ListName,Dlg.m_SelectedItem,m_EnumDefineList[Index].Name))				
 				{
-					AfxMessageBox("转移失败");
+					AfxMessageBox(_T("转移失败"));
 					return;
 				}
 			}

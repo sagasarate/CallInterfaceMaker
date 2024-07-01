@@ -59,7 +59,7 @@ void CDlgConstList::FillList()
 	m_lvList.DeleteAllItems();
 	for(size_t i=0;i<m_ConstDefineList.size();i++)
 	{
-		int Item=m_lvList.InsertItem(i,"");
+		int Item=m_lvList.InsertItem(i,_T(""));
 		FillItem(Item,m_ConstDefineList[i],i);
 	}
 }
@@ -92,12 +92,12 @@ BOOL CDlgConstList::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
 	m_lvList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
-	m_lvList.InsertColumn(0,_T("名称"),LVCFMT_LEFT,200);
-	m_lvList.InsertColumn(1,_T("类型"),LVCFMT_LEFT,80);
-	m_lvList.InsertColumn(2,_T("值"),LVCFMT_LEFT,200);
+	m_lvList.InsertColumn(0, _T("名称"), LVCFMT_LEFT, 200);
+	m_lvList.InsertColumn(1, _T("类型"), LVCFMT_LEFT, 80);
+	m_lvList.InsertColumn(2, _T("值"), LVCFMT_LEFT, 200);
 
 
-	m_cbType.AddString("(无)");
+	m_cbType.AddString(_T("(无)"));
 	for(UINT i=0;i<GetMainDlg()->GetVarTypeCount();i++)
 	{
 		m_cbType.AddString(GetMainDlg()->GetVarType(i)->Name);		
@@ -115,7 +115,7 @@ void CDlgConstList::OnBnClickedButtonNew()
 	UpdateData(true);
 	if(m_ConstDefine.Name.IsEmpty())
 	{
-		AfxMessageBox("请输入名称");
+		AfxMessageBox(_T("请输入名称"));
 		return;
 	}
 	
@@ -151,7 +151,7 @@ void CDlgConstList::OnBnClickedButtonDel()
 		int Item=m_lvList.GetNextSelectedItem(Pos);
 		size_t Index=m_lvList.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除常量[%s]",
+		Msg.Format(_T("是否要删除常量[%s]"),
 			m_lvList.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -272,7 +272,7 @@ void CDlgConstList::OnBnClickedButtonMove()
 		vector<CString> StructPacketList;
 		GetMainDlg()->GetDataStructPacketList(DATA_STRUCT_CONST,StructPacketList);
 		CDlgListSelector Dlg;
-		Dlg.Init("移动到...",StructPacketList);
+		Dlg.Init(_T("移动到..."),StructPacketList);
 		if(Dlg.DoModal()==IDOK)
 		{
 			for(size_t i=0;i<MoveList.size();i++)
@@ -281,7 +281,7 @@ void CDlgConstList::OnBnClickedButtonMove()
 
 				if(!GetMainDlg()->MoveDataStruct(DATA_STRUCT_CONST,m_ListName,Dlg.m_SelectedItem,m_ConstDefineList[Index].Name))				
 				{
-					AfxMessageBox("转移失败");
+					AfxMessageBox(_T("转移失败"));
 					return;
 				}
 			}

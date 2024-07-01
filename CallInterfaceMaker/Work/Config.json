@@ -1,0 +1,207 @@
+﻿{
+    "OneFileExport": {
+        "IsExport": false,
+        "ExportExt": "h"
+    },
+    "InterfaceHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "StructExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "EnumExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "ConstExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "DataStructHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "InterfaceExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "CallHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "CallSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cpp"
+    },
+    "HandlerHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "HandlerSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cpp"
+    },
+    "DataObjectHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "DataObjectSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cpp"
+    },
+    "DataObjectModifyFlagsHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "h"
+    },
+    "DataObjectModifyFlagsSourceExport": {
+        "IsExport": true,
+        "ExportExt": "cpp"
+    },
+    "DefaultStructGenerateOperations": {
+        "PackOperation": "CSmartStruct SubPacket=Packet.PrepareSubStruct();\r\n<IfNotDataObject>if(!<Variable>.MakePacket(SubPacket))\r\n\tFailCount++;</IfNotDataObject>\r\n<IfDataObject>if(!<Variable>.MakePacket(SubPacket,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>))\r\n\tFailCount++;</IfDataObject>\r\nif(!Packet.FinishMember(<IfNotInArray><SST_ID>,</IfNotInArray>SubPacket.GetDataLen()))\r\n\tFailCount++;",
+        "UnpackOperation": "<IfNotDataObject><Variable>.ParsePacket(Value);</IfNotDataObject>\r\n<IfDataObject><Variable>.ParsePacket(Value,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>",
+        "SizeCaculateOperation": "<IfNotDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>::GetStructMemberSize(<Variable>.GetSmartStructSize())</IfNotDataObject><IfDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>::GetStructMemberSize(<Variable>.GetSmartStructSize(<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>))</IfDataObject>",
+        "ToXMLOperation": "<IfNotDataObject>\r\nxml_node <VariableName>Node=StructNode.append_child(node_element,_T(\"<VariableName>\"));\r\n<Variable>.ToXML(<VariableName>Node);\r\n</IfNotDataObject>\r\n<IfDataObject>\r\nxml_node <VariableName>Node=StructNode.append_child(node_element,_T(\"<VariableName>\"));\r\n<Variable>.ToXML(<VariableName>Node);\r\n</IfDataObject>",
+        "FromXMLOperation": "<IfNotDataObject>\r\nxml_node <VariableName>Node=StructNode;\r\nif(<VariableName>Node.moveto_child(_T(\"<VariableName>\")))\r\n{\r\n\t<Variable>.FromXML(<VariableName>Node);\r\n}\r\n</IfNotDataObject>\r\n<IfDataObject>\r\nxml_node <VariableName>Node=StructNode;\r\nif(<VariableName>Node.moveto_child(_T(\"<VariableName>\")))\r\n{\r\n\t<Variable>.FromXML(<VariableName>Node);\r\n}\r\n<IfUpdateMF>UpdateFlag|=(UINT64)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n</IfDataObject>",
+        "ToJsonOperation": "<IfNotDataObject>\r\nrapidjson::Value <VariableName>Node(rapidjson::kObjectType);\r\n<Variable>.ToJson(<VariableName>Node, Alloc);\r\n<IsArray>\r\n<VariableName>Array.PushBack(<VariableName>Node, Alloc);\r\n<!IsArray>\r\nStructNode.AddMember(_T(\"<VariableName>\"), <VariableName>Node, Alloc);\r\n</IsArray>\r\n</IfNotDataObject>\r\n<IfDataObject>\r\nrapidjson::Value <VariableName>Node(rapidjson::kObjectType);\r\n<Variable>.ToJson(<VariableName>Node, Alloc,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n<IsArray>\r\n<VariableName>Array.PushBack(<VariableName>Node, Alloc);\r\n<!IsArray>\r\nStructNode.AddMember(_T(\"<VariableName>\"), <VariableName>Node, Alloc);\r\n</IsArray>\r\n</IfDataObject>",
+        "FromJsonOperation": "<IsArray>\r\nif (ArrayElementNode.IsObject())\r\n{\r\n<IfDataObject>\r\n\t<Variable>.FromJson(ArrayElementNode,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n\t<Variable>.FromJson(ArrayElementNode);\r\n</IfNotDataObject>\r\n}\r\n<!IsArray>\r\nif (StructNode.HasMember(_T(\"<VariableName>\")))\r\n{\r\n\trapidjson::Value& <VariableName>Node = StructNode[_T(\"<VariableName>\")];\r\n\tif (<VariableName>Node.IsObject())\r\n\t{\r\n<IfDataObject>\r\n\t\t<Variable>.FromJson(<VariableName>Node,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n\t\t<Variable>.FromJson(<VariableName>Node);\r\n</IfNotDataObject>\r\n\t}\r\n}\r\n</IsArray>\r\n<IfDataObject>\r\n<IfUpdateMF>UpdateFlag |= (UINT64) <ModifyFlag>;</IfUpdateMF>\r\n</IfDataObject>",
+        "ReferenceDefine": "const <Type>&",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Type><Space><Variable>",
+        "InitOperation": "<Variable>.Clear();",
+        "CloneOperation": "<IfInDataObject>if(Flag&<ModifyFlag>)</IfInDataObject>\r\n{\r\n\t<IfNotDataObject><LeftValue><Variable>=<RightValue><Variable>;</IfNotDataObject>\r\n\t<IfDataObject><LeftValue><Variable>.CloneFrom(<RightValue><Variable>,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "<const> <Type>& Get<VariableName>() <const>;",
+        "GetMethodDefine": "inline <const> <Type>& <ClassName>::Get<VariableName>() <const>\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "void Set<VariableName>(const <Type>& Value);",
+        "SetMethodDefine": "inline void <ClassName>::Set<VariableName>(const <Type>& Value)\r\n{\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>m_ModifyFlag|=<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "`<FieldName>` MEDIUMBLOB NOT NULL",
+        "DBInsertFormatOperation": "?",
+        "DBPutOperation": "{\r\n\t<IfNotDataObject>StrLen = CSmartStruct::GetStructMemberSize(<Variable>.GetSmartStructSize()) + 32;</IfNotDataObject>\r\n\t<IfDataObject>StrLen = CSmartStruct::GetStructMemberSize(<Variable>.GetSmartStructSize(<FULL_MODIFY_FLAG>)) + 32;</IfDataObject>\r\n\tif (StrBuff.GetBufferSize() < StrLen)\r\n\t\tStrBuff.Create(StrLen);\r\n\r\n\tCSmartStruct Packet(StrBuff.GetBuffer(), StrBuff.GetBufferSize(), true);\r\n\t<IfNotDataObject><Variable>.MakePacket(Packet);</IfNotDataObject>\r\n\t<IfDataObject><Variable>.MakePacket(Packet, <FULL_MODIFY_FLAG>);</IfDataObject>\r\n\r\n\tParamInfo.Type = DB_TYPE_BINARY;\r\n\tParamInfo.ParamType = DB_PARAM_TYPE_INPUT;\r\n\tParamInfo.IsNull = false;\r\n\tParamInfo.Size = <Variable>.GetDataLen();\r\n\tParamInfo.DigitSize = 0;\r\n\tParameterSet.AddParam(ParamInfo, <Variable>.GetData(), <Variable>.GetDataLen());\r\n}",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "<Variable>.ToLuaTable(pLuaThread);",
+        "FromLuaOperation": "<Variable>.FromLuaTable(pLuaThread, -1);",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnumGenerateOperations": {
+        "PackOperation": "CHECK_SMART_STRUCT_ADD(Packet.AddMember(<IfNotInArray><SST_ID>,</IfNotInArray>(UINT)<Variable>),FailCount);",
+        "UnpackOperation": "<Variable>=(<Type>)((UINT)Value);",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>::GetFixMemberSize(sizeof(UINT))",
+        "ToXMLOperation": "StructNode.append_attribute(_T(\"<VariableName>\"), (UINT)<Variable>);",
+        "FromXMLOperation": "if (StructNode.has_attribute(_T(\"<VariableName>\")))\r\n\t<Variable> = (<Type>)((UINT)StructNode.attribute(_T(\"<VariableName>\")));",
+        "ToJsonOperation": "<IsArray>\r\n<VariableName>Array.PushBack((UINT)<Variable>, Alloc);\r\n<!IsArray>\r\nStructNode.AddMember(_T(\"<VariableName>\"), (UINT)<Variable>, Alloc);\r\n</IsArray>",
+        "FromJsonOperation": "<IsArray>\r\nif (ArrayElementNode.IsUint())\r\n{\r\n\t<Variable> =  (<Type>)ArrayElementNode.GetUint();\r\n}\r\n<!IsArray>\r\nif (StructNode.HasMember(_T(\"<VariableName>\")))\r\n{\r\n\trapidjson::Value& <VariableName>Node = StructNode[_T(\"<VariableName>\")];\r\n\tif (<VariableName>Node.IsUint())\r\n\t{\r\n\t\t<Variable> = (<Type>)<VariableName>Node.GetUint();\r\n\t}\r\n}\r\n</IsArray>",
+        "ReferenceDefine": "<Type>&",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Type><Space><Variable>;",
+        "InitOperation": "<Variable>=(<Type>)0;",
+        "CloneOperation": "<IfInDataObject>if(Flag&<ModifyFlag>)</IfInDataObject>\r\n{\r\n\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "<Type> Get<VariableName>() const;",
+        "GetMethodDefine": "inline <Type> <ClassName>::Get<VariableName>() const\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "void Set<VariableName>(<Type> Value);",
+        "SetMethodDefine": "inline void <ClassName>::Set<VariableName>(<Type> Value)\r\n{\r\n\tif(<Variable>!=Value)\r\n\t{\r\n\t\t<Variable>=Value;\r\n\t\t<IfUpdateMF>m_ModifyFlag|=<ModifyFlag>;</IfUpdateMF>\r\n\t}\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "<HaveStrTrans><Type>_To_Str((UINT)<Variable>)<!HaveStrTrans>CPropertyGridTools::ToStr((UINT)<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>NULL</HaveExtendType>, CharBuffer, 64)</HaveStrTrans>",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "(int)<Variable>",
+        "AliLogSendOperation": "_T(\"<VariableName>\"), (LPCTSTR)ToString((UINT)<Variable>)",
+        "ToLuaOperation": "pLuaThread->PushValue((UINT)<Variable>);",
+        "FromLuaOperation": "<Variable> = (<Type>)pLuaThread->GetValue<UINT>(-1);",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": "%d"
+    },
+    "DefaultEnum64GenerateOperations": {
+        "PackOperation": "CHECK_SMART_STRUCT_ADD(Packet.AddMember(<IfNotInArray><SST_ID>,</IfNotInArray>(UINT64)<Variable>),FailCount);",
+        "UnpackOperation": "<Variable>=(<Type>)((UINT64)Value);",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>::GetFixMemberSize(sizeof(UINT64))",
+        "ToXMLOperation": "StructNode.append_attribute(_T(\"<VariableName>\"), (UINT64)<Variable>);",
+        "FromXMLOperation": "if (StructNode.has_attribute(_T(\"<VariableName>\")))\r\n\t<Variable> = (<Type>)((UINT64)StructNode.attribute(_T(\"<VariableName>\")));",
+        "ToJsonOperation": "<IsArray>\r\n<VariableName>Array.PushBack((UINT64)<Variable>, Alloc);\r\n<!IsArray>\r\nStructNode.AddMember(_T(\"<VariableName>\"), (UINT64)<Variable>, Alloc);\r\n</IsArray>",
+        "FromJsonOperation": "<IsArray>\r\nif (ArrayElementNode.IsUint64())\r\n{\r\n\t<Variable> = (UINT64)ArrayElementNode.GetUint64();\r\n}\r\n<!IsArray>\r\nif (StructNode.HasMember(_T(\"<VariableName>\")))\r\n{\r\n\trapidjson::Value& <VariableName>Node = StructNode[_T(\"<VariableName>\")];\r\n\tif (<VariableName>Node.IsUint64())\r\n\t{\r\n\t\t<Variable> = (UINT64)<VariableName>Node.GetUint64();\r\n\t}\r\n}\r\n</IsArray>",
+        "ReferenceDefine": "<Type>&",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Type><Space><Variable>;",
+        "InitOperation": "<Variable>=(<Type>)0;",
+        "CloneOperation": "<IfInDataObject>if(Flag&<ModifyFlag>)</IfInDataObject>\r\n{\r\n\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "<Type> Get<VariableName>() const;",
+        "GetMethodDefine": "inline <Type> <ClassName>::Get<VariableName>() const\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "void Set<VariableName>(<Type> Value);",
+        "SetMethodDefine": "inline void <ClassName>::Set<VariableName>(<Type> Value)\r\n{\r\n\tif(<Variable>!=Value)\r\n\t{\r\n\t\t<Variable>=Value;\r\n\t\t<IfUpdateMF>m_ModifyFlag|=<ModifyFlag>;</IfUpdateMF>\r\n\t}\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "<HaveStrTrans><Type>_To_Str((UINT64)<Variable>)<!HaveStrTrans>CPropertyGridTools::ToStr((UINT64)<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>NULL</HaveExtendType>, CharBuffer, 64)</HaveStrTrans>",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "(INT64)<Variable>",
+        "AliLogSendOperation": "_T(\"<VariableName>\"), (LPCTSTR)ToString((UINT64)<Variable>)",
+        "ToLuaOperation": "pLuaThread->PushValue((UINT64)<Variable>);",
+        "FromLuaOperation": "<Variable> = (<Type>)pLuaThread->GetValue<UINT64>(-1);",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": "%lld"
+    },
+    "ArrayDefineConfig": {
+        "PackOperation": "<IfCheckMF>if(Flag&<ModifyFlag>)</IfCheckMF>\r\n{\r\n\tCSmartStruct& ParentPacket=Packet;\r\n\t{\r\n\t\tCSmartArray Packet=ParentPacket.PrepareSubArray();\r\n\t\t<IfIsBaseType>Packet.AddArray(<Variable>);</IfIsBaseType>\r\n\t\t<IfIsNotBaseType>for(size_t i=0;i<<Variable>.GetCount();i++)\r\n\t\t{\r\n\t\t\t<PackOperation>\r\n\t\t}</IfIsNotBaseType>\r\n\t\tif(!ParentPacket.FinishMember(<SST_ID>,Packet.GetDataLen()))\r\n\t\t\tFailCount++;\r\n\t}\r\n}",
+        "UnpackOperation": "case <SST_ID>:\r\n\t<IfCheckMF>if(Flag&<ModifyFlag>)</IfCheckMF>\r\n\t{\r\n\t\t<Variable>.Clear();\r\n\t\tCSmartArray Packet=Value;\r\n\t\t<IfIsBaseType>Packet.GetArray(<Variable>);</IfIsBaseType>\r\n\t\t<IfIsNotBaseType>for(CSmartValue Value : Packet)\r\n\t\t{\r\n\t\t\t<ElementType>& ArrayElement=*<Variable>.AddEmpty();\r\n\t\t\t<UnpackOperation>\r\n\t\t}</IfIsNotBaseType>\r\n\t\t<IfUpdateMF>UpdateFlag |= <ModifyFlag>;</IfUpdateMF>\r\n\t}\r\n\tbreak;\r\n",
+        "SizeCaculateOperation": "<IfCheckMF>if(Flag&<ModifyFlag>)</IfCheckMF>\r\n<IfCheckMF>{</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><IfIsFixLenType>_PackSize += <ArrayElementSize>*<Variable>.GetCount();</IfIsFixLenType>\r\n<IfCheckMF>\t</IfCheckMF><IfIsVariableLenType>for(size_t i=0;i<<Variable>.GetCount();i++)\r\n<IfCheckMF>\t</IfCheckMF>{\r\n<IfCheckMF>\t</IfCheckMF>\t_PackSize += <ArrayElementSize>;\r\n<IfCheckMF>\t</IfCheckMF>}</IfIsVariableLenType>\r\n<IfCheckMF>\t</IfCheckMF>_PackSize += CSmartStruct::GetArrayMemberSize(0);\r\n<IfCheckMF>}</IfCheckMF>",
+        "ToXMLOperation": "<IfCheckMF>if((Flag&<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\txml_node <VariableName>NodeSave = StructNode;\r\n\txml_node <VariableName>Node = StructNode.append_child(node_element,_T(\"<VariableName>\"));\r\n\tfor(size_t i=0;i<<Variable>.GetCount();i++)\r\n\t{\r\n\t\tStructNode =  <VariableName>Node.append_child(node_element,_T(\"ArrayElement\"));\r\n\t\t<ToXMLOperation>\r\n\t}\t\r\n\tStructNode =  <VariableName>NodeSave;\r\n}",
+        "FromXMLOperation": "<IfCheckMF>if((Flag&<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\txml_node <VariableName>NodeSave = StructNode;\r\n\txml_node <VariableName>Node = StructNode;\r\n\tif(<VariableName>Node.moveto_child(_T(\"<VariableName>\")))\r\n\t{\r\n\t\t<Variable>.Clear();\r\n\t\tfor (UINT nc = 0; nc < <VariableName>Node.children(); nc++)\r\n\t\t{\r\n\t\t\tStructNode = <VariableName>Node.child(nc);\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<ArrayElementVariableInit>\r\n\t\t\t<FromXMLOperation>\r\n\t\t\t<Variable>.Add(ArrayElement);\r\n\t\t}\t\r\n\t}\r\n\tStructNode = <VariableName>NodeSave;\r\n}",
+        "ToJsonOperation": "<IfCheckMF>if ((Flag&<ModifyFlag>) != 0) </IfCheckMF>\r\n{\r\n\trapidjson::Value <VariableName>Array(rapidjson::kArrayType);\r\n\tfor (size_t i = 0; i < <Variable>.GetCount(); i++)\r\n\t{\r\n\t\t<ToJsonOperation>\r\n\t}\r\n\tStructNode.AddMember(_T(\"<VariableName>\"), <VariableName>Array, Alloc);\r\n}",
+        "FromJsonOperation": "<IfCheckMF>if ((Flag&<ModifyFlag>) != 0) </IfCheckMF>\r\n{\r\n\tif (StructNode.HasMember(_T(\"<VariableName>\")))\r\n\t{\r\n\t\trapidjson::Value& <VariableName>Node = StructNode[_T(\"<VariableName>\")];\r\n\t\tif (<VariableName>Node.IsArray())\r\n\t\t{\r\n\t\t\t<Variable>.Clear();\r\n\t\t\tfor (size_t j = 0; j < <VariableName>Node.Size(); j++)\r\n\t\t\t{\r\n\t\t\t\trapidjson::Value& ArrayElementNode = <VariableName>Node[(rapidjson::SizeType)j];\r\n\t\t\t\t<ElementType>& ArrayElement=*<Variable>.AddEmpty();\r\n\t\t\t\t<FromJsonOperation>\r\n\t\t\t}\r\n\t\t}\t\t\r\n\t}\t\r\n}",
+        "ReferenceDefine": "const CEasyArray<<Type>>&",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "CEasyArray<<Type>><Space><Variable>",
+        "InitOperation": "<Variable>.SetTag(_T(\"StructData\"));\r\n<Variable>.Clear();\r\n<Variable>.Create(<ArrayStartLength>,<ArrayGrowLength>);",
+        "CloneOperation": "<IfInDataObject>if(Flag&<ModifyFlag>)</IfInDataObject>\r\n{\r\n\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag|=<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n}",
+        "GetMethodDeclare": "<const> CEasyArray<<Type>>& Get<VariableName>() <const>;",
+        "GetMethodDefine": "inline <const> CEasyArray<<Type>>& <ClassName>::Get<VariableName>() <const>\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "void Set<VariableName>(const CEasyArray<<Type>>& Value);",
+        "SetMethodDefine": "inline void <ClassName>::Set<VariableName>(const CEasyArray<<Type>>& Value)\r\n{\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>m_ModifyFlag|=<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "IndexOperation": "<Variable>[<Index>]",
+        "ConstIndexOperation": "<Variable>[<Index>]",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "`<FieldName>` MEDIUMBLOB NOT NULL",
+        "DBInsertFormatOperation": "?",
+        "DBPutOperation": "{\r\n\tStrLen = 0;\r\n\tfor (size_t i = 0; i < <Variable>.GetCount(); i++)\r\n\t{\r\n\t\tStrLen += <ArrayElementSize>;\r\n\t}\r\n\tStrLen += CSmartStruct::GetStructMemberSize(0) + 32;\r\n\r\n\tif (StrBuff.GetBufferSize() < StrLen)\r\n\t\tStrBuff.Create(StrLen);\r\n\r\n\tCSmartStruct Packet(StrBuff.GetBuffer(), StrBuff.GetBufferSize(), true);\r\n\tUINT FailCount = 0;\r\n\tfor (size_t i = 0; i < <Variable>.GetCount(); i++)\r\n\t{\r\n\t\t<PackOperation>\r\n\t}\r\n\r\n\tParamInfo.Type = DB_TYPE_BINARY;\r\n\tParamInfo.ParamType = DB_PARAM_TYPE_INPUT;\r\n\tParamInfo.IsNull = false;\r\n\tParamInfo.Size = Packet.GetDataLen();\r\n\tParamInfo.DigitSize = 0;\r\n\tParameterSet.AddParam(ParamInfo, Packet.GetData(), Packet.GetDataLen());\r\n}",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "<IfCheckMF>if(Flag&<ModifyFlag>)</IfCheckMF>\r\n{\r\n\tpLuaThread->PushValue(\"<VariableName>\");\r\n\tlua_newtable(pLuaThread->GetLuaState());\r\n\tfor (size_t i = 0; i < <Variable>.GetCount(); i++)\r\n\t{\r\n\t\t<IfHaveKey>pLuaThread->PushValue(<Variable>[<Index>].<StructKey>);</IfHaveKey>\r\n\t\t<IfNotHaveKey>pLuaThread->PushValue(<Index> + 1);</IfNotHaveKey>\r\n\t\t<ToLuaOperation>\r\n\t\tlua_settable(pLuaThread->GetLuaState(), -3);\r\n\t}\r\n\tlua_settable(pLuaThread->GetLuaState(), Index);\r\n}",
+        "FromLuaOperation": "<IfCheckMF>if((Flag&<ModifyFlag>) !=0 )</IfCheckMF>\r\n{\r\n\tpLuaThread->PushString(\"<VariableName>\");\r\n\tlua_gettable(pLuaThread->GetLuaState(), Index);\r\n\tif(lua_istable(pLuaThread->GetLuaState(), -1))\r\n\t{\r\n\t\t<Variable>.Clear();\r\n\t\tpLuaThread->PushNil();\r\n\t\twhile(lua_next(pLuaThread->GetLuaState(), -2))\r\n\t\t{\r\n\t\t\t<ElementType>& ArrayElement=*<Variable>.AddEmpty();\r\n\t\t\t<FromLuaOperation>\r\n\t\t\tpLuaThread->Pop(1);\r\n\t\t}\r\n\t}\r\n\tpLuaThread->Pop(1);\r\n\t<IfUpdateMF>UpdateFlag |= <ModifyFlag>;</IfUpdateMF>\r\n}",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "OtherConfig": {
+        "CommentPrefix": "//",
+        "LocalVariableDefinePrefix": "",
+        "MemberVariablePrefix": "",
+        "DefaultPacketName": "Packet",
+        "DefaultPacketMemberName": "PacketMember",
+        "SupportBigInt": false,
+        "ForceExportAll": false
+    }
+}

@@ -134,7 +134,7 @@ void CDlgDataObjectModifyFlagManager::OnBnClickedButtonDel()
 		int Item=m_lvList.GetNextSelectedItem(Pos);
 		size_t Index=m_lvList.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除更新集[%s]",
+		Msg.Format(_T("是否要删除更新集[%s]"),
 			m_lvList.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -216,7 +216,7 @@ void CDlgDataObjectModifyFlagManager::OnBnClickedButtonMoveSort()
 		m_DataObjectModifyFlags[j].ModifyFlag=ModifyFlagUnits;
 	}
 
-	AfxMessageBox("整理完毕");
+	AfxMessageBox(_T("整理完毕"));
 }
 
 

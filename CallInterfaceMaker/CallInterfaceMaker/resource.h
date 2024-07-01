@@ -80,7 +80,6 @@
 #define IDC_BUTTON_SELECT_ALL_INTERFACE 1019
 #define IDC_LIST_TYPES                  1020
 #define IDC_BUTTON_ARRANGE_IDS          1020
-#define IDC_CHECK_IS_REFERENCE2         1020
 #define IDC_BUTTON_SORT                 1021
 #define IDC_BUTTON_SORT_ALL             1022
 #define IDC_BUTTON_IMPORT_EDIT          1023
@@ -153,10 +152,13 @@
 #define IDC_BUTTON_MOVE_UP              1048
 #define IDC_CHECK_EXPORT_EDITOR_PROCESS 1048
 #define IDC_CHECK_HIDE_IN_PROPERTY_GRID 1048
+#define IDC_CHECK_FILE_LOG_PROCESS      1048
+#define IDC_CHECK_EXPORT_FILE_LOG_PROCESS 1048
 #define IDC_TAB                         1049
 #define IDC_BUTTON_CLONE                1049
 #define IDC_CHECK_EXPORT_LOG_PROCESS    1049
 #define IDC_CHECK_IGNORE_IN_LUA_PROCESS 1049
+#define IDC_CHECK_EXPORT_ALI_LOG_PROCESS 1049
 #define IDC_LIST                        1050
 #define IDC_BUTTON_MOVE                 1050
 #define IDC_CHECK_EXPORT_LUA_PROCESS    1050

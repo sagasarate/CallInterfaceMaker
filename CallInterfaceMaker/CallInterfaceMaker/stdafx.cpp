@@ -18,38 +18,39 @@
 
 void TabInitOperations(CTabCtrl& tbOperations)
 {
-	tbOperations.InsertItem(0, "长度计算操作");
-	tbOperations.InsertItem(1, "打包操作");
-	tbOperations.InsertItem(2, "解包操作");
-	tbOperations.InsertItem(3, "ToXML操作");
-	tbOperations.InsertItem(4, "FromXML操作");
-	tbOperations.InsertItem(5, "ToJson操作");
-	tbOperations.InsertItem(6, "FromJson操作");
-	tbOperations.InsertItem(7, "引用定义方式");
-	tbOperations.InsertItem(8, "引用使用方式");
-	tbOperations.InsertItem(9, "变量定义");
-	tbOperations.InsertItem(10, "初始化操作");
-	tbOperations.InsertItem(11, "复制操作");
-	tbOperations.InsertItem(12, "Get方法声明");
-	tbOperations.InsertItem(13, "Get方法实现");
-	tbOperations.InsertItem(14, "Set方法声明");
-	tbOperations.InsertItem(15, "Set方法实现");
-	tbOperations.InsertItem(16, "索引操作");
-	tbOperations.InsertItem(17, "只读索引操作");
-	tbOperations.InsertItem(18, "字符串化操作");
-	tbOperations.InsertItem(19, "数据库字段定义");
-	tbOperations.InsertItem(20, "数据库格式化符");
-	tbOperations.InsertItem(21, "数据库写入操作");
-	tbOperations.InsertItem(22, "数据库读取操作");
-	tbOperations.InsertItem(23, "PropertyGrid填充操作");
-	//tbOperations.InsertItem(24, "PropertyGrid获取操作");
-	tbOperations.InsertItem(24, "日志发送操作");
-	tbOperations.InsertItem(25, "ToLua操作");
-	tbOperations.InsertItem(26, "FromLua操作");
-	tbOperations.InsertItem(27, "创建XLS表头操作");
-	tbOperations.InsertItem(28, "检查XLS表头操作");
-	tbOperations.InsertItem(29, "ToXLS操作");
-	tbOperations.InsertItem(30, "FromXLS操作");
+	tbOperations.InsertItem(0, _T("长度计算操作"));
+	tbOperations.InsertItem(1, _T("打包操作"));
+	tbOperations.InsertItem(2, _T("解包操作"));
+	tbOperations.InsertItem(3, _T("ToXML操作"));
+	tbOperations.InsertItem(4, _T("FromXML操作"));
+	tbOperations.InsertItem(5, _T("ToJson操作"));
+	tbOperations.InsertItem(6, _T("FromJson操作"));
+	tbOperations.InsertItem(7, _T("引用定义方式"));
+	tbOperations.InsertItem(8, _T("引用使用方式"));
+	tbOperations.InsertItem(9, _T("变量定义"));
+	tbOperations.InsertItem(10, _T("初始化操作"));
+	tbOperations.InsertItem(11, _T("复制操作"));
+	tbOperations.InsertItem(12, _T("Get方法声明"));
+	tbOperations.InsertItem(13, _T("Get方法实现"));
+	tbOperations.InsertItem(14, _T("Set方法声明"));
+	tbOperations.InsertItem(15, _T("Set方法实现"));
+	tbOperations.InsertItem(16, _T("索引操作"));
+	tbOperations.InsertItem(17, _T("只读索引操作"));
+	tbOperations.InsertItem(18, _T("字符串化操作"));
+	tbOperations.InsertItem(19, _T("数据库字段定义"));
+	tbOperations.InsertItem(20, _T("数据库格式化符"));
+	tbOperations.InsertItem(21, _T("数据库写入操作"));
+	tbOperations.InsertItem(22, _T("数据库读取操作"));
+	tbOperations.InsertItem(23, _T("文件日志填充操作"));
+	//tbOperations.InsertItem(24, _T("PropertyGrid获取操作"));
+	tbOperations.InsertItem(24, _T("阿里日志发送操作"));
+	tbOperations.InsertItem(25, _T("ToLua操作"));
+	tbOperations.InsertItem(26, _T("FromLua操作"));
+	tbOperations.InsertItem(27, _T("创建XLS表头操作"));
+	tbOperations.InsertItem(28, _T("检查XLS表头操作"));
+	tbOperations.InsertItem(29, _T("ToXLS操作"));
+	tbOperations.InsertItem(30, _T("FromXLS操作"));
+	tbOperations.InsertItem(31, _T("格式化占位符"));
 }
 void TabShowOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPERATIONS_INFO& Operation)
 {
@@ -125,13 +126,13 @@ void TabShowOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPER
 		edOperation.SetWindowText(Operation.DBGetOperation);
 		break;
 	case 23:
-		edOperation.SetWindowText(Operation.PropertyGridFillOperation);
+		edOperation.SetWindowText(Operation.FileLogFillOperation);
 		break;
 	//case 24:
 	//	edOperation.SetWindowText(Operation.PropertyGridFetchOperation);
 	//	break;
 	case 24:
-		edOperation.SetWindowText(Operation.LogSendOperation);
+		edOperation.SetWindowText(Operation.AliLogSendOperation);
 		break;
 	case 25:
 		edOperation.SetWindowText(Operation.ToLuaOperation);
@@ -150,6 +151,9 @@ void TabShowOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPER
 		break;
 	case 30:
 		edOperation.SetWindowText(Operation.FromXLSOperation);
+		break;
+	case 31:
+		edOperation.SetWindowText(Operation.FormatSpecOperation);
 		break;
 	}
 }
@@ -227,13 +231,13 @@ void TabFetchOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPE
 		edOperation.GetWindowText(Operation.DBGetOperation);
 		break;
 	case 23:
-		edOperation.GetWindowText(Operation.PropertyGridFillOperation);
+		edOperation.GetWindowText(Operation.FileLogFillOperation);
 		break;
 	//case 24:
 	//	edOperation.GetWindowText(Operation.PropertyGridFetchOperation);
 	//	break;
 	case 24:
-		edOperation.GetWindowText(Operation.LogSendOperation);
+		edOperation.GetWindowText(Operation.AliLogSendOperation);
 		break;
 	case 25:
 		edOperation.GetWindowText(Operation.ToLuaOperation);
@@ -252,6 +256,9 @@ void TabFetchOperations(CTabCtrl& tbOperations, CEdit& edOperation, GENERATE_OPE
 		break;
 	case 30:
 		edOperation.GetWindowText(Operation.FromXLSOperation);
+		break;
+	case 31:
+		edOperation.GetWindowText(Operation.FormatSpecOperation);
 		break;
 	}
 }

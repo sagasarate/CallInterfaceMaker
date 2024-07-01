@@ -18,7 +18,7 @@
 		return COMMON_RESULT_MSG_ALLOC_ERROR;
 	}
 
-	pMsgPacket->GetMessage().SetMsgID(MAKE_MSG_ID(<ModuleID>,<InterfaceID>,I<@InterfaceName>::<MethodID>,<IsAckMsg>));
+	pMsgPacket->GetMessage().SetMsgID(MAKE_MSG_ID(<ModuleID>,<InterfaceID>,I<@InterfaceName>::<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>));
 	pMsgPacket->GetMessage().SetSenderID(m_SenderID);
 	pMsgPacket->GetMessage().SetDataLength(_PackSize);
 	pMsgPacket->GetMessage().SetMsgFlag(MsgFlag);

@@ -14,7 +14,7 @@
 	
 	
     local MsgID = MAKE_MSG_ID(<SpaceName>.MODULE_IDS.<ModuleID>, <SpaceName>.<InterfaceIDEnumName>.<InterfaceID>,
-		<SpaceName>.<MethodIDEnumName>.<MethodID>, <IsAckMsg>);		
+		<SpaceName>.<MethodIDEnumName>.<MethodID>, <IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
 
 	
 	local Packet = SmartStruct.New(MsgBuffer, 0, _PackSize, true);

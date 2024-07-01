@@ -1,0 +1,43 @@
+﻿static size_t MakeFileLogHeader(LPTSTR pBuffer, size_t BufferLen)
+{
+	size_t Len = 0;
+	<IfHaveBaseClass>
+	Len = <BaseClass>::MakeFileLogHeader(pBuffer, BufferLen);
+	if(Len + 1 <= BufferLen)
+	{
+		pBuffer[Len] = ',';
+		pBuffer[Len + 1] = 0;
+		pBuffer += Len + 1;
+		BufferLen -= Len + 1;
+	}
+	else
+	{
+		return 0;
+	}
+	</IfHaveBaseClass>
+	_tcscpy_s(pBuffer, BufferLen, _T("<JoinWithStruct Separator(,)><VariableName></JoinWithStruct>"));	
+	Len += _tcslen(pBuffer);
+	return Len;
+}
+
+virtual size_t FillFileLog(LPTSTR pBuffer, size_t BufferLen)
+{
+	size_t Len = 0;
+	<IfHaveBaseClass>
+	Len = <BaseClass>::FillFileLog(pBuffer, BufferLen);
+	if(Len + 1 <= BufferLen)
+	{
+		pBuffer[Len] = ',';
+		pBuffer[Len + 1] = 0;
+		pBuffer += Len + 1;
+		BufferLen -= Len + 1;
+	}
+	else
+	{
+		return 0;
+	}
+	</IfHaveBaseClass>
+	_stprintf_s(pBuffer, BufferLen, _T("<JoinWithStruct Separator(,)><FormatSpec></JoinWithStruct>"), <JoinWithStruct Separator(, )><FileLogFillOperation></JoinWithStruct>);
+	Len += _tcslen(pBuffer);
+	return Len;
+}

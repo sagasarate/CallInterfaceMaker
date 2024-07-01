@@ -1,0 +1,207 @@
+﻿{
+    "OneFileExport": {
+        "IsExport": false,
+        "ExportExt": "ts"
+    },
+    "InterfaceHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "StructExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "EnumExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "ConstExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "DataStructHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "InterfaceExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "CallHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "CallSourceExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "HandlerHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "HandlerSourceExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "DataObjectHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectSourceExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "DataObjectModifyFlagsHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectModifyFlagsSourceExport": {
+        "IsExport": true,
+        "ExportExt": "ts"
+    },
+    "DefaultStructGenerateOperations": {
+        "PackOperation": "let SubPacket=<Packet>.PrepareSubStruct();\r\n<IfNotDataObject>if(!<Variable>.MakePacket(SubPacket))\r\n\tFailCount++;</IfNotDataObject>\r\n<IfDataObject>if(!<Variable>.MakePacket(SubPacket,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>))\r\n\tFailCount++;</IfDataObject>\r\n<Packet>.FinishMember(<IfNotInArray><SST_NAME>.<SST_ID>,</IfNotInArray>SubPacket.GetDataLen());",
+        "UnpackOperation": "<IfNotDataObject><Variable>.ParsePacket(<PacketMember>.toSmartStruct());</IfNotDataObject>\r\n<IfDataObject><Variable>.ParsePacket(<PacketMember>.toSmartStruct(),<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>",
+        "SizeCaculateOperation": "<IfNotDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetStructMemberSize(<Variable>.GetSmartStructSize())</IfNotDataObject><IfDataObject><IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetStructMemberSize(<Variable>.GetSmartStructSize(<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>))</IfDataObject>",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "let DataNode = {};\r\n<IfNotDataObject>\r\n<Variable>.ToJson(DataNode);\r\n</IfNotDataObject>\r\n<IfDataObject>\r\n<Variable>.ToJson(DataNode, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotArray>\r\nStructNode[\"<VariableName>\"] = DataNode;\r\n</IfNotArray>\r\n<IfArray>\r\nArrayNode.push(DataNode);\r\n</IfArray>",
+        "FromJsonOperation": "<IfNotArray>\r\nlet DateNode = StructNode[\"<VariableName>\"];\r\nif(DateNode != null && DateNode != undefined)\r\n{\r\n<IfDataObject>\r\n    <Variable>.FromJson(DateNode, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n    <Variable>.FromJson(DateNode);\r\n</IfNotDataObject>\r\n}\r\n</IfNotArray>\r\n<IfArray>\r\nif(typeof(ArrayElementNode) == \"object\")\r\n{\r\n<IfDataObject>\r\n    <Variable>.FromJson(ArrayElementNode, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);\r\n</IfDataObject>\r\n<IfNotDataObject>\r\n    <Variable>.FromJson(ArrayElementNode);\r\n</IfNotDataObject>\r\n}\r\n</IfArray>\r\n<IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable>: <Type>=new <Type>()",
+        "InitOperation": "<Variable>.Clear();",
+        "CloneOperation": "<IfInDataObject>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfInDataObject>\r\n{\r\n\tif(<RightValue><Variable>)\r\n\t{\r\n\t\t<IfNotDataObject><LeftValue><Variable>.CloneFrom(<RightValue><Variable>);</IfNotDataObject>\r\n\t\t<IfDataObject><LeftValue><Variable>.CloneFrom(<RightValue><Variable>,<IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>\r\n\t\t<IfInDataObject><IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF></IfInDataObject>\r\n\t}\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public get <VariableName>(): <Type>\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public set <VariableName>(Value: <Type>)\r\n{\r\n\t<Variable>=Value.Clone();\r\n\t<IfUpdateMF>this.m_ModifyFlag = this.m_ModifyFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "PropertyGridTools.ToStr(<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>null</HaveExtendType>)",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "Cols[0].push(\"<VariableName>\");\r\nCols[1].push(\"<OrginType>\");\r\nCols[2].push(<Description> + \"\\n\" + PropertyGridTools.GetAdditionalDesc(\"<VariableName>\", \"<Type>\", false));",
+        "CheckXLSColumnOperation": "if(!PropertyGridTools.CheckXLSColumn(Sheet, \"<VariableName>\", MsgPrefix))\r\n\treturn false;",
+        "ToXLSOperation": "Cols.push(PropertyGridTools.StructToString(<Variable>, \"<Type>\"));",
+        "FromXLSOperation": "if (Sheet.getColumnKey(\"<VariableName>\")) {\r\n    let Str = Sheet.getRow(Row).getCell(\"<VariableName>\").text;\r\n\tlet Value = PropertyGridTools.StringToStruct(Str, \"<OrginType>\", false);\r\n\tif(Value !== undefined)\r\n\t\t<Variable> = Value;\r\n\telse\r\n\t\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]解析失败`;\r\n}\r\nelse{\r\n\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]不存在`;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnumGenerateOperations": {
+        "PackOperation": "if(!<Packet>.AddMemberInt(<IfNotInArray><SST_NAME>.<SST_ID>,</IfNotInArray><Variable>)) FailCount++;",
+        "UnpackOperation": "<Variable>=<PacketMember>.valueOf();",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetFixMemberSize(4)",
+        "ToXMLOperation": "XmlAttribute Attr<VariableName>=StructNode.OwnerDocument.CreateAttribute(\"<VariableName>\");\r\n<IfNot64Bit>Attr<VariableName>.Value = ((uint)<Variable>).ToString();</IfNot64Bit>\r\n<If64Bit>Attr<VariableName>.Value = ((ulong)<Variable>).ToString();</If64Bit>\r\nStructNode.Attributes.Append(Attr<VariableName>);",
+        "FromXMLOperation": "\r\n<If64Bit></If64Bit>\r\nXmlAttribute Attr<VariableName>=StructNode.Attributes[\"<VariableName>\"];\r\nif(Attr<VariableName>!=null)\r\n{\r\n\t<IfNot64Bit>\r\n\tuint ParseTemp = 0;\r\n\tInt32.TryParse(Attr<VariableName>.Value,out ParseTemp);\r\n\t<Variable> = ParseTemp;\r\n\t</IfNot64Bit>\r\n\t<If64Bit>\r\n\tulong ParseTemp = 0;\r\n\tUint64.TryParse(Attr<VariableName>.Value,out ParseTemp);\r\n\t<Variable> = ParseTemp;\r\n\t</If64Bit>\r\n\t<IfUpdateMF>UpdateFlag|=(ulong)<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n}",
+        "ToJsonOperation": "<IfNotArray>StructNode[\"<VariableName>\"]=<Variable>;</IfNotArray>\r\n<IfArray>ArrayNode.push(<Variable>);</IfArray>",
+        "FromJsonOperation": "<IfNotArray>if(typeof(StructNode[\"<VariableName>\"]) == \"number\")\r\n{\r\n    <Variable> = StructNode[\"<VariableName>\"];\r\n    <IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}</IfNotArray>\r\n<IfArray>if(typeof(ArrayElementNode) == \"number\")\r\n{\r\n    <Variable> = ArrayElementNode;\r\n    <IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}</IfArray>",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable>: <Type>",
+        "InitOperation": "<Variable>=0;",
+        "CloneOperation": "<IfInDataObject>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfInDataObject>\r\n{\r\n\tif(<RightValue><Variable>)\r\n\t{\r\n\t\t<LeftValue><Variable>=<RightValue><Variable>;\r\n\t\t<IfInDataObject><IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF></IfInDataObject>\r\n\t}\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public get <VariableName>(): <Type>\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public set <VariableName>(Value: <Type>)\r\n{\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>this.m_ModifyFlag = this.m_ModifyFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "<HaveStrTrans><Type>_UTILS.ToStr(<Variable>)<!HaveStrTrans>PropertyGridTools.ToStr(<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>null</HaveExtendType>)</HaveStrTrans>",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "Cols[0].push(\"<VariableName>\");\r\nCols[1].push(\"<OrginType>\");\r\nCols[2].push(<Description> + \"\\n\" + <Type>_UTILS.GetDescs());",
+        "CheckXLSColumnOperation": "if(!PropertyGridTools.CheckXLSColumn(Sheet, \"<VariableName>\", MsgPrefix))\r\n\treturn false;",
+        "ToXLSOperation": "Cols.push(<Variable>);",
+        "FromXLSOperation": "if (Sheet.getColumnKey(\"<VariableName>\")) {\r\n    let Str = Sheet.getRow(Row).getCell(\"<VariableName>\").text;\r\n\tlet Value = PropertyGridTools.StringToStruct(Str, \"UINT\", false);\r\n\tif(Value !== undefined)\r\n\t\t<Variable> = Value;\r\n\telse\r\n\t\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]解析失败`;\r\n}\r\nelse{\r\n\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]不存在`;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnum64GenerateOperations": {
+        "PackOperation": "if(!<Packet>.AddMemberLong(<IfNotInArray><SST_NAME>.<SST_ID>,</IfNotInArray><Variable>)) FailCount++;",
+        "UnpackOperation": "<Variable>=<PacketMember>.toLong();",
+        "SizeCaculateOperation": "<IfInArray>CSmartArray</IfInArray><IfNotInArray>CSmartStruct</IfNotInArray>.GetFixMemberSize(8)",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "<IfNotArray>StructNode[\"<VariableName>\"]=<Variable>.toString();</IfNotArray>\r\n<IfArray>ArrayNode.push(<Variable>.toString());</IfArray>",
+        "FromJsonOperation": "<IfNotArray>if(typeof(StructNode[\"<VariableName>\"]) == \"string\")\r\n{\r\n    <Variable> = Long.fromString(StructNode[\"<VariableName>\"]);\r\n    <IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}</IfNotArray>\r\n<IfArray>if(typeof(ArrayElementNode) == \"string\")\r\n{\r\n    <Variable> = Long.fromString(ArrayElementNode);\r\n    <IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}</IfArray>",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable>: <Type>",
+        "InitOperation": "<Variable>=Long.ZERO;",
+        "CloneOperation": "<IfInDataObject>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfInDataObject>\r\n{\r\n\tif(<RightValue><Variable>)\r\n\t{\r\n\t\t<LeftValue><Variable>=Long.fromValue(<RightValue><Variable>);\r\n\t\t<IfInDataObject><IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF></IfInDataObject>\r\n\t}\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public get <VariableName>(): <Type>\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public set <VariableName>(Value: <Type>)\r\n{\r\n\t<Variable>=Long.fromValue(Value);\r\n\t<IfUpdateMF>this.m_ModifyFlag = this.m_ModifyFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "<HaveStrTrans><Type>_UTILS.ToStr(<Variable>)<!HaveStrTrans>PropertyGridTools.ToStr(<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>null</HaveExtendType>)</HaveStrTrans>",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "Cols[0].push(\"<VariableName>\");\r\nCols[1].push(\"<OrginType>\");\r\nCols[2].push(<Description> + \"\\n\" + <Type>_UTILS.GetDescs());",
+        "CheckXLSColumnOperation": "if(!PropertyGridTools.CheckXLSColumn(Sheet, \"<VariableName>\", MsgPrefix))\r\n\treturn false;",
+        "ToXLSOperation": "Cols.push(<Variable>);",
+        "FromXLSOperation": "if (Sheet.getColumnKey(\"<VariableName>\")) {\r\n    let Str = Sheet.getRow(Row).getCell(\"<VariableName>\").text;\r\n\tlet Value = PropertyGridTools.StringToStruct(Str, \"UINT64\", false);\r\n\tif(Value !== undefined)\r\n\t\t<Variable> = Value;\r\n\telse\r\n\t\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]解析失败`;\r\n}\r\nelse{\r\n\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]不存在`;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "ArrayDefineConfig": {
+        "PackOperation": "<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>\r\n{\r\n\tlet ArrayPacket = <Packet>.PrepareSubArray();\r\n\t<IfIsBaseType>ArrayPacket.AddArray(<Variable>, \"<OrginType>\");</IfIsBaseType>\r\n\t<IfIsNotBaseType><ChangePacketName=ArrayPacket>for(let i=0;i<<Variable>.length;i++)\r\n\t{\r\n\t\t<PackOperation>\r\n\t}</IfIsNotBaseType>\r\n\t<Packet>.FinishMember(<SST_NAME>.<SST_ID>,ArrayPacket.GetDataLen());\r\n}",
+        "UnpackOperation": "case <SST_NAME>.<SST_ID>:\r\n\t<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>\r\n\t{\r\n\t\t<Variable>=[];\r\n\t\tlet ArrayPacket=<PacketMember>.toSmartArray();\r\n\t\t<IfIsBaseType>ArrayPacket.GetArray(<Variable>);</IfIsBaseType>\r\n\t\t<IfIsNotBaseType>let SubPos=ArrayPacket.GetFirstMemberPosition();\r\n\t\twhile(SubPos.Pos>0)\r\n\t\t{\r\n\t\t\tlet ArrayMember=ArrayPacket.GetNextMember(SubPos);<ChangePacketMemberName=ArrayMember>\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<UnpackOperation>\r\n\t\t\t<Variable>.push(ArrayElement);\r\n\t\t}</IfIsNotBaseType>\r\n\t\t<IfUpdateMF>UpdateFlag=UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n\t}\r\n\tbreak;",
+        "SizeCaculateOperation": "<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>\r\n<IfCheckMF>{</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><IfIsFixLenType>_PackSize += <ArrayElementSize>*<Variable>.length;</IfIsFixLenType>\r\n<IfCheckMF>\t</IfCheckMF><IfIsVariableLenType>for(let i=0;i<<Variable>.length;i++)\r\n<IfCheckMF>\t</IfCheckMF>{\r\n<IfCheckMF>\t</IfCheckMF>\t_PackSize += <ArrayElementSize>;\r\n<IfCheckMF>\t</IfCheckMF>}</IfIsVariableLenType>\r\n<IfCheckMF>\t</IfCheckMF>_PackSize += CSmartStruct.GetArrayMemberSize(0);\r\n<IfCheckMF>}</IfCheckMF>",
+        "ToXMLOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tXmlNode NodeSaveArray=StructNode;\r\n\tXmlNode NodeArray=NodeSaveArray.OwnerDocument.CreateElement(\"<VariableName>\");\r\n\tNodeSaveArray.AppendChild(NodeArray);\r\n\tfor(int i=0;i<<Variable>.Count;i++)\r\n\t{\r\n\t\tStructNode =  NodeArray.OwnerDocument.CreateElement(\"ArrayElement\");\r\n\t\tNodeArray.AppendChild(StructNode);\r\n\t\t<ToXMLOperation>\r\n\t}\t\r\n\tStructNode= NodeSaveArray;\r\n}",
+        "FromXMLOperation": "<IfCheckMF>if((Flag&(ulong)<ModifyFlagEnumName>.<ModifyFlag>)!=0)</IfCheckMF>\r\n{\r\n\tXmlNode NodeSaveArray=StructNode;\r\n\tXmlNode NodeArray= NodeSaveArray.SelectSingleNode(\"<VariableName>\");\r\n\tif(NodeArray!=null)\r\n\t{\r\n\t\tforeach(XmlNode ChildNode in NodeArray.ChildNodes)\r\n\t\t{\r\n\t\t\tStructNode =  ChildNode;\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<ArrayElementVariableInit>\r\n\t\t\t<FromXMLOperation>\r\n\t\t\t<Variable>.Add(ArrayElement);\r\n\t\t}\t\r\n\t}\r\n\tStructNode=NodeSaveArray;\r\n}",
+        "ToJsonOperation": "<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>\r\n{\r\n\tlet ArrayNode = [];\r\n\tfor(let i=0;i<<Variable>.length;i++)\r\n\t{\r\n\t\t<ToJsonOperation>\r\n\t}\t\r\n\tStructNode[\"<VariableName>\"] = ArrayNode;\r\n}",
+        "FromJsonOperation": "<IfCheckMF>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfCheckMF>\r\n{\r\n\tlet ArrayNode = StructNode[\"<VariableName>\"];\r\n\tif(ArrayNode != null && ArrayNode != undefined)\r\n\t{\r\n\t\tfor(let ArrayElementNode of ArrayNode)\r\n\t\t{\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<ArrayElementVariableInit>\r\n\t\t\t<FromJsonOperation>\r\n\t\t\t<Variable>.push(ArrayElement);\r\n\t\t}\t\r\n\t}\r\n}",
+        "ReferenceDefine": "<Type>[]",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable>: <Type>[]",
+        "InitOperation": "<Variable>=[];",
+        "CloneOperation": "<IfInDataObject>if(!Flag.and(<ModifyFlagEnumName>.<ModifyFlag>).equals(0))</IfInDataObject>\r\n{\r\n\tif(<RightValue><Variable> instanceof Array)\r\n\t{\r\n\t\t<IfNotRefType><LeftValue><Variable>=<RightValue><Variable>.slice();</IfNotRefType>\r\n\t\t<IfRefType><LeftValue><Variable>=[];\r\n\t\tfor (let i = 0; i < <RightValue><Variable>.length;i++ )\r\n\t\t{\r\n\t\t\t<ArrayElementVariableDefine>;\r\n\t\t\t<IfNotDataObject>ArrayElement.CloneFrom(<RightValue><Variable>[i]);</IfNotDataObject>\r\n\t\t\t<IfDataObject>ArrayElement.CloneFrom(<RightValue><Variable>[i], <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>\r\n\t\t\t<LeftValue><Variable>.push(ArrayElement);\r\n\t\t}</IfRefType>\r\n\t\t<IfInDataObject><IfUpdateMF>UpdateFlag = UpdateFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF></IfInDataObject>\r\n\t}\r\n}",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "public get <VariableName>(): <Type>[]\r\n{\r\n\treturn <Variable>;\r\n}",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "public set <VariableName>(Value: <Type>[])\r\n{\r\n\t<IfNotRefType><Variable>= Value.slice();</IfNotRefType>\r\n\t<IfRefType><Variable>=[];\r\n\tfor (let i = 0; i < Value.length;i++ )\r\n\t{\r\n\t\tlet ElementObject = Value[i];\r\n\t\t<Variable>.push(ElementObject.Clone());\r\n\t}</IfRefType>\r\n\t<IfUpdateMF>this.m_ModifyFlag = this.m_ModifyFlag.or(<ModifyFlagEnumName>.<ModifyFlag>);</IfUpdateMF>\r\n}",
+        "IndexOperation": "<Variable>[<Index>]",
+        "ConstIndexOperation": "<Variable>[<Index>]",
+        "ToStringOperation": "PropertyGridTools.ToStr(<Variable>, <HaveExtendType>\"<ExtendType>\"<!HaveExtendType>null</HaveExtendType>)",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "Cols[0].push(\"<VariableName>\");\r\nCols[1].push(\"<OrginType>\");\r\nCols[2].push(<Description> + \"\\n\" + PropertyGridTools.GetAdditionalDesc(\"<VariableName>\", \"<Type>\", true));",
+        "CheckXLSColumnOperation": "if(!PropertyGridTools.CheckXLSColumn(Sheet, \"<VariableName>\", MsgPrefix))\r\n\treturn false;",
+        "ToXLSOperation": "Cols.push(PropertyGridTools.StructToString(<Variable>, \"<Type>\"));",
+        "FromXLSOperation": "if (Sheet.getColumnKey(\"<VariableName>\")) {\r\n    let Str = Sheet.getRow(Row).getCell(\"<VariableName>\").text;\r\n\tlet Value = PropertyGridTools.StringToStruct(Str, \"<OrginType>\", true);\r\n\tif(Value !== undefined)\r\n\t\t<Variable> = Value;\r\n\telse\r\n\t\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]解析失败`;\r\n}\r\nelse{\r\n\treturn `${MsgPrefix}的行[${Row}]的列[<VariableName>]不存在`;\r\n}",
+        "FormatSpecOperation": ""
+    },
+    "OtherConfig": {
+        "CommentPrefix": "//",
+        "LocalVariableDefinePrefix": "let ",
+        "MemberVariablePrefix": "this.",
+        "DefaultPacketName": "Packet",
+        "DefaultPacketMemberName": "PacketMember",
+        "SupportBigInt": false,
+        "ForceExportAll": false
+    }
+}

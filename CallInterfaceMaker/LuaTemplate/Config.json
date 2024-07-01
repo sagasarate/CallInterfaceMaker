@@ -1,0 +1,207 @@
+﻿{
+    "OneFileExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "InterfaceHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "StructExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "EnumExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "ConstExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "DataStructHeaderExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "InterfaceExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "CallHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "CallSourceExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "HandlerHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "HandlerSourceExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "DataObjectHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectSourceExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "DataObjectModifyFlagsHeaderExport": {
+        "IsExport": false,
+        "ExportExt": ""
+    },
+    "DataObjectModifyFlagsSourceExport": {
+        "IsExport": true,
+        "ExportExt": "lua"
+    },
+    "DefaultStructGenerateOperations": {
+        "PackOperation": "local SubPacket=<Packet>:PrepareSubStruct();\r\n<IfNotDataObject>\r\nif not <Variable>:MakePacket(SubPacket) then \r\n\tFailCount=FailCount+1; \r\nend</IfNotDataObject>\r\n<IfDataObject>\r\nif not <Variable>:MakePacket(SubPacket,MemberFlags) then \r\n\tFailCount=FailCount+1; \r\nend</IfDataObject>\r\n<Packet>:FinishMember(<IfNotInArray><SpaceName>.<SST_NAME>.<SST_ID>, </IfNotInArray>SubPacket:GetDataLen());",
+        "UnpackOperation": "<IfNotDataObject><Variable>:ParsePacket(Value:GetValueAsStruct());</IfNotDataObject>\r\n<IfDataObject><Variable>:ParsePacket(Value:GetValueAsStruct(),MemberFlags);</IfDataObject>",
+        "SizeCaculateOperation": "<IfNotDataObject>SmartStruct.GetStructMemberSize(<Variable>:GetSmartStructSize())</IfNotDataObject>\r\n<IfDataObject>SmartStruct.GetStructMemberSize(<Variable>:GetSmartStructSize(MemberFlags))</IfDataObject>",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "",
+        "FromJsonOperation": "",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable> = NewObject(<SpaceName>.<Type>)",
+        "InitOperation": "<Variable>:Clear();",
+        "CloneOperation": "<IfCheckMF>if  (Flag & <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>) ~= 0 then</IfCheckMF>\r\n\t<IfNotDataObject><LeftValue><Variable>:CloneFrom(<RightValue><Variable>);</IfNotDataObject>\r\n\t<IfDataObject><LeftValue><Variable>:CloneFrom(<RightValue><Variable>,MemberFlags);</IfDataObject>\r\n\t<IfInDataObject><IfUpdateMF>UpdateFlag=UpdateFlag|<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n<IfCheckMF>end</IfCheckMF>",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "function <SpaceName>.<ClassName>:Get<VariableName>()\r\n\treturn <Variable>;\r\nend",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "function <SpaceName>.<ClassName>:Set<VariableName>(Value)\r\n\t<Variable>:CloneFrom(Value);\r\n\t<IfUpdateMF>self.m_ModifyFlag=self.m_ModifyFlag|<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\nend",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnumGenerateOperations": {
+        "PackOperation": "if not <Packet>:AddMemberUInt(<IfNotInArray><SpaceName>.<SST_NAME>.<SST_ID>, </IfNotInArray><Variable>) then\r\n\tFailCount=FailCount+1;\r\nend",
+        "UnpackOperation": "<Variable>=Value:GetValueAsUInt();",
+        "SizeCaculateOperation": "SmartStruct.GetFixMemberSize(4)",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "",
+        "FromJsonOperation": "",
+        "ReferenceDefine": "ref <Type>",
+        "ReferenceUse": "ref <Variable>",
+        "VariableDefine": "<Variable> = 0",
+        "InitOperation": "<Variable>=0;",
+        "CloneOperation": "<IfCheckMF>if (Flag&<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>)~=0 then</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><LeftValue><Variable>=<RightValue><Variable>;\r\n<IfCheckMF>\t</IfCheckMF><IfUpdateMF>UpdateFlag = UpdateFlag | <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n<IfCheckMF>end</IfCheckMF>",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "function <SpaceName>.<ClassName>:Get<VariableName>()\r\n\treturn <Variable>;\r\nend",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "function <SpaceName>.<ClassName>:Set<VariableName>(Value)\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>self.m_ModifyFlag=self.m_ModifyFlag|<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\nend",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "DefaultEnum64GenerateOperations": {
+        "PackOperation": "if not <Packet>:AddMemberUInt64(<IfNotInArray><SpaceName>.<SST_NAME>.<SST_ID>, </IfNotInArray><Variable>) then\r\n\tFailCount=FailCount+1;\r\nend",
+        "UnpackOperation": "<Variable>=Value:GetValueAsUInt64();",
+        "SizeCaculateOperation": "SmartStruct.GetFixMemberSize(8)",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "",
+        "FromJsonOperation": "",
+        "ReferenceDefine": "",
+        "ReferenceUse": "",
+        "VariableDefine": "<Variable> = 0",
+        "InitOperation": "<Variable>=0;",
+        "CloneOperation": "<IfCheckMF>if (Flag&<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>)~=0 then</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><LeftValue><Variable>=<RightValue><Variable>;\r\n<IfCheckMF>\t</IfCheckMF><IfUpdateMF>UpdateFlag = UpdateFlag | <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n<IfCheckMF>end</IfCheckMF>",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "function <SpaceName>.<ClassName>:Get<VariableName>()\r\n\treturn <Variable>;\r\nend",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "function <SpaceName>.<ClassName>:Set<VariableName>(Value)\r\n\t<Variable>=Value;\r\n\t<IfUpdateMF>self.m_ModifyFlag=self.m_ModifyFlag|<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\nend",
+        "IndexOperation": "",
+        "ConstIndexOperation": "",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "ArrayDefineConfig": {
+        "PackOperation": "<IfCheckMF>if (Flag & <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>) ~= 0 then</IfCheckMF>\r\n\tlocal ArrayPacket = <Packet>:PrepareSubArray();<ChangePacketName=ArrayPacket>\r\n\t<IfIsBaseType>if not ArrayPacket:AddArray(<Variable>, ToSmartValueType(\"<OrginType>\")) then\r\n\t\tFailCount=FailCount+1;\r\n\tend</IfIsBaseType>\r\n\t<IfIsNotBaseType>for i = 1, #<Variable>, 1 do\r\n\t\t<PackOperation>\r\n\tend</IfIsNotBaseType>\r\n\t<Packet>:FinishMember(<SpaceName>.<SST_NAME>.<SST_ID>, ArrayPacket:GetDataLen());\r\n<IfCheckMF>end</IfCheckMF>",
+        "UnpackOperation": "elseif MemberID==<SpaceName>.<SST_NAME>.<SST_ID> then\r\n\t<IfCheckMF>if (Flag & <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>) ~= 0 then</IfCheckMF>\r\n\t\tlocal SubPacket = Value:GetValueAsArray();\r\n\t\t<IfIsBaseType><Variable> = SubPacket:GetArray();</IfIsBaseType>\r\n\t\t<IfIsNotBaseType><Variable> = {};\r\n\t\tlocal SubPos = SubPacket:GetFirstMemberPosition();\r\n\t\tlocal ArrayIndex = 1;\r\n\t\twhile SubPos ~= nil do\r\n\t\t\tlocal Value;\r\n\t\t\tValue, SubPos = SubPacket:GetNextMember(SubPos);\r\n\t\t\t<ArrayElementVariableDefine>\r\n\t\t\t<UnpackOperation>\r\n\t\t\t<Variable>[ArrayIndex] = ArrayElement;\r\n\t\t\tArrayIndex = ArrayIndex + 1;\r\n\t\tend</IfIsNotBaseType>\r\n\t\t<IfUpdateMF>UpdateFlag=UpdateFlag|<SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>\r\n\t<IfCheckMF>end</IfCheckMF>",
+        "SizeCaculateOperation": "<IfCheckMF>if (Flag & <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>) ~= 0 then</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF><IfIsFixLenType>_PackSize += <ArrayElementSize> * (#<Variable>);</IfIsFixLenType>\r\n<IfCheckMF>\t</IfCheckMF><IfIsVariableLenType>for i = 1, #<Variable>, 1 do\r\n<IfCheckMF>\t</IfCheckMF>\t_PackSize = _PackSize + <ArrayElementSize>;\r\n<IfCheckMF>\t</IfCheckMF>end</IfIsVariableLenType>\r\n<IfCheckMF>\t</IfCheckMF>_PackSize = _PackSize +  SmartStruct.GetStructMemberSize(0);\r\n<IfCheckMF>end</IfCheckMF>",
+        "ToXMLOperation": "",
+        "FromXMLOperation": "",
+        "ToJsonOperation": "",
+        "FromJsonOperation": "",
+        "ReferenceDefine": "<Type>",
+        "ReferenceUse": "<Variable>",
+        "VariableDefine": "<Variable> = {}",
+        "InitOperation": "<Variable>={};",
+        "CloneOperation": "<IfCheckMF>if Flag & <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag> then</IfCheckMF>\r\n<IfCheckMF>\t</IfCheckMF>if type(<RightValue><Variable>) == \"table\" then\r\n<IfCheckMF>\t</IfCheckMF>\t<LeftValue><Variable> = {};\r\n<IfCheckMF>\t</IfCheckMF>\tfor k,v in pairs(<RightValue><Variable>) do\r\n<IfNotRefType>\r\n<IfCheckMF>\t</IfCheckMF>\t\t<LeftValue><Variable>[k] = v;\r\n</IfNotRefType>\r\n<IfRefType>\r\n<IfCheckMF>\t</IfCheckMF>\t\t<ArrayElementVariableDefine>;\r\n<IfCheckMF>\t</IfCheckMF>\t\t<IfNotDataObject>ArrayElement:CloneFrom(v);</IfNotDataObject>\r\n<IfCheckMF>\t</IfCheckMF>\t\t<IfDataObject>ArrayElement:CloneFrom(v, <IfInDataObject>MemberFlags</IfInDataObject><IfNotInDataObject><PackFlag></IfNotInDataObject>);</IfDataObject>\r\n<IfCheckMF>\t</IfCheckMF>\t\t<LeftValue><Variable>[k] = ArrayElement;\r\n</IfRefType>\r\n<IfCheckMF>\t</IfCheckMF>\tend\r\n<IfCheckMF>\t</IfCheckMF>\t<IfInDataObject><IfUpdateMF>UpdateFlag = UpdateFlag | <SpaceName>.<ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF></IfInDataObject>\r\n<IfCheckMF>\t</IfCheckMF>end\r\n<IfCheckMF>end</IfCheckMF>",
+        "GetMethodDeclare": "",
+        "GetMethodDefine": "function <SpaceName>.<ClassName>:Get<VariableName>()\r\n\treturn <Variable>;\r\nend",
+        "SetMethodDeclare": "",
+        "SetMethodDefine": "function <SpaceName>.<ClassName>:Set<VariableName>(Value)\r\n\t<CloneOperation>\t\r\nend",
+        "IndexOperation": "<Variable>[<Index>]",
+        "ConstIndexOperation": "<Variable>[<Index>]",
+        "ToStringOperation": "",
+        "DBFieldDefineOperation": "",
+        "DBInsertFormatOperation": "",
+        "DBPutOperation": "",
+        "DBGetOperation": "",
+        "FileLogFillOperation": "",
+        "AliLogSendOperation": "",
+        "ToLuaOperation": "",
+        "FromLuaOperation": "",
+        "CreateXLSColumnOperation": "",
+        "CheckXLSColumnOperation": "",
+        "ToXLSOperation": "",
+        "FromXLSOperation": "",
+        "FormatSpecOperation": ""
+    },
+    "OtherConfig": {
+        "CommentPrefix": "--",
+        "LocalVariableDefinePrefix": "local ",
+        "MemberVariablePrefix": "self.",
+        "DefaultPacketName": "Packet",
+        "DefaultPacketMemberName": "PacketMember",
+        "SupportBigInt": false,
+        "ForceExportAll": false
+    }
+}

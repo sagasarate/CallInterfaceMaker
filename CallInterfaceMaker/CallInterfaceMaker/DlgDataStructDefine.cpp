@@ -248,7 +248,7 @@ void CDlgDataStructDefine::OnBnClickedButtonDel()
 		if(Index<m_DataStructDefineList.size())
 		{
 			CString Temp;
-			Temp.Format("是否要删除数据结构[%s]？",m_DataStructDefineList[Index]->ListName);
+			Temp.Format(_T("是否要删除数据结构[%s]？"),m_DataStructDefineList[Index]->ListName);
 			if(AfxMessageBox(Temp,MB_YESNO)==IDYES)
 			{
 				if(GetMainDlg()->DeleteDataStructList(m_DataStructDefineList[Index]->ModuleID, 
@@ -381,12 +381,12 @@ void CDlgDataStructDefine::OnBnClickedButtonBaseTypeDef()
 
 			TYPE_DEFINE& Enum64 = Dlg.m_TypeList[3];
 			Config.DefaultEnum64GenerateOperations = Enum64.GenerateOperations;
-			GetMainDlg()->SaveTypeDef();
-			GetMainDlg()->SaveConfig();
+			GetMainDlg()->SaveTypeDefByJson();
+			GetMainDlg()->SaveConfigByJson();
 		}
 		else
 		{
-			AfxMessageBox("数据异常");
+			AfxMessageBox(_T("数据异常"));
 		}
 	}
 }

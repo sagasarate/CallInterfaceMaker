@@ -67,7 +67,7 @@ void CDlgModuleSelector::FillList()
 	for (size_t i = 0; i < ModuleList.size(); i++)
 	{
 		MODULE_DEFINE_INFO * pModuleInfo = ModuleList[i];
-		Temp.Format("%d", pModuleInfo->ModuleID);
+		Temp.Format(_T("%d"), pModuleInfo->ModuleID);
 		int Item = m_lvList.InsertItem(i, Temp);
 		m_lvList.SetItemText(Item, 1, pModuleInfo->Name);
 		m_lvList.SetItemData(Item, pModuleInfo->ModuleID);
@@ -86,7 +86,7 @@ void CDlgModuleSelector::OnBnClickedOk()
 	}
 	else
 	{
-		AfxMessageBox("请选择一个模块");
+		AfxMessageBox(_T("请选择一个模块"));
 	}
 	
 }

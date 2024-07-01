@@ -29,7 +29,7 @@ protected:
 	MODULE_DEFINE_INFO						m_MainModule;
 	vector<MODULE_DEFINE_INFO>				m_ImportModuleList;
 
-	vector<MODULE_DEFINE_INFO*>			m_AllModuleList;
+	vector<MODULE_DEFINE_INFO*>				m_AllModuleList;
 	vector<CALLER_INTERFACE*>				m_AllInterfaceList;
 	vector<BASE_DATA_STRUCT_DEFINE_LIST*>	m_AllDataStructList;
 
@@ -37,7 +37,6 @@ protected:
 
 	INTERFACE_CONFIG						m_InterfaceConfig;
 	RUN_ENV_INFO							m_RunEnvInfo;
-	CString									m_TypeDefFileName;
 
 	CString									m_AllDefinesTemplate;
 
@@ -127,15 +126,16 @@ protected:
 	CString									m_DataObjectGetModifyFlagDefineTemplate;
 	CString									m_DataObjectIsModifiedDefineTemplate;
 
-	CString									m_StructEditorProcessTemplate;
-	CString									m_CreateListHeaderUnitTemplate;
-	CString									m_FillListItemUnitTemplate;
+	//CString									m_StructEditorProcessTemplate;
+	//CString									m_CreateListHeaderUnitTemplate;
+	//CString									m_FillListItemUnitTemplate;
 	//CString									m_PropertyGridFetchUnitTemplate;
 	//CString									m_PropertyGridAddItemUnitTemplate;
 	//CString									m_PropertyGridDelItemUnitTemplate;
 	//CString									m_PropertyGridMoveItemUnitTemplate;
 
-	CString									m_StructLogProcessTemplate;
+	CString									m_StructFileLogProcessTemplate;
+	CString									m_StructAliLogProcessTemplate;
 
 	CString									m_StructLuaProcessTemplate;
 	CString									m_DataObjectLuaProcessTemplate;
@@ -144,6 +144,8 @@ protected:
 	CString									m_FromLuaTableOperationUnitTemplate;
 
 	CString									m_StructXLSProcessTemplate;
+
+	CString									m_DependImportTemplate;
 
 	vector<TYPE_DEFINE>						m_CurVarTypeList;
 
@@ -196,15 +198,21 @@ protected:
 	void EditListItem(int Item, CALLER_INTERFACE& InterfaceInfo);
 	bool IsListItemChecked(UINT ModuleID, UINT InterfaceID);
 	void FillListItem();
-	bool LoadTypeDef();
+	bool LoadTypeDefByXML();
+	bool LoadTypeDefByJson();
 	bool LoadTemple(LPCTSTR FileName, CString& TemplateStr);
 	bool LoadTemples();
-	bool LoadConfig();
-	bool LoadEnv();
-	bool SaveEnv();
+	bool LoadConfigByXML();
+	bool LoadConfigByJson();
+	bool LoadEnvByXML();
+	bool SaveEnvByXML();
+	bool LoadEnvByJson();
+	bool SaveEnvByJson();
 public:
-	bool SaveTypeDef();
-	bool SaveConfig();
+	bool SaveTypeDefByXML();
+	bool SaveTypeDefByJson();
+	bool SaveConfigByXML();
+	bool SaveConfigByJson();
 	void RefreshDataCache();
 	void RefreshInterfaceCache();
 	void RefreshDataStructCache();
@@ -273,8 +281,11 @@ public:
 
 	bool MoveDataStruct(int Type, LPCTSTR SourcePacket, LPCTSTR TargetPacket, LPCTSTR Name);
 
-	bool Save(MODULE_DEFINE_INFO& ModuleInfo);
-	bool Load(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo);
+	bool SaveByXML(MODULE_DEFINE_INFO& ModuleInfo);
+	bool LoadByXML(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo);
+
+	bool SaveByJson(MODULE_DEFINE_INFO& ModuleInfo);
+	bool LoadByJson(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo);
 	//bool LoadOld(LPCTSTR FileName, INTERFANCE_DEFINES_OLD& ModuleInfo);
 	//bool LoadOverVersion(LPCTSTR FileName, MODULE_DEFINE_INFO& ModuleInfo);
 
@@ -287,27 +298,42 @@ protected:
 
 	MODULE_DEFINE_INFO* LoadModule(LPCTSTR szFileName);
 
-	bool SaveInterfaces(xml_node& Interfaces, vector<CALLER_INTERFACE>& InterfaceList);
-	bool LoadInterfaces(xml_node& Interfaces, vector<CALLER_INTERFACE>& InterfaceList, UINT ModuleID);
+	bool SaveInterfacesByXML(xml_node& Interfaces, vector<CALLER_INTERFACE>& InterfaceList);
+	bool LoadInterfacesByXML(xml_node& Interfaces, vector<CALLER_INTERFACE>& InterfaceList, UINT ModuleID);
+	bool SaveInterfacesByJson(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, vector<CALLER_INTERFACE>& InterfaceList);
+	bool LoadInterfacesByJson(rapidjson::Value& JsonNode, vector<CALLER_INTERFACE>& InterfaceList, UINT ModuleID);
 	//bool LoadInterfacesOld(xml_node& Interfaces, vector<CALLER_INTERFACE_OLD>& InterfaceList);
 
+	bool SaveStructDefineByXML(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList);
+	bool LoadStructDefineByXML(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList);
+	bool SaveStructDefineByJson(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, vector<STRUCT_DEFINE_INFO>& StructDefineList);
+	bool LoadStructDefineByJson(rapidjson::Value& JsonNode, vector<STRUCT_DEFINE_INFO>& StructDefineList);
+	//bool LoadStructDefineOld(xml_node& Structs, vector<STRUCT_DEFINE_INFO_OLD>& StructDefineList);
 
+	bool SaveEnumDefineByXML(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList);
+	bool LoadEnumDefineByXML(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList);
+	bool SaveEnumDefineByJson(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, vector<ENUM_DEFINE_INFO>& EnumDefineList);
+	bool LoadEnumDefineByJson(rapidjson::Value& JsonNode, vector<ENUM_DEFINE_INFO>& EnumDefineList);
 
-	bool SaveStructDefine(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList);
-	bool LoadStructDefine(xml_node& Structs, vector<STRUCT_DEFINE_INFO>& StructDefineList);
-	bool LoadStructDefineOld(xml_node& Structs, vector<STRUCT_DEFINE_INFO_OLD>& StructDefineList);
+	bool SaveConstDefineByXML(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList);
+	bool LoadConstDefineByXML(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList);
+	bool SaveConstDefineByJson(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, vector<CONST_DEFINE_INFO>& ConstDefineList);
+	bool LoadConstDefineByJson(rapidjson::Value& JsonNode, vector<CONST_DEFINE_INFO>& ConstDefineList);
 
-	bool SaveEnumDefine(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList);
-	bool LoadEnumDefine(xml_node& Enums, vector<ENUM_DEFINE_INFO>& EnumDefineList);
-
-	bool SaveConstDefine(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList);
-	bool LoadConstDefine(xml_node& Consts, vector<CONST_DEFINE_INFO>& ConstDefineList);
-
-	bool SaveDataObjectModifyFlag(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
-	bool LoadDataObjectModifyFlag(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
+	bool SaveDataObjectModifyFlagByXML(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
+	bool LoadDataObjectModifyFlagByXML(xml_node& ModifyFlags, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
+	bool SaveDataObjectModifyFlagByJson(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
+	bool LoadDataObjectModifyFlagByJson(rapidjson::Value& JsonNode, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags);
 
 	bool SaveGenerateOperations(xml_node& XmlNode, GENERATE_OPERATIONS_INFO& GenerateOperations);
 	bool LoadGenerateOperations(xml_node& XmlNode, GENERATE_OPERATIONS_INFO& GenerateOperations);
+	bool SaveGenerateOperations(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, GENERATE_OPERATIONS_INFO& GenerateOperations);
+	bool LoadGenerateOperations(rapidjson::Value& JsonNode, GENERATE_OPERATIONS_INFO& GenerateOperations);
+
+	bool SaveMethodParam(rapidjson::Value& JsonNode, rapidjson::Document::AllocatorType& Alloc, METHOD_PARAM& ParamInfo);
+	bool LoadMethodParam(rapidjson::Value& JsonNode, METHOD_PARAM& ParamInfo);
+
+	bool LoadExportConfig(rapidjson::Value& JsonNode, EXPORT_CONFIG& ExportConfig);
 
 	//CString EncodeString(CString Str);
 	//CString DecodeString(CString Str);
@@ -326,7 +352,7 @@ protected:
 	bool ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& StructList, LPCTSTR ExportDir, LPCTSTR SpaceName);
 	bool ExportInterfaces(vector<CALLER_INTERFACE*>& InterfaceList, LPCTSTR ExportDir, INTERFACE_METHOD_EXPORT_TYPE ExportType, LPCTSTR SpaceName);
 
-	bool ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName, vector<STRUCT_DEFINE_INFO*>& StructList);
+	bool ExportStructs(LPCTSTR ExportDir, LPCTSTR FileName, LPCTSTR SpaceName, STRUCT_DEFINE_LIST2& StructList);
 	bool ExportSystemEnums(LPCTSTR ExportDir, LPCTSTR FileName, vector<MODULE_DEFINE_INFO*>& AllModuleList);
 	bool ExportEnums(LPCTSTR ExportDir, LPCTSTR FileName, vector<ENUM_DEFINE_INFO>& EnumList, LPCTSTR SpaceName, LPCTSTR ListName, bool IsSystem);
 	bool ExportConsts(LPCTSTR ExportDir, LPCTSTR FileName, vector<CONST_DEFINE_INFO>& ConstList, LPCTSTR SpaceName, LPCTSTR ListName);
@@ -388,8 +414,10 @@ protected:
 	CString MakeDBFieldDefineOperation(LPCTSTR Type, LPCTSTR Name, LPCTSTR ParentName, LPCTSTR ParentShortName, LPCTSTR SSTIDEnumName, bool IsInDataObject, bool IsArray, LPCTSTR DBLength, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDBFieldFormats(STRUCT_DEFINE_INFO& StructInfo);
 
-	CString MakeLogProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
-	CString MakeLogDataList(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
+
+	CString MakeFileLogProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeAliLogProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeAliLogDataList(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
 
 	CString MakeLuaProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDataObjectLuaProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SSTIDEnumName, LPCTSTR SpaceName, LPCTSTR szLineSpace);
@@ -410,8 +438,8 @@ protected:
 	CString MakeCloneOperation(LPCTSTR VariableName, TYPE_DEFINE* pTypeInfo, bool IsArray, bool InDataObject, bool BeCheckMF, bool BeUpdateMF, LPCTSTR PackFlag,
 		LPCTSTR szLeftValue, LPCTSTR szRightValue, LPCTSTR ClassName, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 
-	bool MakeDataObjectFlagIndicesEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, ENUM_DEFINE_INFO& EnumInfo);
-	bool MakeDataObjectSSTIDsEnum(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DataStructList, ENUM_DEFINE_INFO& EnumInfo);
+	bool MakeDataObjectFlagIndicesEnum(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, ENUM_DEFINE_INFO& EnumInfo);
+	bool MakeDataObjectSSTIDsEnum(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, ENUM_DEFINE_INFO& EnumInfo);
 	CString MakeDataObjectModifyFlagEnumDefine(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDataObjectMembersGetModifyFlag(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
 	CString MakeDataDataObjectMembersIsModified(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
@@ -422,8 +450,8 @@ protected:
 	CString MakeDataObjectGetMethodsDeclare(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
 	CString MakeDataObjectGetMethodsDefine(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 
-	CString MakeDataObjectModifyFlagsHeader(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
-	CString MakeDataObjectModifyFlagsSource(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& AllDataStructList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeDataObjectModifyFlagsHeader(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeDataObjectModifyFlagsSource(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_FLAG& ModifyFlag, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 
 
@@ -444,9 +472,9 @@ protected:
 	DATA_OBJECT_MODIFY_FLAG MakeDataObjectFullModifyFlag(STRUCT_DEFINE_INFO& StructInfo, vector<STRUCT_DEFINE_INFO*>& DataObjectList);
 
 
-	CString MakeStructEditorProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
-	CString MakePropertyGridFillOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace);
-	CString MakePropertyGridFillOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, LPCTSTR SSTIDEnumName, bool ReplaceByBindData, LPCTSTR szLineSpace);
+	//CString MakeStructEditorProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
+	//CString MakePropertyGridFillOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace);
+	//CString MakePropertyGridFillOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, LPCTSTR SSTIDEnumName, bool ReplaceByBindData, LPCTSTR szLineSpace);
 	//CString MakePropertyGridFetchOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace);
 	//CString MakePropertyGridFetchOperation(STRUCT_DEFINE_INFO& StructInfo, STRUCT_MEMBER_INFO& MemberInfo, UINT MemberIndex, bool ReplaceByBindData, LPCTSTR szLineSpace);
 	//CString MakePropertyGridAddItemOperations(STRUCT_DEFINE_INFO& StructInfo, bool ReplaceByBindData, LPCTSTR szLineSpace);
@@ -455,6 +483,16 @@ protected:
 
 
 	CString MakeStructXLSProcess(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR szLineSpace);
+
+
+	CString MakeStructJoin(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR Template, LPCTSTR Separator);
+
+	CString MakeStructDependImports(STRUCT_DEFINE_LIST2& StructList, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeStructDependImports(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeStructDependImports(CALLER_INTERFACE& InterfaceInfo, LPCTSTR SpaceName, LPCTSTR InterfaceName, LPCTSTR szLineSpace, INTERFACE_DEPEND_MAKE_TYPE MakeType);
+	CString MakeStructDependImports(vector<DEPEND_INFO>& DependTypeList, vector<CString> DataObjectList, vector<CString> PackFlagList, vector<CString> MethodList,  LPCTSTR SpaceName, LPCTSTR InterfaceName, LPCTSTR szLineSpace);
+	CString MakeAllDataObjectDependImports(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+
 
 	bool HaveMemberByType(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR Type, int Depth = 32);
 	STRUCT_DEFINE_INFO* GetStructDefineInfo(LPCTSTR Type);
@@ -503,6 +541,7 @@ protected:
 	void GetModuleDepends(const vector<MODULE_DEFINE_INFO*>& ModuleList, const MODULE_DEFINE_INFO* pModuleInfo, vector<CString>& DependList, int Depth);
 	void AddUnique(vector<MODULE_DEFINE_INFO*>& ModuleList, MODULE_DEFINE_INFO* pModuleInfo);
 	bool HaveDefines(const MODULE_DEFINE_INFO* pModuleInfo, vector<CString>& DefineNameList);
+	void AddDependType(vector<DEPEND_INFO>& DependList, const TYPE_DEFINE* pType);
 
 	void SaveInterfaceSelections();
 	void RestoreInterfaceSelections();
@@ -521,6 +560,9 @@ protected:
 	STRUCT_MEMBER_INFO* IsBeBind(STRUCT_DEFINE_INFO& StructInfo, LPCTSTR MemberName);
 	STRUCT_MEMBER_INFO* GetStructKeyMember(LPCTSTR StructName);
 	CString ParserEnumValue(CString Value, bool IsBitMask);
+
+	int FindJoinContent(CString& Template, LPCTSTR Type, int StartPos, int& BlockLen, CString& Separator, CString& Content);
+	BASE_DATA_STRUCT_DEFINE_LIST* GetDataDefineList(DATA_STRUCT_TYPE Type, LPCTSTR Name);
 public:
 	void GetDataObjectListSorted(vector<BASE_DATA_STRUCT_DEFINE_LIST*>& DataStructList, vector<STRUCT_DEFINE_INFO*>& DataObjectList);
 	static int InterfaceInfoComp(LPCVOID p1, LPCVOID p2);

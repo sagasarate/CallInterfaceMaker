@@ -61,7 +61,7 @@ void CDlgImportEditor::FillList()
 	for (size_t i = 0; i < ModuleList.size(); i++)
 	{
 		MODULE_DEFINE_INFO& ModuleInfo = ModuleList[i];
-		Temp.Format("%d", ModuleInfo.ModuleID);
+		Temp.Format(_T("%d"), ModuleInfo.ModuleID);
 		int Item = m_lvList.InsertItem(i, Temp);
 		m_lvList.SetItemText(Item, 1, ModuleInfo.Name);
 		m_lvList.SetItemText(Item, 2, ModuleInfo.ModuleDefineFileName);
@@ -72,7 +72,7 @@ void CDlgImportEditor::FillList()
 void CDlgImportEditor::OnBnClickedButtonAdd()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	CFileDialog Dlg(true, "*.xml", "*.xml", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "XML Files(*.xml)|*,xml|All Files(*.*)|*.*||");
+	CFileDialog Dlg(true, _T("*.xml"), _T("*.xml"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("XML Files(*.xml)|*,xml|All Files(*.*)|*.*||"));
 
 	//if (!m_RunEnvInfo.RecentDataDir.IsEmpty())
 	//{
@@ -98,7 +98,7 @@ void CDlgImportEditor::OnBnClickedButtonDel()
 		MODULE_DEFINE_INFO * pModule=GetMainDlg()->GetModuleInfo(ModuleID);
 		if (pModule)
 		{
-			if (AfxMessageBox("是否要删除引用模块：" + pModule->Name, MB_YESNO) == IDYES)
+			if (AfxMessageBox(_T("是否要删除引用模块：") + pModule->Name, MB_YESNO) == IDYES)
 			{
 				GetMainDlg()->DeleteModule(ModuleID);
 				FillList();

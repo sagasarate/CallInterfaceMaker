@@ -38,6 +38,9 @@
     <Filter Include="模块引用">
       <UniqueIdentifier>{597a8289-9e9d-4c79-aa64-766d7efd6c7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="工具">
+      <UniqueIdentifier>{cdfe5286-a1b7-4bdd-9de5-65c48b49d13f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\CallInterfaceMaker.ico">
@@ -126,6 +129,9 @@
     </ClInclude>
     <ClInclude Include="DlgModuleSelector.h">
       <Filter>模块引用</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h">
+      <Filter>工具</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

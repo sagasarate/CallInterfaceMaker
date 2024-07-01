@@ -47,7 +47,7 @@ void CDlgListSelector::OnBnClickedOk()
 		OnOK();
 		return;
 	}
-	AfxMessageBox("请选择一个项目");
+	AfxMessageBox(_T("请选择一个项目"));
 }
 
 void CDlgListSelector::OnBnClickedCancel()

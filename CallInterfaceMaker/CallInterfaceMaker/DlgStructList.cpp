@@ -52,7 +52,7 @@ void CDlgStructList::FillList()
 	m_lvStruct.DeleteAllItems();
 	for(size_t i=0;i<m_StructDefineList.size();i++)
 	{
-		int Item=m_lvStruct.InsertItem(i,"");
+		int Item=m_lvStruct.InsertItem(i,_T(""));
 		FillItem(Item,m_StructDefineList[i],i);
 	}
 }
@@ -135,7 +135,7 @@ void CDlgStructList::OnBnClickedButtonDel()
 		int Item=m_lvStruct.GetNextSelectedItem(Pos);
 		size_t Index=m_lvStruct.GetItemData(Item);
 		CString Msg;
-		Msg.Format("是否要删除结构[%s]",
+		Msg.Format(_T("是否要删除结构[%s]"),
 			m_lvStruct.GetItemText(Item,0));
 		if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 		{
@@ -230,7 +230,7 @@ void CDlgStructList::OnBnClickedButtonMove()
 		vector<CString> StructPacketList;
 		GetMainDlg()->GetDataStructPacketList(DATA_STRUCT_STRUCT,StructPacketList);
 		CDlgListSelector Dlg;
-		Dlg.Init("移动到...",StructPacketList);
+		Dlg.Init(_T("移动到..."),StructPacketList);
 		if(Dlg.DoModal()==IDOK)
 		{
 			for(size_t i=0;i<MoveList.size();i++)
@@ -239,7 +239,7 @@ void CDlgStructList::OnBnClickedButtonMove()
 
 				if(!GetMainDlg()->MoveDataStruct(DATA_STRUCT_STRUCT,m_ListName,Dlg.m_SelectedItem,m_StructDefineList[Index].Name))				
 				{
-					AfxMessageBox("转移失败");
+					AfxMessageBox(_T("转移失败"));
 					return;
 				}
 			}

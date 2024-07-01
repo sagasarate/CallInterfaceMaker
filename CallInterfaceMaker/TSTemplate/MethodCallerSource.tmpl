@@ -14,7 +14,7 @@ public <MethodName>(<Params>): number
 	let MsgBuffer=this.m_Operator.AllocMsgBuffer(_PackSize);
 	
 	
-    let MsgID = DOSSystem.MakeMsgID(MODULE_IDS.<ModuleID>,<InterfaceIDEnumName>.<InterfaceID>,<MethodIDEnumName>.<MethodID>,<IsAckMsg>);		
+    let MsgID = DOSSystem.MakeMsgID(MODULE_IDS.<ModuleID>,<InterfaceIDEnumName>.<InterfaceID>,<MethodIDEnumName>.<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
 
 	
 	let Packet = new CSmartStruct(MsgBuffer,0,_PackSize,true);

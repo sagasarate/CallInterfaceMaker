@@ -64,13 +64,13 @@ BOOL CDlgInterfaceEdtor::OnInitDialog()
 	m_lvMethodList.SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
 
 
-	m_lvMethodList.InsertColumn(0, "名称", LVCFMT_LEFT, 200);
-	m_lvMethodList.InsertColumn(1, "类型", LVCFMT_LEFT, 80);
-	m_lvMethodList.InsertColumn(2, "调用参数", LVCFMT_LEFT, 60);
-	m_lvMethodList.InsertColumn(3, "回调参数", LVCFMT_LEFT, 60);
-	m_lvMethodList.InsertColumn(4, "Flag", LVCFMT_LEFT, 60);
-	m_lvMethodList.InsertColumn(5, "ID", LVCFMT_LEFT, 60);
-	m_lvMethodList.InsertColumn(6, "描述", LVCFMT_LEFT, 200);
+	m_lvMethodList.InsertColumn(0, _T("名称"), LVCFMT_LEFT, 200);
+	m_lvMethodList.InsertColumn(1, _T("类型"), LVCFMT_LEFT, 80);
+	m_lvMethodList.InsertColumn(2, _T("调用参数"), LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(3, _T("回调参数"), LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(4, _T("Flag"), LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(5, _T("ID"), LVCFMT_LEFT, 60);
+	m_lvMethodList.InsertColumn(6, _T("描述"), LVCFMT_LEFT, 200);
 
 
 	FillListItem();
@@ -122,7 +122,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonEditMethod()
 	}
 	else
 	{
-		MessageBox("请选择一个方法");
+		MessageBox(_T("请选择一个方法"));
 	}
 }
 
@@ -137,7 +137,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonDelMethod()
 		if(Index<m_InterfaceInfo.MethodList.size())
 		{
 			CString Msg;
-			Msg.Format("是否要删除方法[%s]",
+			Msg.Format(_T("是否要删除方法[%s]"),
 				m_InterfaceInfo.MethodList[Index].Name);
 			if(AfxMessageBox(Msg,MB_YESNO)==IDYES)
 			{
@@ -170,15 +170,15 @@ void CDlgInterfaceEdtor::AddListItem(INTERFACE_METHOD& MethodInfo,UINT Index)
 	m_lvMethodList.SetItemData(Item,(INT_PTR)Index);
 
 	m_lvMethodList.SetItemText(Item, 1, 
-		MethodInfo.Type >= 0 && MethodInfo.Type<INTERFACE_METHOD_TYPE_MAX ? g_szINTERFACE_METHOD_TYPE[MethodInfo.Type]:"未知");
+		MethodInfo.Type >= 0 && MethodInfo.Type<INTERFACE_METHOD_TYPE_MAX ? g_szINTERFACE_METHOD_TYPE[MethodInfo.Type]:_T("未知"));
 	
-	Temp.Format("%d",MethodInfo.CallParamList.size());
+	Temp.Format(_T("%d"),MethodInfo.CallParamList.size());
 	m_lvMethodList.SetItemText(Item,2,Temp);
-	Temp.Format("%d", MethodInfo.AckParamList.size());
+	Temp.Format(_T("%d"), MethodInfo.AckParamList.size());
 	m_lvMethodList.SetItemText(Item, 3, Temp);
-	Temp.Format("%u", MethodInfo.Flag);
+	Temp.Format(_T("%u"), MethodInfo.Flag);
 	m_lvMethodList.SetItemText(Item, 4, Temp);
-	Temp.Format("%d",MethodInfo.ID);
+	Temp.Format(_T("%d"),MethodInfo.ID);
 	m_lvMethodList.SetItemText(Item,5,Temp);
 	m_lvMethodList.SetItemText(Item,6,MethodInfo.Description);
 
@@ -189,15 +189,15 @@ void CDlgInterfaceEdtor::EditListItem(int Item,INTERFACE_METHOD& MethodInfo)
 	m_lvMethodList.SetItemText(Item,0,MethodInfo.Name);
 
 	m_lvMethodList.SetItemText(Item, 1,
-		MethodInfo.Type >= 0 && MethodInfo.Type < INTERFACE_METHOD_TYPE_MAX ? g_szINTERFACE_METHOD_TYPE[MethodInfo.Type] : "未知");
+		MethodInfo.Type >= 0 && MethodInfo.Type < INTERFACE_METHOD_TYPE_MAX ? g_szINTERFACE_METHOD_TYPE[MethodInfo.Type] : _T("未知"));
 
-	Temp.Format("%d",MethodInfo.CallParamList.size());
+	Temp.Format(_T("%d"),MethodInfo.CallParamList.size());
 	m_lvMethodList.SetItemText(Item,2,Temp);
-	Temp.Format("%d", MethodInfo.AckParamList.size());
+	Temp.Format(_T("%d"), MethodInfo.AckParamList.size());
 	m_lvMethodList.SetItemText(Item, 3, Temp);
-	Temp.Format("%u", MethodInfo.Flag);
+	Temp.Format(_T("%u"), MethodInfo.Flag);
 	m_lvMethodList.SetItemText(Item, 4, Temp);
-	Temp.Format("%d",MethodInfo.ID);
+	Temp.Format(_T("%d"),MethodInfo.ID);
 	m_lvMethodList.SetItemText(Item,5,Temp);
 	m_lvMethodList.SetItemText(Item,6,MethodInfo.Description);
 }
@@ -296,7 +296,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonClone()
 			vector<CALLER_INTERFACE *>& InterfaceList = GetMainDlg()->GetInterfaceList();
 			CDlgListSelector Dlg;
 
-			Dlg.m_Title = "请选择接口";
+			Dlg.m_Title = _T("请选择接口");
 			Dlg.m_Items.resize(InterfaceList.size());
 			for (size_t i = 0; i < InterfaceList.size(); i++)
 			{
@@ -306,7 +306,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonClone()
 				MODULE_DEFINE_INFO * pModule = GetMainDlg()->GetModuleInfo(InterfaceList[i]->ModuleID);
 				if (pModule)
 				{
-					Dlg.m_Items[i] = InterfaceList[i]->Name + "@" + pModule->Name;
+					Dlg.m_Items[i] = InterfaceList[i]->Name + _T("@") + pModule->Name;
 				}
 			}
 			if (Dlg.DoModal() == IDOK)
@@ -322,7 +322,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonClone()
 						pInterface->MethodList.push_back(m_InterfaceInfo.MethodList[Index]);
 						pInterface->MethodList[pInterface->MethodList.size() - 1].ID = pInterface->IDSeed;
 						pInterface->IDSeed++;
-						AfxMessageBox("复制成功");
+						AfxMessageBox(_T("复制成功"));
 					}
 				}
 			}
@@ -347,7 +347,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonMove()
 			vector<CALLER_INTERFACE *>& InterfaceList = GetMainDlg()->GetInterfaceList();
 			CDlgListSelector Dlg;
 
-			Dlg.m_Title = "请选择接口";
+			Dlg.m_Title = _T("请选择接口");
 			Dlg.m_Items.resize(InterfaceList.size());
 			for (size_t i = 0; i < InterfaceList.size(); i++)
 			{
@@ -357,7 +357,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonMove()
 				MODULE_DEFINE_INFO * pModule = GetMainDlg()->GetModuleInfo(InterfaceList[i]->ModuleID);
 				if (pModule)
 				{
-					Dlg.m_Items[i] = InterfaceList[i]->Name + "@" + pModule->Name;
+					Dlg.m_Items[i] = InterfaceList[i]->Name + _T("@") + pModule->Name;
 				}
 			}
 			if (Dlg.DoModal() == IDOK)
@@ -374,7 +374,7 @@ void CDlgInterfaceEdtor::OnBnClickedButtonMove()
 						pInterface->MethodList[pInterface->MethodList.size() - 1].ID = pInterface->IDSeed;
 						pInterface->IDSeed++;
 						m_InterfaceInfo.MethodList.erase(m_InterfaceInfo.MethodList.begin() + Index);
-						AfxMessageBox("移动成功");
+						AfxMessageBox(_T("移动成功"));
 						FillListItem();
 					}
 				}
