@@ -1,0 +1,196 @@
+//<GenerateArea1Start>
+import { CSmartValue, CSmartArray, CSmartStruct } from "../DOSSystem/SmartStruct";
+import { OBJECT_ID } from "../DOSSystem/DOSSystem";
+import { ALL_CLASS } from "./<SpaceName>DataStructs";
+import { DATA_OBJECT_FLAGS, GET_MODIFY_FLAG_TYPE, DOMF_ALL_FULL } from "./<SpaceName>SystemEnums";
+<DependImports>
+
+
+<Description>
+//<GenerateArea1End>
+
+//<GenerateArea2Start>
+<SSTIDEnumDefine>
+<ModifyFlagEnumDefine>
+//<GenerateArea2End>
+
+export class <ClassName><IfHaveBaseClass> extends <BaseClass></IfHaveBaseClass>
+{
+
+	protected m_ModifyFlag: bigint = 0n;
+	
+//<GenerateArea3Start>	   
+	<Members>
+
+	constructor()
+	{
+		<IfHaveBaseClass>super();</IfHaveBaseClass>
+		this.m_ModifyFlag = 0n;
+		<InitOperations>
+//<GenerateArea3End>
+	}
+	
+	public Clear(): void
+	{
+//<GenerateArea4Start>
+		<IfHaveBaseClass>super.Clear();</IfHaveBaseClass>
+
+		this.m_ModifyFlag = 0n;
+	   
+		<InitOperations>
+//<GenerateArea4End>
+
+	}
+	 
+//<GenerateArea5Start>
+
+	public SetModifyFlag(RemoveFlags: bigint, AddFlags: bigint): void
+	{
+		this.m_ModifyFlag = this.m_ModifyFlag & (~RemoveFlags);
+		this.m_ModifyFlag = this.m_ModifyFlag | AddFlags;
+	}
+
+
+	<SetMethodsDefine>
+			   
+	<GetMethodsDefine>
+
+//<GenerateArea5End>
+
+	public GetModifyFlag(ModifyFlags: bigint[], GetType: number, MemberFlags: bigint[]): void
+	{
+//<GenerateArea6Start>
+		<IfHaveBaseClass>super.GetModifyFlag(ModifyFlags, GetType, MemberFlags);</IfHaveBaseClass>
+		switch(GetType)
+		{
+		case GET_MODIFY_FLAG_TYPE.GMFT_COPY:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = this.m_ModifyFlag & MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+			break;
+		case GET_MODIFY_FLAG_TYPE.GMFT_AND:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] & (this.m_ModifyFlag & MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]);
+			break;
+		case GET_MODIFY_FLAG_TYPE.GMFT_OR:
+			ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] = ModifyFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>] | (this.m_ModifyFlag & MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]);
+			break;
+		}
+		<DataObjectMembersGetModifyFlag>
+//<GenerateArea6End>
+	}
+	
+	public IsModified(MemberFlags: bigint[]): boolean
+	{
+		let IsModified = false;
+//<GenerateArea7Start>
+		<IfHaveBaseClass>IsModified=IsModified||super.IsModified(MemberFlags);</IfHaveBaseClass>
+		
+		IsModified = IsModified || ((this.m_ModifyFlag & MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]) != 0n);
+		IsModified = IsModified
+			<DataObjectMembersIsModified>;
+//<GenerateArea7End>
+		return IsModified;
+
+	}
+	
+	public ClearModifyFlag(MemberFlags: bigint[]): void
+	{
+//<GenerateArea8Start>
+		<IfHaveBaseClass>super.ClearModifyFlag(MemberFlags);</IfHaveBaseClass>
+		this.m_ModifyFlag = this.m_ModifyFlag | (~MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>]);
+		<DataObjectMembersClearModifyFlag>
+//<GenerateArea8End>
+	}
+
+	public MakeUpdatePacket(Packet: CSmartStruct, MemberFlags: bigint[]): boolean
+	{
+//<GenerateArea9Start>
+		let ModifyFlags: bigint[] = [];
+		for(let i=0;i<DATA_OBJECT_FLAGS.DATA_OBJECT_FLAG_MAX;i++)
+			ModifyFlags.push(0n);
+		this.GetModifyFlag(ModifyFlags,GET_MODIFY_FLAG_TYPE.GMFT_OR,MemberFlags);	
+//<GenerateArea9End>
+		return this.MakePacket(Packet,ModifyFlags);
+	}
+	
+	public MakePacket(Packet: CSmartStruct, MemberFlags: bigint[]): boolean
+	{
+//<GenerateArea10Start>
+		let FailCount: number = 0;
+		<IfHaveBaseClass>
+		if(!super.MakePacket(Packet,MemberFlags))
+			FailCount++;
+		</IfHaveBaseClass>
+		
+		let Flag = MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+
+		<PackOperations>
+//<GenerateArea10End>
+		return FailCount == 0;
+	}
+		
+	public ParsePacket(Packet: CSmartStruct, MemberFlags: bigint[]): void
+	{
+//<GenerateArea11Start>
+		<IfHaveBaseClass>
+		super.ParsePacket(Packet, MemberFlags);
+		</IfHaveBaseClass>
+		
+		let Flag = MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		let UpdateFlag = 0n;
+		
+		<IfHaveMember>
+		let Pos = Packet.GetFirstMemberPosition();
+		while(Pos.Pos > 0)
+		{
+			let PacketMember = Packet.GetNextMember(Pos);
+			switch(Pos.MemberID)
+			{
+			<UnpackOperations>
+			}
+		}
+		</IfHaveMember>
+//<GenerateArea11End>
+		this.m_ModifyFlag = this.m_ModifyFlag | UpdateFlag;
+	}
+	
+	public CloneFrom(DataObject: <ClassName>, MemberFlags: bigint[]): void
+	{
+	//<GenerateArea12Start>
+		<IfHaveBaseClass>
+		super.CloneFrom(DataObject,MemberFlags);
+		</IfHaveBaseClass>
+		
+		let Flag = MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		let UpdateFlag = 0n;
+		
+		<CloneOperations>
+		
+	//<GenerateArea12End>
+
+		this.m_ModifyFlag = this.m_ModifyFlag | UpdateFlag;
+	}
+	public GetSmartStructSize(MemberFlags: bigint[]): number
+	{
+//<GenerateArea13Start>
+		let _PackSize = 0;
+		let Flag = MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+		<PacketSizes>
+			
+		<IfHaveBaseClass>
+		_PackSize += super.GetSmartStructSize(MemberFlags);
+		</IfHaveBaseClass>
+//<GenerateArea13End>	
+		return _PackSize;
+	}
+	public Clone(): any
+	{
+//<GenerateArea14Start>
+		let DataObject = new <ClassName>();
+		DataObject.CloneFrom(this, DOMF_ALL_FULL);
+		return DataObject;
+//<GenerateArea14End>	
+	}
+//<GenerateArea15Start>
+//<GenerateArea15End>
+};
+
+ALL_CLASS["<ClassName>"] = <ClassName>;

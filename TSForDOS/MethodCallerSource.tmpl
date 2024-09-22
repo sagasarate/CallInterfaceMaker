@@ -1,0 +1,40 @@
+public <MethodName>(<Params>): number
+{
+	if((this.m_Operator == null) || (this.m_Operator == undefined))
+	{
+		return COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
+	}
+
+	let _PackSize = CSmartStruct.GetEmptyStructSize();
+	<PacketSizes>
+
+	let MsgPacket = this.m_Operator.NewMessagePacket(_PackSize, this.m_TargetID.length);	
+	MsgPacket.SenderID = this.m_SenderID;
+	let MsgFlag=0;
+	<IfMsgCanCache>MsgFlag |= DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
+	MsgPacket.MsgFlag = MsgFlag;
+	
+    MsgPacket.MsgID = DOSMakeMsgID(MODULE_IDS.<ModuleID>,<InterfaceIDEnumName>.<InterfaceID>,<MethodIDEnumName>.<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
+
+	
+	let Packet = MsgPacket.EmptyDataPacket;
+	
+	if(this.PackMsg<MethodName>(Packet<,Params>))
+	{
+		MsgPacket.DataLength = Packet.GetDataLen();
+		MsgPacket.TargetIDs = this.m_TargetID;
+		if(this.m_Operator.SendMessagePacket(MsgPacket))
+		{
+			return COMMON_RESULT_CODE.COMMON_RESULT_SUCCEED;
+		}
+		else
+		{
+			return COMMON_RESULT_CODE.COMMON_RESULT_MSG_SEND_ERROR;
+		}
+	}
+	else
+	{
+		return COMMON_RESULT_CODE.COMMON_RESULT_MSG_PACK_ERROR;
+	}
+	
+}

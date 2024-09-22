@@ -1,0 +1,7 @@
+case <SST_NAME>.<SST_ID>:
+	<IfCheckMF>if((Flag & <ModifyFlagEnumName>.<ModifyFlag>) != 0n)</IfCheckMF>
+	{
+		<UnpackOperation>
+		<IfUpdateMF>UpdateFlag = UpdateFlag | <ModifyFlagEnumName>.<ModifyFlag>;</IfUpdateMF>
+	}
+	break;

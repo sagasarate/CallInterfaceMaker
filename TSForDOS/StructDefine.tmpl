@@ -1,0 +1,76 @@
+<Description>
+
+<SSTIDEnumDefine>
+
+export class <StructName><IfHaveBaseClass> extends </IfHaveBaseClass><BaseStruct>
+{
+	<Members>
+	
+	constructor()
+	{
+		<IfHaveBaseClass>super();</IfHaveBaseClass>
+		<InitOperations>
+	}
+	public Clear(): void
+	{
+		<IfHaveBaseClass>
+		super.Clear();
+		</IfHaveBaseClass>
+		<InitOperations>
+	}
+	public MakePacket(Packet: CSmartStruct): boolean
+	{
+		let FailCount=0;
+
+		<IfHaveBaseClass>
+		if(!super.MakePacket(Packet))
+			FailCount++;
+		</IfHaveBaseClass>
+
+		<PackOperations>
+
+		return FailCount==0;
+	}
+	public ParsePacket(Packet: CSmartStruct): boolean
+	{
+		<IfHaveBaseClass>
+		super.ParsePacket(Packet);
+		</IfHaveBaseClass>
+		<IfHaveMember>
+		let Pos=Packet.GetFirstMemberPosition();
+		while(Pos.Pos>0)
+		{
+			let PacketMember=Packet.GetNextMember(Pos);
+			switch(Pos.MemberID)
+			{
+			<UnpackOperations>
+			}
+		}
+		</IfHaveMember>
+		return true;
+	}
+	public GetSmartStructSize(): number
+	{
+		let _PackSize = 0;
+		<IfHaveBaseClass>
+		_PackSize += super.GetSmartStructSize();
+		</IfHaveBaseClass>
+		<PacketSizes>
+		return _PackSize;
+	}
+	public CloneFrom(Value: <StructName>): void
+	{
+		<IfHaveBaseClass>
+		super.CloneFrom(Value);
+		</IfHaveBaseClass>
+		<CloneFromOperations>
+	}
+	public Clone(): <StructName>
+	{
+		let CloneObject=new <StructName>();
+		CloneObject.CloneFrom(this);
+		return CloneObject;
+	}
+};
+
+ALL_CLASS["<StructName>"] = <StructName>;

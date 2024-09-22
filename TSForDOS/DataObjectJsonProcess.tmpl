@@ -1,0 +1,29 @@
+public ToJson(StructNode: object, MemberFlags: Long[]): boolean
+{
+	<IfHaveBaseClass>
+	if (!super.ToJson(StructNode, MemberFlags))
+		return false;
+	</IfHaveBaseClass>
+
+	let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+
+	<ToJsonOperations>
+	return true;
+}
+public FromJson(StructNode: object, MemberFlags: Long[]): boolean
+{
+	let FailCount=0;
+	<IfHaveBaseClass>
+	if (!super.FromJson(StructNode, MemberFlags))
+		return false;
+	</IfHaveBaseClass>
+
+	let Flag=MemberFlags[DATA_OBJECT_FLAGS.<CLASS_FLAG_INDEX>];
+	let UpdateFlag = 0n;
+
+	<FromJsonOperations>
+
+	this.m_ModifyFlag = this.m_ModifyFlag.or(UpdateFlag);
+
+	return FailCount==0;
+}

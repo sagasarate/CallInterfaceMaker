@@ -1,0 +1,20 @@
+HandleMsg<MethodName>(Packet: CSmartStruct): number
+{
+	<ParamDefines>
+	
+	<ParamInitOperations>
+
+	<IfHaveMember>
+	let Pos=Packet.GetFirstMemberPosition();
+	while(Pos.Pos>0)
+	{
+		let PacketMember=Packet.GetNextMember(Pos);
+		switch(Pos.MemberID)
+		{
+		<UnpackOperations>
+		}
+	}
+	</IfHaveMember>	
+
+	return this.m_pMsgHandler.<MethodName>(<Params>);
+}

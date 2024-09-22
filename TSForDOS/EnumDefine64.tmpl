@@ -1,0 +1,97 @@
+<Description>
+export const <EnumName> =
+{
+	<EnumMembers>
+};
+
+export class <EnumName>_UTILS
+{
+	public static ENUM_COUNT : number = <EnumMemberCount>;
+	<IfExportEnumList>	
+	public static VALUE_LIST : <EnumName>[] = [<EnumValues>];	
+	</IfExportEnumList>
+
+	<IfExportEnumStrList>
+	public static NAME_LIST: string[] = [<EnumStrValues>];
+	public static DESC_LIST: string[] = [<EnumStrDescs>];
+	</IfExportEnumStrList>
+
+	<IfExportEnumTransFn>
+	<IsFlagEnum>
+	public static ToStr(Value : bigint) : string
+	{
+		let Str = [];
+		<EnumToStrs>
+		return Str.join("|");
+	}
+
+	public static FromStr(Str : string) : bigint
+	{
+		let Flag = 0n;
+		let Splitter = Str.split('|');
+		for (let i = 0; i < Splitter.length; i++)
+		{
+			<StrToEnums>
+		}	
+		return Flag;
+	}
+	public static GetDesc(Value: bigint): string
+	{
+		let Str = [];
+		<EnumToDescs>
+		return Str.join('');
+	}
+	<!IsFlagEnum>
+	public static ToStr(Value : bigint) : string
+	{
+		<HaveEnumStrArray>
+		if (Value < <EnumMemberCount>)
+		{
+			return <EnumName>_UTILS.NAME_LIST[Value];
+		}
+		</HaveEnumStrArray>
+		<NotHaveEnumStrArray>
+		switch(Value)
+		{
+			<EnumToStrs>
+		}
+		</NotHaveEnumStrArray>
+		return "UNKNOW";
+	}
+	public static FromStr(Str : string) : bigint
+	{
+		<StrToEnums>
+		return <EnumName>.<LastEnumValue>;
+	}
+	public static GetDesc(Value: bigint): string
+	{
+		<HaveEnumStrArray>
+		if (Value < <EnumName>_UTILS.ENUM_COUNT)
+		{
+			return <EnumName>_UTILS.DESC_LIST[Value.toNumber()];
+		}
+		</HaveEnumStrArray>
+		<NotHaveEnumStrArray>
+		switch(Value)
+		{
+			<EnumToDescs>
+		}
+		</NotHaveEnumStrArray>
+		return "UNKNOW";
+	}
+	</IsFlagEnum>
+	<IfExportEnumList>	
+	public static GetDescs(): string
+	{
+		let Desc = [];
+		for(let Value of <EnumName>_UTILS.VALUE_LIST)
+		{
+			if (Desc.length > 0)
+                Desc.push("\n");
+			Desc.push(`${Value}=${<EnumName>_UTILS.GetDesc(Value)}`);
+		}
+		return Desc.join('');
+	}	
+	</IfExportEnumList>
+	</IfExportEnumTransFn>
+};

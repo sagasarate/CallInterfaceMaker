@@ -1,0 +1,13 @@
+﻿<IsFlagEnum>
+<If64Bit>
+if (Splitter[i] == <EnumStrValue>)
+	Flag = Flag.or(<EnumName>.<EnumValue>);
+</If64Bit>
+<IfNot64Bit>
+if (Splitter[i] == <EnumStrValue>)
+	Flag |= <EnumName>.<EnumValue>;
+</IfNot64Bit>
+<!IsFlagEnum>
+<IfNotFirst>else </IfNotFirst>if (Str == <EnumStrValue>)
+	return <EnumName>.<EnumValue>;
+</IsFlagEnum>

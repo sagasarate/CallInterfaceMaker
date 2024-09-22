@@ -1,0 +1,19 @@
+public ToJson(StructNode: object): boolean
+{
+	<IfHaveBaseClass>
+	if (!super.ToJson(StructNode))
+		return false;
+	</IfHaveBaseClass>
+	<ToJsonOperations>
+	return true;
+}
+public FromJson(StructNode: object): boolean
+{
+	let FailCount=0;
+	<IfHaveBaseClass>
+	if (!super.FromJson(StructNode))
+		return false;
+	</IfHaveBaseClass>
+	<FromJsonOperations>
+	return FailCount==0;
+}

@@ -1,0 +1,17 @@
+﻿<IsFlagEnum>
+<If64Bit>
+if ((Value & <EnumName>.<EnumValue>) != 0n)
+{
+	Str.push(<EnumStrValue>);
+}
+</If64Bit>
+<IfNot64Bit>
+if ((Value & <EnumName>.<EnumValue>) != 0)
+{
+	Str.push(<EnumStrValue>);
+}
+</IfNot64Bit>
+<!IsFlagEnum>
+case <EnumName>.<EnumValue>:
+	return <EnumStrValue>;
+</IsFlagEnum>

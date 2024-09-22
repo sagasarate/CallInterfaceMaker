@@ -1,0 +1,18 @@
+import { CSmartValue, CSmartArray, CSmartStruct } from "../DOSSystem/SmartStruct";
+import { DOSMakeMsgID, DOS_MSG_MAP, OBJECT_ID } from "../DOSSystem/DOSSystem";
+import { MODULE_IDS, <MODULE_NAME>_INTERFACES } from "./<SpaceName>SystemEnums";
+import { I<InterfaceName> } from "./<InterfaceName>Interface";
+import { <@INTERFACE_NAME>_METHODS } from "./<@InterfaceName>Interface";
+<DependImports>
+
+export class C<InterfaceName>MsgHandler
+{
+	protected m_pMsgHandler: I<InterfaceName>;
+	public InitMsgMap(pMsgHandler: I<InterfaceName>,MsgMap: DOS_MSG_MAP): void
+	{
+		this.m_pMsgHandler=pMsgHandler;
+		<MsgMapInits>
+	}
+
+	<Methods>
+};
