@@ -747,6 +747,7 @@ struct INTERFACE_CONFIG
 	CString						MemberVariablePrefix;
 	CString						DefaultPacketName;
 	CString						DefaultPacketMemberName;
+	CString						PrecompileHeaderFileName;
 	bool						SupportBigInt;
 	bool						ForceExportAll;
 	INTERFACE_CONFIG()
@@ -786,6 +787,7 @@ struct INTERFACE_CONFIG
 		MemberVariablePrefix = "";
 		DefaultPacketName = _T("Packet");
 		DefaultPacketMemberName = _T("PacketMember");
+		PrecompileHeaderFileName = _T("stdafx.h");
 		SupportBigInt = true;
 		ForceExportAll = false;
 	}

@@ -12,14 +12,21 @@ namespace <SpaceName>
 		I<InterfaceName>
 	{
 		DistributedObjectOperator						m_Operator;		
-		OBJECT_ID										m_TargetID;
+		OBJECT_ID										m_SenderID;
+		OBJECT_ID[]										m_TargetIDList;
 		
-		public C<InterfaceName>MsgCaller(DistributedObjectOperator Operator, OBJECT_ID TargetID)
+		public C<InterfaceName>MsgCaller(DistributedObjectOperator Operator, OBJECT_ID SenderID, OBJECT_ID TargetID)
 		{
 			m_Operator = Operator;
-			m_TargetID = TargetID;			
+			m_SenderID = SenderID;
+			m_TargetIDList = new OBJECT_ID[1]{TargetID};
 		}
-		
+		public C<InterfaceName>MsgCaller(DistributedObjectOperator Operator, OBJECT_ID SenderID, OBJECT_ID[] TargetIDList)
+		{
+			m_Operator = Operator;
+			m_SenderID = SenderID;
+			m_TargetIDList = TargetIDList;
+		}
 		
 		
 		<Methods>

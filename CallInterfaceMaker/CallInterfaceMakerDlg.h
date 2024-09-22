@@ -205,13 +205,13 @@ protected:
 	bool LoadConfigByXML();
 	bool LoadConfigByJson();
 	bool LoadEnvByXML();
-	bool SaveEnvByXML();
+	//bool SaveEnvByXML();
 	bool LoadEnvByJson();
 	bool SaveEnvByJson();
 public:
 	bool SaveTypeDefByXML();
 	bool SaveTypeDefByJson();
-	bool SaveConfigByXML();
+	//bool SaveConfigByXML();
 	bool SaveConfigByJson();
 	void RefreshDataCache();
 	void RefreshInterfaceCache();
@@ -223,6 +223,7 @@ public:
 	TYPE_DEFINE* FindVarType(LPCTSTR TypeName);
 	ENUM_DEFINE_INFO* GetEnumDefine(LPCTSTR EnumName);
 	void GetDataObjectDefineList(vector<STRUCT_DEFINE_INFO*>& DataObjectList);
+	size_t GetDataObjectCount();
 
 	MODULE_DEFINE_INFO* GetModuleInfo(UINT ModuleID);
 	MODULE_DEFINE_INFO* GetModuleInfoByName(LPCTSTR szModuleName);
@@ -453,6 +454,7 @@ protected:
 	CString MakeDataObjectModifyFlagsHeader(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDataObjectModifyFlagsSource(vector<STRUCT_DEFINE_INFO*>& AllDataObjectList, vector<DATA_OBJECT_MODIFY_FLAG>& DataObjectModifyFlags, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 	CString MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_FLAG& ModifyFlag, LPCTSTR SpaceName, LPCTSTR szLineSpace);
+	CString MakeDataObjectAllFullModifyFlag(size_t ObjectCount, LPCTSTR SpaceName, LPCTSTR szLineSpace);
 
 
 	CString MakeEnumDefine(ENUM_DEFINE_INFO& EnumInfo, LPCTSTR SpaceName, LPCTSTR szLineSpace);

@@ -1,6 +1,6 @@
 public int <MethodName>(<Params>)
 {
-	if(m_Operator==null)
+	if(m_Operator == null)
 	{
 		return (int)COMMON_RESULT_CODE.COMMON_RESULT_FAILED;
 	}
@@ -8,20 +8,20 @@ public int <MethodName>(<Params>)
 	uint _PackSize = CSmartStruct.GetEmptyStructSize();
 	<PacketSizes>;
 
-	ushort MsgFlag=0;
+	ushort MsgFlag = 0;
 	<IfMsgCanCache>MsgFlag|=(ushort)DOS_MESSAGE_FLAG.DOS_MESSAGE_FLAG_CAN_CACHE;</IfMsgCanCache>
 		
 	byte[] MsgBuffer=new byte[_PackSize];
 	
 	
-    uint MsgID = CBaseMsgHandler.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
+    uint MsgID = DistributedObject.MakeMsgID((uint)MODULE_IDS.<ModuleID>,(uint)<InterfaceIDEnumName>.<InterfaceID>,(uint)<MethodIDEnumName>.<MethodID>,<IsAckMsg>true<!IsAckMsg>false</IsAckMsg>);		
 
 	
-	CSmartStruct Packet=new CSmartStruct(MsgBuffer,0,_PackSize,true);
+	CSmartStruct Packet = new CSmartStruct(MsgBuffer,0,_PackSize,true);
 	
 	if(PackMsg<MethodName>(Packet<,Params>))
 	{	
-		if(m_Operator.SendMessage(m_TargetID, MsgID, MsgFlag, MsgBuffer, 0, MsgBuffer.Length))
+		if(m_Operator.SendMessageMulti(m_TargetIDList, true, m_SenderID, MsgID, MsgFlag, MsgBuffer, 0, MsgBuffer.Length))
 		{
 			return (int)COMMON_RESULT_CODE.COMMON_RESULT_SUCCEED;
 		}

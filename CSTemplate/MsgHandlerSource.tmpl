@@ -9,12 +9,12 @@ using <SpaceName>;
 namespace <SpaceName>
 {
 	
-	public class C<InterfaceName>MsgHandler : CBaseMsgHandler
+	public class C<InterfaceName>MsgHandler
 	{
 		I<InterfaceName>	m_pMsgHandler;
-		public void InitMsgMap(I<InterfaceName> pMsgHandler,Dictionary<uint,MsgHandler> MsgMap)
+		public void InitMsgMap(I<InterfaceName> pMsgHandler,Dictionary<uint, DistributedObject.MsgHandler> MsgMap)
 		{
-			m_pMsgHandler=pMsgHandler;
+			m_pMsgHandler = pMsgHandler;
 			<MsgMapInits>
 		}
 

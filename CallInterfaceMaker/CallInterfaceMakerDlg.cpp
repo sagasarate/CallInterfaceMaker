@@ -874,196 +874,196 @@ bool CCallInterfaceMakerDlg::LoadConfigByXML()
 	}
 	return true;
 }
-bool CCallInterfaceMakerDlg::SaveConfigByXML()
-{
-	pug::xml_parser Xml;
-
-	Xml.create();
-	xml_node Doc;
-	Doc = Xml.document();
-	xml_node pi = Doc.append_child(node_pi);
-	pi.name(_T("xml"));
-	pi.attribute(_T("version")) = _T("1.0");
-	pi.attribute(_T("encoding")) = _T("utf-8");
-
-	xml_node Config = Doc.append_child(node_element, _T("Config"));
-
-	{
-		xml_node InterfaceHeaderExport = Config.append_child(node_element, _T("OneFileExport"));
-		InterfaceHeaderExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.OneFileExportConfig.IsExport);
-		InterfaceHeaderExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.OneFileExportConfig.ExportExt);
-	}
-	{
-		xml_node InterfaceHeaderExport = Config.append_child(node_element, _T("InterfaceHeaderExport"));
-		InterfaceHeaderExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport);
-		InterfaceHeaderExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node StructExport = Config.append_child(node_element, _T("StructExport"));
-		StructExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.StructExportConfig.IsExport);
-		StructExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.StructExportConfig.ExportExt);
-	}
-
-	{
-		xml_node EnumExport = Config.append_child(node_element, _T("EnumExport"));
-		EnumExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.EnumExportConfig.IsExport);
-		EnumExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.EnumExportConfig.ExportExt);
-	}
-
-	{
-		xml_node ConstExport = Config.append_child(node_element, _T("ConstExport"));
-		ConstExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.ConstExportConfig.IsExport);
-		ConstExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.ConstExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DOHeaderExport = Config.append_child(node_element, _T("DataStructHeaderExport"));
-		DOHeaderExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.DataStructHeaderExportConfig.IsExport);
-		DOHeaderExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node InterfaceExportConfig = Config.append_child(node_element, _T("InterfaceExport"));
-		InterfaceExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.InterfaceExportConfig.IsExport);
-		InterfaceExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.InterfaceExportConfig.ExportExt);
-	}
-
-	{
-		xml_node CallHeaderExportConfig = Config.append_child(node_element, _T("CallHeaderExport"));
-		CallHeaderExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.CallHeaderExportConfig.IsExport);
-		CallHeaderExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node CallSourceExportConfig = Config.append_child(node_element, _T("CallSourceExport"));
-		CallSourceExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.CallSourceExportConfig.IsExport);
-		CallSourceExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.CallSourceExportConfig.ExportExt);
-	}
-
-	{
-		xml_node HandlerHeaderExportConfig = Config.append_child(node_element, _T("HandlerHeaderExport"));
-		HandlerHeaderExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.HandlerHeaderExportConfig.IsExport);
-		HandlerHeaderExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node HandlerSourceExportConfig = Config.append_child(node_element, _T("HandlerSourceExport"));
-		HandlerSourceExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.HandlerSourceExportConfig.IsExport);
-		HandlerSourceExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DataObjectHeaderExportConfig = Config.append_child(node_element, _T("DataObjectHeaderExport"));
-		DataObjectHeaderExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport);
-		DataObjectHeaderExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DataObjectSourceExportConfig = Config.append_child(node_element, _T("DataObjectSourceExport"));
-		DataObjectSourceExportConfig.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.DataObjectSourceExportConfig.IsExport);
-		DataObjectSourceExportConfig.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, _T("DataObjectModifyFlagsHeaderExport"));
-		DataObjectModifyFlagsExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport);
-		DataObjectModifyFlagsExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, _T("DataObjectModifyFlagsSourceExport"));
-		DataObjectModifyFlagsExport.append_attribute(_T("IsExport"),
-			(bool)m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport);
-		DataObjectModifyFlagsExport.append_attribute(_T("FileExt"),
-			m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt);
-	}
-
-	{
-		xml_node DefaultStructPackOperation = Config.append_child(node_element, _T("DefaultStructGenerateOperations"));
-
-		SaveGenerateOperations(DefaultStructPackOperation, m_InterfaceConfig.DefaultStructGenerateOperations);
-	}
-
-	{
-		xml_node DefaultEnumGenerateOperations = Config.append_child(node_element, _T("DefaultEnumGenerateOperations"));
-
-		SaveGenerateOperations(DefaultEnumGenerateOperations, m_InterfaceConfig.DefaultEnumGenerateOperations);
-	}
-	{
-		xml_node DefaultEnum64GenerateOperations = Config.append_child(node_element, _T("DefaultEnum64GenerateOperations"));
-
-		SaveGenerateOperations(DefaultEnum64GenerateOperations, m_InterfaceConfig.DefaultEnum64GenerateOperations);
-	}
-	{
-		xml_node ArrayDefineConfig = Config.append_child(node_element, _T("ArrayDefineConfig"));
-
-		SaveGenerateOperations(ArrayDefineConfig, m_InterfaceConfig.ArrayDefineConfig);
-	}
-
-	{
-		xml_node OtherConfig = Config.append_child(node_element, _T("OtherConfig"));
-
-		OtherConfig.append_attribute(_T("CommentPrefix"),
-			m_InterfaceConfig.CommentPrefix);
-
-		OtherConfig.append_attribute(_T("LocalVariableDefinePrefix"),
-			m_InterfaceConfig.LocalVariableDefinePrefix);
-
-		OtherConfig.append_attribute(_T("MemberVariablePrefix"),
-			m_InterfaceConfig.MemberVariablePrefix);
-
-		OtherConfig.append_attribute(_T("DefaultPacketName"),
-			m_InterfaceConfig.DefaultPacketName);
-
-		OtherConfig.append_attribute(_T("DefaultPacketMemberName"),
-			m_InterfaceConfig.DefaultPacketMemberName);
-
-		OtherConfig.append_attribute(_T("SupportBigInt"),
-			m_InterfaceConfig.SupportBigInt);
-
-		OtherConfig.append_attribute(_T("ForceExportAll"),
-			m_InterfaceConfig.ForceExportAll);
-	}
-
-	CString FileName = CFileTools::MakeModuleFullPath(NULL, CONFIG_FILE_NAME_XML);
-	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
-	{
-		CString Msg;
-		Msg.Format(_T("保存文件失败%s"), FileName);
-		MessageBox(Msg);
-		return false;
-	}
-	return true;
-}
+//bool CCallInterfaceMakerDlg::SaveConfigByXML()
+//{
+//	pug::xml_parser Xml;
+//
+//	Xml.create();
+//	xml_node Doc;
+//	Doc = Xml.document();
+//	xml_node pi = Doc.append_child(node_pi);
+//	pi.name(_T("xml"));
+//	pi.attribute(_T("version")) = _T("1.0");
+//	pi.attribute(_T("encoding")) = _T("utf-8");
+//
+//	xml_node Config = Doc.append_child(node_element, _T("Config"));
+//
+//	{
+//		xml_node InterfaceHeaderExport = Config.append_child(node_element, _T("OneFileExport"));
+//		InterfaceHeaderExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.OneFileExportConfig.IsExport);
+//		InterfaceHeaderExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.OneFileExportConfig.ExportExt);
+//	}
+//	{
+//		xml_node InterfaceHeaderExport = Config.append_child(node_element, _T("InterfaceHeaderExport"));
+//		InterfaceHeaderExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.InterfaceHeaderExportConfig.IsExport);
+//		InterfaceHeaderExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.InterfaceHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node StructExport = Config.append_child(node_element, _T("StructExport"));
+//		StructExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.StructExportConfig.IsExport);
+//		StructExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.StructExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node EnumExport = Config.append_child(node_element, _T("EnumExport"));
+//		EnumExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.EnumExportConfig.IsExport);
+//		EnumExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.EnumExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node ConstExport = Config.append_child(node_element, _T("ConstExport"));
+//		ConstExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.ConstExportConfig.IsExport);
+//		ConstExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.ConstExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DOHeaderExport = Config.append_child(node_element, _T("DataStructHeaderExport"));
+//		DOHeaderExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.DataStructHeaderExportConfig.IsExport);
+//		DOHeaderExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.DataStructHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node InterfaceExportConfig = Config.append_child(node_element, _T("InterfaceExport"));
+//		InterfaceExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.InterfaceExportConfig.IsExport);
+//		InterfaceExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.InterfaceExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node CallHeaderExportConfig = Config.append_child(node_element, _T("CallHeaderExport"));
+//		CallHeaderExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.CallHeaderExportConfig.IsExport);
+//		CallHeaderExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.CallHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node CallSourceExportConfig = Config.append_child(node_element, _T("CallSourceExport"));
+//		CallSourceExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.CallSourceExportConfig.IsExport);
+//		CallSourceExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.CallSourceExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node HandlerHeaderExportConfig = Config.append_child(node_element, _T("HandlerHeaderExport"));
+//		HandlerHeaderExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.HandlerHeaderExportConfig.IsExport);
+//		HandlerHeaderExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.HandlerHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node HandlerSourceExportConfig = Config.append_child(node_element, _T("HandlerSourceExport"));
+//		HandlerSourceExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.HandlerSourceExportConfig.IsExport);
+//		HandlerSourceExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DataObjectHeaderExportConfig = Config.append_child(node_element, _T("DataObjectHeaderExport"));
+//		DataObjectHeaderExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.DataObjectHeaderExportConfig.IsExport);
+//		DataObjectHeaderExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.DataObjectHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DataObjectSourceExportConfig = Config.append_child(node_element, _T("DataObjectSourceExport"));
+//		DataObjectSourceExportConfig.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.DataObjectSourceExportConfig.IsExport);
+//		DataObjectSourceExportConfig.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, _T("DataObjectModifyFlagsHeaderExport"));
+//		DataObjectModifyFlagsExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.IsExport);
+//		DataObjectModifyFlagsExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.DataObjectModifyFlagsHeaderExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DataObjectModifyFlagsExport = Config.append_child(node_element, _T("DataObjectModifyFlagsSourceExport"));
+//		DataObjectModifyFlagsExport.append_attribute(_T("IsExport"),
+//			(bool)m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.IsExport);
+//		DataObjectModifyFlagsExport.append_attribute(_T("FileExt"),
+//			m_InterfaceConfig.DataObjectModifyFlagsSourceExportConfig.ExportExt);
+//	}
+//
+//	{
+//		xml_node DefaultStructPackOperation = Config.append_child(node_element, _T("DefaultStructGenerateOperations"));
+//
+//		SaveGenerateOperations(DefaultStructPackOperation, m_InterfaceConfig.DefaultStructGenerateOperations);
+//	}
+//
+//	{
+//		xml_node DefaultEnumGenerateOperations = Config.append_child(node_element, _T("DefaultEnumGenerateOperations"));
+//
+//		SaveGenerateOperations(DefaultEnumGenerateOperations, m_InterfaceConfig.DefaultEnumGenerateOperations);
+//	}
+//	{
+//		xml_node DefaultEnum64GenerateOperations = Config.append_child(node_element, _T("DefaultEnum64GenerateOperations"));
+//
+//		SaveGenerateOperations(DefaultEnum64GenerateOperations, m_InterfaceConfig.DefaultEnum64GenerateOperations);
+//	}
+//	{
+//		xml_node ArrayDefineConfig = Config.append_child(node_element, _T("ArrayDefineConfig"));
+//
+//		SaveGenerateOperations(ArrayDefineConfig, m_InterfaceConfig.ArrayDefineConfig);
+//	}
+//
+//	{
+//		xml_node OtherConfig = Config.append_child(node_element, _T("OtherConfig"));
+//
+//		OtherConfig.append_attribute(_T("CommentPrefix"),
+//			m_InterfaceConfig.CommentPrefix);
+//
+//		OtherConfig.append_attribute(_T("LocalVariableDefinePrefix"),
+//			m_InterfaceConfig.LocalVariableDefinePrefix);
+//
+//		OtherConfig.append_attribute(_T("MemberVariablePrefix"),
+//			m_InterfaceConfig.MemberVariablePrefix);
+//
+//		OtherConfig.append_attribute(_T("DefaultPacketName"),
+//			m_InterfaceConfig.DefaultPacketName);
+//
+//		OtherConfig.append_attribute(_T("DefaultPacketMemberName"),
+//			m_InterfaceConfig.DefaultPacketMemberName);
+//
+//		OtherConfig.append_attribute(_T("SupportBigInt"),
+//			m_InterfaceConfig.SupportBigInt);
+//
+//		OtherConfig.append_attribute(_T("ForceExportAll"),
+//			m_InterfaceConfig.ForceExportAll);
+//	}
+//
+//	CString FileName = CFileTools::MakeModuleFullPath(NULL, CONFIG_FILE_NAME_XML);
+//	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
+//	{
+//		CString Msg;
+//		Msg.Format(_T("保存文件失败%s"), FileName);
+//		MessageBox(Msg);
+//		return false;
+//	}
+//	return true;
+//}
 
 bool CCallInterfaceMakerDlg::LoadConfigByJson()
 {
@@ -1186,6 +1186,7 @@ bool CCallInterfaceMakerDlg::LoadConfigByJson()
 							GetJsonValue(Entry[_T("MemberVariablePrefix")], m_InterfaceConfig.MemberVariablePrefix);
 							GetJsonValue(Entry[_T("DefaultPacketName")], m_InterfaceConfig.DefaultPacketName);
 							GetJsonValue(Entry[_T("DefaultPacketMemberName")], m_InterfaceConfig.DefaultPacketMemberName);
+							GetJsonValue(Entry[_T("PrecompileHeaderFileName")], m_InterfaceConfig.PrecompileHeaderFileName);
 							{
 								rapidjson::Value& Value = Entry[_T("SupportBigInt")];
 								if (Value.IsBool())
@@ -1358,6 +1359,7 @@ bool CCallInterfaceMakerDlg::SaveConfigByJson()
 		Value.AddMember(_T("MemberVariablePrefix"), rapidjson::Value((LPCTSTR)m_InterfaceConfig.MemberVariablePrefix, m_InterfaceConfig.MemberVariablePrefix.GetLength()), Alloc);
 		Value.AddMember(_T("DefaultPacketName"), rapidjson::Value((LPCTSTR)m_InterfaceConfig.DefaultPacketName, m_InterfaceConfig.DefaultPacketName.GetLength()), Alloc);
 		Value.AddMember(_T("DefaultPacketMemberName"), rapidjson::Value((LPCTSTR)m_InterfaceConfig.DefaultPacketMemberName, m_InterfaceConfig.DefaultPacketMemberName.GetLength()), Alloc);
+		Value.AddMember(_T("PrecompileHeaderFileName"), rapidjson::Value((LPCTSTR)m_InterfaceConfig.PrecompileHeaderFileName, m_InterfaceConfig.PrecompileHeaderFileName.GetLength()), Alloc);
 		Value.AddMember(_T("SupportBigInt"), m_InterfaceConfig.SupportBigInt, Alloc);
 		Value.AddMember(_T("ForceExportAll"), m_InterfaceConfig.ForceExportAll, Alloc);
 		Root.AddMember(_T("OtherConfig"), Value, Alloc);
@@ -1443,48 +1445,48 @@ bool CCallInterfaceMakerDlg::LoadEnvByXML()
 	}
 	return true;
 }
-bool CCallInterfaceMakerDlg::SaveEnvByXML()
-{
-
-	pug::xml_parser Xml;
-
-	Xml.create();
-	xml_node Doc;
-	Doc = Xml.document();
-	xml_node pi = Doc.append_child(node_pi);
-	pi.name(_T("xml"));
-	pi.attribute(_T("version")) = _T("1.0");
-	pi.attribute(_T("encoding")) = _T("utf-8");
-
-	xml_node RunEnvironment = Doc.append_child(node_element, _T("RunEnvironment"));
-
-	RunEnvironment.append_attribute(_T("UTF8Export"), m_UTF8Export ? true : false);
-
-	{
-		xml_node ExportEnv = RunEnvironment.append_child(node_element, _T("ExportEnv"));
-		ExportEnv.append_attribute(_T("RecentExportDir"), m_RunEnvInfo.RecentExportDir);
-
-		xml_node DataEnv = RunEnvironment.append_child(node_element, _T("DataEnv"));
-		DataEnv.append_attribute(_T("RecentDataDir"), m_RunEnvInfo.RecentOpenPath);
-	}
-
-	xml_node SelectedInterfaces = RunEnvironment.append_child(node_element, _T("SelectedInterfaces"));
-
-	for (size_t i = 0; i < m_RunEnvInfo.SelectedInterfaces.size(); i++)
-	{
-		SelectedInterfaces.append_child(node_element, m_RunEnvInfo.SelectedInterfaces[i]);
-	}
-
-	CString FileName = CFileTools::MakeModuleFullPath(NULL, ENV_FILE_NAME_XML);
-	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
-	{
-		CString Msg;
-		Msg.Format(_T("保存文件失败%s"), FileName);
-		MessageBox(Msg);
-		return false;
-	}
-	return true;
-}
+//bool CCallInterfaceMakerDlg::SaveEnvByXML()
+//{
+//
+//	pug::xml_parser Xml;
+//
+//	Xml.create();
+//	xml_node Doc;
+//	Doc = Xml.document();
+//	xml_node pi = Doc.append_child(node_pi);
+//	pi.name(_T("xml"));
+//	pi.attribute(_T("version")) = _T("1.0");
+//	pi.attribute(_T("encoding")) = _T("utf-8");
+//
+//	xml_node RunEnvironment = Doc.append_child(node_element, _T("RunEnvironment"));
+//
+//	RunEnvironment.append_attribute(_T("UTF8Export"), m_UTF8Export ? true : false);
+//
+//	{
+//		xml_node ExportEnv = RunEnvironment.append_child(node_element, _T("ExportEnv"));
+//		ExportEnv.append_attribute(_T("RecentExportDir"), m_RunEnvInfo.RecentExportDir);
+//
+//		xml_node DataEnv = RunEnvironment.append_child(node_element, _T("DataEnv"));
+//		DataEnv.append_attribute(_T("RecentDataDir"), m_RunEnvInfo.RecentOpenPath);
+//	}
+//
+//	xml_node SelectedInterfaces = RunEnvironment.append_child(node_element, _T("SelectedInterfaces"));
+//
+//	for (size_t i = 0; i < m_RunEnvInfo.SelectedInterfaces.size(); i++)
+//	{
+//		SelectedInterfaces.append_child(node_element, m_RunEnvInfo.SelectedInterfaces[i]);
+//	}
+//
+//	CString FileName = CFileTools::MakeModuleFullPath(NULL, ENV_FILE_NAME_XML);
+//	if (!Xml.SaveToFile(Xml.document(), FileName, CP_UTF8))
+//	{
+//		CString Msg;
+//		Msg.Format(_T("保存文件失败%s"), FileName);
+//		MessageBox(Msg);
+//		return false;
+//	}
+//	return true;
+//}
 
 bool CCallInterfaceMakerDlg::LoadEnvByJson()
 {
@@ -1858,7 +1860,7 @@ void CCallInterfaceMakerDlg::OnBnClickedButtonSave()
 void CCallInterfaceMakerDlg::OnBnClickedButtonSaveAs()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CFileDialog Dlg(false, _T("*.json"), _T("*.json"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Json Files(*.json)|*,json|All Files(*.*)|*.*||"));
+	CFileDialog Dlg(false, _T("*.xml"), _T("*.xml"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("XML Files(*.xml)|*,xml|All Files(*.*)|*.*||"));
 
 	if (Dlg.DoModal() == IDOK)
 	{
@@ -2495,7 +2497,7 @@ bool CCallInterfaceMakerDlg::LoadInterfacesByXML(xml_node& Interfaces, vector<CA
 					MethodInfo.ID = (UINT)Method.attribute(_T("ID"));
 					MethodInfo.Flag = (UINT)Method.attribute(_T("Flag"));
 					MethodInfo.ParamIDSeed = (UINT)Method.attribute(_T("ParamIDSeed"));
-					MethodInfo.Description = ((LPCTSTR)Method.attribute(_T("Description")).getvalue());
+					MethodInfo.Description = (LPCTSTR)Method.attribute(_T("Description")).getvalue();
 
 					for (UINT k = 0; k < Method.children(); k++)
 					{
@@ -4508,6 +4510,13 @@ bool CCallInterfaceMakerDlg::ExportEnums(LPCTSTR ExportDir, LPCTSTR FileName, ve
 	//CString EnumStrValues = MakeEnumStrValues(EnumList, SpaceName, LineSpace);
 	//EnumDefineHeader.Replace(_T("<EnumStrValues>"), EnumStrValues);
 
+	if (IsSystem)
+	{
+		LineSpace = GetLineSpace(EnumDefineHeader, _T("<DataObjectAllFullModifyFlag>"));
+		CString AllFullModifyFlag = MakeDataObjectAllFullModifyFlag(GetDataObjectCount(), SpaceName, LineSpace);
+		EnumDefineHeader.Replace(_T("<DataObjectAllFullModifyFlag>"), AllFullModifyFlag);
+	}
+
 
 	WriteStringToFile(OutputFileName, EnumDefineHeader);
 
@@ -4696,6 +4705,8 @@ bool CCallInterfaceMakerDlg::ExportMsgCaller(LPCTSTR ExportDir, LPCTSTR SpaceNam
 
 		CString Source = m_MsgCallerSourceTemplate;
 
+		Source.Replace(_T("<PCH>"), m_InterfaceConfig.PrecompileHeaderFileName);
+
 		if (Source.Find(_T("<DependImports>")) >= 0)
 		{
 			CString LineSpace = GetLineSpace(Source, _T("<DependImports>"));
@@ -4760,6 +4771,8 @@ bool CCallInterfaceMakerDlg::ExportMsgHandler(LPCTSTR ExportDir, LPCTSTR SpaceNa
 			m_InterfaceConfig.HandlerSourceExportConfig.ExportExt);
 
 		CString Source = m_MsgHandlerSourceTemplate;
+
+		Source.Replace(_T("<PCH>"), m_InterfaceConfig.PrecompileHeaderFileName);
 
 		if (Source.Find(_T("<DependImports>")) >= 0)
 		{
@@ -4933,6 +4946,8 @@ bool CCallInterfaceMakerDlg::ExportDataObject(vector<STRUCT_DEFINE_LIST2*>& Stru
 						SourceFileName.Format(_T("%s\\%s.%s"), ExportDir, ClassNameToFileName(pInfo->Name),
 							m_InterfaceConfig.DataObjectSourceExportConfig.ExportExt);
 						CString Source = RestoreFileToTemplate(SourceFileName, m_DataObjectDefineSourceTemple);
+
+						Source.Replace(_T("<PCH>"), m_InterfaceConfig.PrecompileHeaderFileName);
 
 						Source.Replace(_T("<SpaceName>"), SpaceName);
 
@@ -5146,6 +5161,8 @@ bool CCallInterfaceMakerDlg::ExportDataObjectModifyFlags(vector<DATA_OBJECT_MODI
 
 		CString Source = m_DataObjectModifyFlagsSourceTemple;
 
+		Source.Replace(_T("<PCH>"), m_InterfaceConfig.PrecompileHeaderFileName);
+
 		Source.Replace(_T("<SpaceName>"), SpaceName);
 
 		LineSpace = GetLineSpace(Source, _T("<DataObjectModifyFlags>"));
@@ -5340,7 +5357,7 @@ CString CCallInterfaceMakerDlg::MakeStructSSTIDEnumDefines(STRUCT_DEFINE_INFO& S
 	{
 		CString MemberName;
 		MemberName = ClassNameToUpper(StructInfo.MemberList[j].Name);
-		EnumInfo.MemberList[j].Name.Format(_T("SST_%s_%s"), StructName, MemberName);
+		EnumInfo.MemberList[j].Name.Format(_T("SST_%s_%s"), ClassNameToUpper(StructName), MemberName);
 		EnumInfo.MemberList[j].Value.Format(_T("%d"), StructInfo.ObjectID + StructInfo.MemberList[j].ID);
 	}
 
@@ -5875,7 +5892,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(INTERFACE_METHOD& MethodInfo,
 				CString SST_ID;
 				CString ParentShortName = ClassNameToUpper(MethodName);
 				SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(ParamInfo.Name));
-				SST_ID.MakeUpper();
+				
 				Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
 				Operation.Replace(_T("<SST_ID>"), SST_ID);
 
@@ -5979,7 +5996,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(INTERFACE_METHOD& MethodInf
 
 				CString ParentShortName = ClassNameToUpper(MethodName);
 				SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(ParamInfo.Name));
-				SST_ID.MakeUpper();
+				
 
 
 				Operation.Replace(_T("<SpaceName>"), SpaceName);
@@ -6243,13 +6260,17 @@ CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInf
 
 		Operation.Replace(_T("<SpaceName>"), SpaceName);
 
+		CString SST_ID;
+		CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+
 		CString LineSpace = GetLineSpace(Operation, _T("<PackOperation>"));
 		UINT OperationFlag = (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0) ? PACK_OPERATION_FLAG_IN_DATA_OBJECT : 0)
 			| (((StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0)) ? PACK_OPERATION_FLAG_NEED_MF_CHECK : 0)
 			| ((StructInfo.MemberList[i].IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
 		CString PackOP = MakePackOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
-			StructInfo.Name, StructInfo.ShortName,
+			StructInfo.Name, ParentShortName,
 			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 			LocalPacketName, LocalPacketMemberName,
 			OperationFlag,
@@ -6257,10 +6278,7 @@ CString CCallInterfaceMakerDlg::MakePackOperations(STRUCT_DEFINE_INFO& StructInf
 
 		Operation.Replace(_T("<PackOperation>"), PackOP);
 
-		CString SST_ID;
-
-		SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-		SST_ID.MakeUpper();
+		
 
 
 		Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6338,9 +6356,8 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 			}
 
 			CString SST_ID;
-
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-			SST_ID.MakeUpper();
+			CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+			SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6370,7 +6387,7 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperations(STRUCT_DEFINE_INFO& StructI
 				| ((StructInfo.MemberList[i].IsArray) ? PACK_OPERATION_FLAG_IS_ARRAY : 0);
 			CString UnpackOP = MakeUnpackOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
-				StructInfo.Name, StructInfo.ShortName,
+				StructInfo.Name, ParentShortName,
 				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 				LocalPacketName, LocalPacketMemberName,
 				OperationFlag,
@@ -6600,10 +6617,14 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 
 		Operation.Replace(_T("<SpaceName>"), SpaceName);
 
+		CString SST_ID;
+		CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+
 		CString LineSpace = GetLineSpace(Operation, _T("<ToXMLOperation>"));
 		CString PackOP = MakeToXMLOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
-			StructInfo.Name, StructInfo.ShortName,
+			StructInfo.Name, ParentShortName,
 			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
@@ -6612,10 +6633,7 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperations(STRUCT_DEFINE_INFO& StructIn
 
 		Operation.Replace(_T("<ToXMLOperation>"), PackOP);
 
-		CString SST_ID;
-
-		SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-		SST_ID.MakeUpper();
+		
 
 
 		Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6687,9 +6705,8 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 			}
 
 			CString SST_ID;
-
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-			SST_ID.MakeUpper();
+			CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+			SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6714,7 +6731,7 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperations(STRUCT_DEFINE_INFO& Struct
 			CString LineSpace = GetLineSpace(Operation, _T("<FromXMLOperation>"));
 			CString UnpackOP = MakeFromXMLOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
-				StructInfo.Name, StructInfo.ShortName,
+				StructInfo.Name, ParentShortName,
 				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
@@ -6837,10 +6854,14 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 
 		Operation.Replace(_T("<SpaceName>"), SpaceName);
 
+		CString SST_ID;
+		CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
+
 		CString LineSpace = GetLineSpace(Operation, _T("<ToJsonOperation>"));
 		CString PackOP = MakeToJsonOperation(StructInfo.MemberList[i].Type,
 			StructInfo.MemberList[i].Name,
-			StructInfo.Name, StructInfo.ShortName,
+			StructInfo.Name, ParentShortName,
 			SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 			(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
@@ -6849,10 +6870,7 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperations(STRUCT_DEFINE_INFO& StructI
 
 		Operation.Replace(_T("<ToJsonOperation>"), PackOP);
 
-		CString SST_ID;
-
-		SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-		SST_ID.MakeUpper();
+		
 
 
 		Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6924,9 +6942,8 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			}
 
 			CString SST_ID;
-
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
-			SST_ID.MakeUpper();
+			CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+			SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(StructInfo.MemberList[i].Name));
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -6952,7 +6969,7 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperations(STRUCT_DEFINE_INFO& Struc
 			CString LineSpace = GetLineSpace(Operation, _T("<FromJsonOperation>"));
 			CString UnpackOP = MakeFromJsonOperation(StructInfo.MemberList[i].Type,
 				StructInfo.MemberList[i].Name,
-				StructInfo.Name, StructInfo.ShortName,
+				StructInfo.Name, ParentShortName,
 				SSTIDEnumName, StructInfo.MemberList[i].PackFlag,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0 && ((StructInfo.MemberList[i].Flag & STRUCT_MEMBER_FLAG_NOT_MONITOR_UPDATE) == 0),
@@ -7049,7 +7066,6 @@ CString CCallInterfaceMakerDlg::MakePackOperation(LPCTSTR Type, LPCTSTR Name, LP
 
 
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 
 
@@ -7166,7 +7182,6 @@ CString CCallInterfaceMakerDlg::MakeUnpackOperation(LPCTSTR Type, LPCTSTR Name, 
 
 		CString SST_ID;
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 
 		if (OperationFlag & PACK_OPERATION_FLAG_IS_ARRAY)
@@ -7278,7 +7293,6 @@ CString CCallInterfaceMakerDlg::MakeToXMLOperation(LPCTSTR Type, LPCTSTR Name, L
 
 
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 
 
@@ -7382,7 +7396,6 @@ CString CCallInterfaceMakerDlg::MakeFromXMLOperation(LPCTSTR Type, LPCTSTR Name,
 
 		CString SST_ID;
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 		SelectBlock(Operation, _T("IsArray"), IsArray);
 		if (IsArray)
@@ -7485,7 +7498,6 @@ CString CCallInterfaceMakerDlg::MakeToJsonOperation(LPCTSTR Type, LPCTSTR Name, 
 
 
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 
 
@@ -7589,7 +7601,6 @@ CString CCallInterfaceMakerDlg::MakeFromJsonOperation(LPCTSTR Type, LPCTSTR Name
 
 		CString SST_ID;
 		SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-		SST_ID.MakeUpper();
 
 		SelectBlock(Operation, _T("IsArray"), IsArray);
 		if (IsArray)
@@ -7929,8 +7940,7 @@ CString CCallInterfaceMakerDlg::MakeDBPutParamBindOperations(STRUCT_DEFINE_INFO&
 
 			CString SST_ID;
 
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
-			SST_ID.MakeUpper();
+			SST_ID.Format(_T("SST_%s_%s"), ClassNameToUpper(StructInfo.ShortName), ClassNameToUpper(MemberInfo.Name));
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -8371,10 +8381,14 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperations(STRUCT_DEFINE_INFO& Str
 
 			Operation.Replace(_T("<SpaceName>"), SpaceName);
 
+			CString SST_ID;
+			CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+			SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(MemberInfo.Name));
+
 			CString LineSpace = GetLineSpace(Operation, _T("<ToLuaOperation>"));
 			CString PackOP = MakeToLuaTableOperation(pTypeInfo,
 				MemberInfo.Name,
-				StructInfo.Name, StructInfo.ShortName,
+				StructInfo.Name, ParentShortName,
 				SSTIDEnumName,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 				MemberInfo.IsArray,
@@ -8382,10 +8396,7 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperations(STRUCT_DEFINE_INFO& Str
 
 			Operation.Replace(_T("<ToLuaOperation>"), PackOP);
 
-			CString SST_ID;
-
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
-			SST_ID.MakeUpper();
+			
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -8463,7 +8474,6 @@ CString CCallInterfaceMakerDlg::MakeToLuaTableOperation(TYPE_DEFINE* pTypeInfo, 
 
 
 	SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-	SST_ID.MakeUpper();
 
 
 
@@ -8595,10 +8605,14 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperations(STRUCT_DEFINE_INFO& S
 
 			Operation.Replace(_T("<SpaceName>"), SpaceName);
 
+			CString SST_ID;
+			CString ParentShortName = ClassNameToUpper(StructInfo.ShortName);
+			SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(MemberInfo.Name));
+
 			CString LineSpace = GetLineSpace(Operation, _T("<FromLuaOperation>"));
 			CString PackOP = MakeFromLuaTableOperation(pTypeInfo,
 				MemberInfo.Name,
-				StructInfo.Name, StructInfo.ShortName,
+				StructInfo.Name, ParentShortName,
 				SSTIDEnumName,
 				(StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT) != 0,
 				MemberInfo.IsArray,
@@ -8606,10 +8620,7 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperations(STRUCT_DEFINE_INFO& S
 
 			Operation.Replace(_T("<FromLuaOperation>"), PackOP);
 
-			CString SST_ID;
-
-			SST_ID.Format(_T("SST_%s_%s"), StructInfo.ShortName, ClassNameToUpper(MemberInfo.Name));
-			SST_ID.MakeUpper();
+			
 
 
 			Operation.Replace(_T("<SST_NAME>"), SSTIDEnumName);
@@ -8686,7 +8697,6 @@ CString CCallInterfaceMakerDlg::MakeFromLuaTableOperation(TYPE_DEFINE* pTypeInfo
 
 
 	SST_ID.Format(_T("SST_%s_%s"), ParentShortName, ClassNameToUpper(Name));
-	SST_ID.MakeUpper();
 
 
 
@@ -9863,6 +9873,7 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_
 	RemoveBlock(Template, _T("<FlagSeparator>"), _T("</FlagSeparator>"));
 	CString ZeroValue = GetBlock(Template, _T("<ZeroValue>"), _T("</ZeroValue>"));
 	RemoveBlock(Template, _T("<ZeroValue>"), _T("</ZeroValue>"));
+	RemoveBlock(Template, _T("<FullValue>"), _T("</FullValue>"));
 	CString ObjTemplate = GetBlock(Template, _T("<FlagUnit>"), _T("</FlagUnit>"));
 	ReplaceBlock(Template, _T("<FlagUnit>"), _T("</FlagUnit>"), _T("<ObjFlag>"));
 	for (size_t i = 0; i < ModifyFlag.ModifyFlag.size(); i++)
@@ -9902,6 +9913,40 @@ CString CCallInterfaceMakerDlg::MakeDataObjectModifyFlagData(DATA_OBJECT_MODIFY_
 			Source += Line;
 		}
 	}
+
+	CString Space = _T("\r\n");
+	Space += szLineSpace;
+	Source.Replace(_T("\r\n"), Space);
+	return Source;
+}
+CString CCallInterfaceMakerDlg::MakeDataObjectAllFullModifyFlag(size_t ObjectCount, LPCTSTR SpaceName, LPCTSTR szLineSpace)
+{
+	CString Source = m_DataObjectModifyFlagDefineTemple;
+
+	Source.Replace(_T("<FlagName>"), _T("DOMF_ALL_FULL"));
+	Source.Replace(_T("<SpaceName>"), SpaceName);
+
+	CString Data;
+	CString Template = m_DataObjectModifyFlagUnitTemple;
+	CString ObjSeparatorStr = GetBlock(Template, _T("<ObjSeparator>"), _T("</ObjSeparator>"));
+	RemoveBlock(Template, _T("<ObjSeparator>"), _T("</ObjSeparator>"));
+	RemoveBlock(Template, _T("<FlagSeparator>"), _T("</FlagSeparator>"));
+	RemoveBlock(Template, _T("<ZeroValue>"), _T("</ZeroValue>"));
+	CString FullValue = GetBlock(Template, _T("<FullValue>"), _T("</FullValue>"));
+	RemoveBlock(Template, _T("<FullValue>"), _T("</FullValue>"));
+	ReplaceBlock(Template, _T("<FlagUnit>"), _T("</FlagUnit>"), _T("<ObjFlag>"));
+
+	for (size_t i = 0; i < ObjectCount; i++)
+	{
+		
+		if (i)
+		{
+			Data += ObjSeparatorStr + _T("\r\n");
+		}
+		Data += FullValue;
+	}
+
+	Source.Replace(_T("<FlagData>"), Data);
 
 	CString Space = _T("\r\n");
 	Space += szLineSpace;
@@ -11491,12 +11536,12 @@ CString CCallInterfaceMakerDlg::MakeStructDependImports(STRUCT_DEFINE_INFO& Stru
 			AddUnique(PackFlagList, MemberInfo.PackFlag);
 	}
 
-	if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
-	{
-		CString FullModifyFlag;
-		FullModifyFlag.Format(_T("DOMF_%s_FULL"), ClassNameToUpper(StructInfo.Name));
-		AddUnique(PackFlagList, FullModifyFlag);
-	}
+	//if (StructInfo.Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+	//{
+	//	CString FullModifyFlag;
+	//	FullModifyFlag.Format(_T("DOMF_%s_FULL"), ClassNameToUpper(StructInfo.Name));
+	//	AddUnique(PackFlagList, FullModifyFlag);
+	//}
 
 	return MakeStructDependImports(DependTypeList, DataObjectList, PackFlagList, MethodList, SpaceName, _T(""), szLineSpace);
 }
@@ -11758,6 +11803,23 @@ ENUM_DEFINE_INFO* CCallInterfaceMakerDlg::GetEnumDefine(LPCTSTR EnumName)
 void CCallInterfaceMakerDlg::GetDataObjectDefineList(vector<STRUCT_DEFINE_INFO*>& DataObjectList)
 {
 	GetDataObjectListSorted(m_AllDataStructList, DataObjectList);
+}
+size_t CCallInterfaceMakerDlg::GetDataObjectCount()
+{
+	size_t Count = 0;
+	for (size_t i = 0; i < m_AllDataStructList.size(); i++)
+	{
+		if (m_AllDataStructList[i]->ListType == DATA_STRUCT_STRUCT)
+		{
+			STRUCT_DEFINE_LIST* pStructList = (STRUCT_DEFINE_LIST*)m_AllDataStructList[i];
+			for (size_t j = 0; j < pStructList->StructList.size(); j++)
+			{
+				if (pStructList->StructList[j].Flag & STRUCT_FLAG_IS_DATA_OBJECT)
+					Count++;
+			}
+		}
+	}
+	return Count;
 }
 
 MODULE_DEFINE_INFO* CCallInterfaceMakerDlg::GetModuleInfo(UINT ModuleID)
